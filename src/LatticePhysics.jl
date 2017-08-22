@@ -229,14 +229,32 @@ end
 
 
 # print information about unitcell (export with lattice printInfo)
-function printInfo(unitcell::Unitcell)
+function printInfo(unitcell::Unitcell; detailed=false)
     println("Information on the unitcell stored in file \"$(unitcell.filename)\":")
     println(" - periodicity given by $(size(unitcell.lattice_vectors,1)) lattice vectors:")
     for l in unitcell.lattice_vectors
         println("     - $(l)")
     end
-    println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1]))")
-    println(" - $(size(unitcell.connections,1)) connections in the unitcell")
+    if detailed
+        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1])):")
+        for site in unitcell.basis
+            println("     - $(site)")
+        end
+    else
+        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1]))")
+    end    
+    if detailed
+        println(" - $(size(unitcell.connections,1)) connections in the unitcell:")
+        for c in unitcell.connections
+            if typeof(c[3]) == String
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): \"$(c[3])\"")
+            else
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): $(c[3])")
+            end
+        end
+    else
+        println(" - $(size(unitcell.connections,1)) connections in the unitcell")
+    end
     println(" - $(size(unitcell.connections,1)/size(unitcell.basis,1)) connections per site")
     # check statistics of connections
     nc = zeros(Int64, size(unitcell.basis,1))
@@ -5660,7 +5678,8 @@ export getInteractionMatrixKSpace
 #   path has to be of following format
 #   Array[
 #       ["name1", [coordinates1]],
-#       ["name2", [coordinates2]]
+#       ["name2", [coordinates2]],
+#       ...
 #   ]
 #   path does not close! to close, insert first point again
 #
