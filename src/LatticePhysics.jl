@@ -5401,7 +5401,7 @@ function plotLattice3D(
                     [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])],
                     [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])],
                     getProperConnectionColor(c[5], c[3]),
-                    getProperConnectionWidth(c[5]), dashed=(c[4] == neutral_connection_wrap)))	
+                    getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))	
             end
 			# increase index
 			i = i+1
@@ -5429,7 +5429,7 @@ function plotLattice3D(
 						[X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])],
 						[X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])],
 						getProperConnectionColor(c[5], c[3]),
-						getProperConnectionWidth(c[5]), dashed=(c[4] == neutral_connection_wrap)))	
+						getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))	
 				end	
 			end
 			# increase index
