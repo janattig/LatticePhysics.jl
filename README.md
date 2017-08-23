@@ -2,7 +2,16 @@
 
 Lattice based calculations and plotting for Julia v.0.5.2
 
-Usage:
+
+## Usage
+
+See upcoming Wiki (to be done)
+
+
+## Installation:
+
+You can use the package via the package manager in Julia (Pkg). However, since the package
+is not listed in the Julia package repositories, you have to use
 ```Julia
 Pkg.clone("git@gitsrv.thp.uni-koeln.de:attig/LatticePhysics.jl.git")
 ```
