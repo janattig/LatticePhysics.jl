@@ -31,7 +31,7 @@
 #
 #   AUTHOR:             Jan Attig
 #   DATE started:       2017-08-16
-#   DATE last version:  2017-08-22
+#   DATE last version:  2017-08-23
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -1175,7 +1175,127 @@ function getUnitcellKagome(version=1; save=true)
 end
 export getUnitcellKagome
 
-
+#-----------------------------------------------------------------------------------------------------------------------------
+# HONEYCOMB-XXX LATTICE
+# 1 - simple, 11 sites per UC (symmetric around x axis, gives ZZ edge in strip, all couplings identical)
+# 2 - simple, 11 sites per UC (symmetric around x axis, gives ZZ edge in strip, couplings fine tuned to be square root)
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitcellHoneycombXXX(version=1; save=true)
+    # distinguish by version
+    if version == 1
+       # the lattice vectors
+        a1 = [sqrt(3.0)/2, -0.5]
+        a2 = [sqrt(3.0)/2, +0.5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0,0.0],
+            [0.57735,0.0],
+            [0.288675,0.0],
+            [-0.144338,0.25],
+            [-0.144338,-0.25],
+            [0.144338,0.0],
+            [0.433013,0.0],
+            [-0.0721688,0.125],
+            [-0.216506,0.375],
+            [-0.0721688,-0.125],
+            [-0.216506,-0.375]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 6; 1.0; (0,0)],
+            [6; 1; 1.0; (0,0)],
+            [6; 3; 1.0; (0,0)],
+            [3; 6; 1.0; (0,0)],
+            [3; 7; 1.0; (0,0)],
+            [7; 3; 1.0; (0,0)],
+            [7; 2; 1.0; (0,0)],
+            [2; 7; 1.0; (0,0)],
+            [1; 8; 1.0; (0,0)],
+            [8; 1; 1.0; (0,0)],
+            [8; 4; 1.0; (0,0)],
+            [4; 8; 1.0; (0,0)],
+            [4; 9; 1.0; (0,0)],
+            [9; 4; 1.0; (0,0)],
+            [9; 2; 1.0; (-1,0)],
+            [2; 9; 1.0; (1,0)],
+            [1; 10; 1.0; (0,0)],
+            [10; 1; 1.0; (0,0)],
+            [10; 5; 1.0; (0,0)],
+            [5; 10; 1.0; (0,0)],
+            [5; 11; 1.0; (0,0)],
+            [11; 5; 1.0; (0,0)],
+            [11; 2; 1.0; (0,-1)],
+            [2; 11; 1.0; (0,1)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_honeycomb-XXX_unitcell.jld"
+    elseif version == 2
+       # the lattice vectors
+        a1 = [sqrt(3.0)/2, -0.5]
+        a2 = [sqrt(3.0)/2, +0.5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0,0.0],
+            [0.57735,0.0],
+            [0.288675,0.0],
+            [-0.144338,0.25],
+            [-0.144338,-0.25],
+            [0.144338,0.0],
+            [0.433013,0.0],
+            [-0.0721688,0.125],
+            [-0.216506,0.375],
+            [-0.0721688,-0.125],
+            [-0.216506,-0.375]
+        ]
+        # Connection Definition
+        a = sqrt(sqrt(2.0/3.0))
+        b = sqrt(sqrt(3.0/2.0))
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 6; a; (0,0)],
+            [6; 1; a; (0,0)],
+            [6; 3; b; (0,0)],
+            [3; 6; b; (0,0)],
+            [3; 7; b; (0,0)],
+            [7; 3; b; (0,0)],
+            [7; 2; a; (0,0)],
+            [2; 7; a; (0,0)],
+            [1; 8; a; (0,0)],
+            [8; 1; a; (0,0)],
+            [8; 4; b; (0,0)],
+            [4; 8; b; (0,0)],
+            [4; 9; b; (0,0)],
+            [9; 4; b; (0,0)],
+            [9; 2; a; (-1,0)],
+            [2; 9; a; (1,0)],
+            [1; 10; a; (0,0)],
+            [10; 1; a; (0,0)],
+            [10; 5; b; (0,0)],
+            [5; 10; b; (0,0)],
+            [5; 11; b; (0,0)],
+            [11; 5; b; (0,0)],
+            [11; 2; a; (0,-1)],
+            [2; 11; a; (0,1)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_honeycomb-XXX_fine_tuned_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcellHoneycombXXX
 
 
 
@@ -4912,6 +5032,60 @@ end
 
 
 
+# GET AUTOMATICAL SEQUENCE OF COLORS
+function getColorSequence(len::Int64)
+    # define a new list for the sequence
+    colors = Array[]
+    # fill the sequence depending on the number of requested elements
+    if len <= 1
+        # only one color --> black
+        push!(colors, [0,0,0])
+    elseif len == 2
+        # only two colors --> black and red
+        push!(colors, [0,0,0])
+        push!(colors, [255,0,0])
+    elseif len == 2
+        # only three colors --> red, green, blue (Kitaev)
+        push!(colors, [255,0,0])
+        push!(colors, [0,255,0])
+        push!(colors, [0,0,255])
+    else
+        # continuous sequence of random colors
+        for i in 1:len
+            push!(colors, [rand(1:255),rand(1:255),rand(1:255)])
+        end
+    end
+    # return the sequence
+    return colors
+end
+function getGreySequence(len::Int64)
+    # define a new list for the sequence
+    colors = Array[]
+    # fill the sequence depending on the number of requested elements
+    if len <= 1
+        # only one color --> black
+        push!(colors, [0,0,0])
+    elseif len == 2
+        # only two colors --> black and grey
+        push!(colors, [0,0,0])
+        push!(colors, [125,125,125])
+    elseif len == 2
+        # only three colors --> black and two grey
+        push!(colors, [0,0,0])
+        push!(colors, [90,90,90])
+        push!(colors, [180,180,180])
+    else
+        # continuous sequence
+        for i in 1:len
+            c = round(Int64, i/len * 200)
+            push!(colors, [c,c,c])
+        end
+    end
+    # return the sequence
+    return colors
+end
+
+
 
 
 
@@ -4947,6 +5121,7 @@ end
 #   -   visualize_periodic: Decide if periodic connections are also shown (Default: false)
 #   -   colorcode_sites: Dictonary containing a colorcode for all sites matching the site index to a RGB color array
 #   -   colorcode_bonds: Dictonary containing a colorcode for all bonds matching the interaction strength to a RGB color array
+#   -   colorcode_bonds_automation: String specifying if bonds are colored automatically. Select either "COLOR" or "GREY" or "OFF"
 #   -   openfile: Decide if the newly created SVG should already be opened by external viewer (Default: false)
 #   -   export_pdf: Decide if svg should be converted to pdf (Default: true)
 #
@@ -4969,6 +5144,7 @@ function plotLattice2D(
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
 		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
 		openfile=false,
         export_pdf=true
 		)
@@ -4982,6 +5158,31 @@ function plotLattice2D(
 	# load positions and connections
 	positions	= lattice.positions
 	connections = lattice.connections
+
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getGreySequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getColorSequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    end
 
 	# repair color dictonary
 	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
@@ -5085,6 +5286,7 @@ function plotLattice3D(
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
 		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
 		bond_color_BG = [100,100,100],
 		site_color_BG = [125,125,125],
 		lattice_rotation::Array{Float64}=[0.0,0.0,0.0],
@@ -5103,6 +5305,31 @@ function plotLattice3D(
 	# load positions and connections
 	positions = copy(lattice.positions)
 	connections = copy(lattice.connections)
+
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getGreySequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getColorSequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    end
 
 	# repair color dictonary
 	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
@@ -5492,6 +5719,7 @@ function plotLattice(
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
 		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
 		bond_color_BG = [100,100,100],
 		site_color_BG = [125,125,125],
 		lattice_rotation::Array{Float64}=[0.0,0.0,0.0],
@@ -5516,6 +5744,7 @@ function plotLattice(
             visualize_periodic=visualize_periodic,
             colorcode_sites = colorcode_sites,
             colorcode_bonds = colorcode_bonds,
+            colorcode_bonds_automation = colorcode_bonds_automation,
             openfile=openfile,
             export_pdf=export_pdf)
     elseif dimension == 3
@@ -5529,6 +5758,7 @@ function plotLattice(
             visualize_periodic=visualize_periodic,
             colorcode_sites = colorcode_sites,
             colorcode_bonds = colorcode_bonds,
+            colorcode_bonds_automation = colorcode_bonds_automation,
             bond_color_BG = bond_color_BG,
             site_color_BG = site_color_BG,
             lattice_rotation=lattice_rotation,
