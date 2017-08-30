@@ -546,6 +546,18 @@ function getConnectivityList(lattice::Lattice)
     # return the lists
     return lists
 end
+function getConnectivityList(unitcell::Unitcell)
+    # list of lists
+    lists = Array[]
+    for p in unitcell.basis
+        push!(lists, [])
+    end
+    for c in unitcell.connections
+        push!(lists[Int(c[1])], (c[2], c[3]) )
+    end
+    # return the lists
+    return lists
+end
 # get for every site a list with all connections
 function getConnectionList(lattice::Lattice)
     # list of lists
@@ -554,6 +566,18 @@ function getConnectionList(lattice::Lattice)
         push!(lists, Array[])
     end
     for c in lattice.connections
+        push!(lists[Int(c[1])], c )
+    end
+    # return the lists
+    return lists
+end
+function getConnectionList(unitcell::Unitcell)
+    # list of lists
+    lists = Array[]
+    for p in unitcell.basis
+        push!(lists, Array[])
+    end
+    for c in unitcell.connections
         push!(lists[Int(c[1])], c )
     end
     # return the lists
@@ -1229,7 +1253,7 @@ function getUnitcellHoneycombXXX(version=1; save=true)
             [5; 11; 1.0; (0,0)],
             [11; 5; 1.0; (0,0)],
             [11; 2; 1.0; (0,-1)],
-            [2; 11; 1.0; (0,1)],
+            [2; 11; 1.0; (0,1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_honeycomb-XXX_unitcell.jld"
@@ -1282,10 +1306,10 @@ function getUnitcellHoneycombXXX(version=1; save=true)
             [5; 11; b; (0,0)],
             [11; 5; b; (0,0)],
             [11; 2; a; (0,-1)],
-            [2; 11; a; (0,1)],
+            [2; 11; a; (0,1)]
         ]
         # filename
-        filename = "$(FOLDER_UNITCELLS)2d_honeycomb-XXX_fine_tuned_unitcell.jld"
+        filename = "$(FOLDER_UNITCELLS)2d_honeycomb-XXX_a_b_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -4553,9 +4577,8 @@ function getIndependentSubunitcells(unitcell::Unitcell)
     # define an array of labels
     labels = zeros(Int64, size(positions,1))
     currentlabel = 1
-    # get the connectivity list of the unitcell via the connectivity list of a 1x1(x1) periodic lattice
-    lattice = getLatticePeriodic(unitcell, ones(Int64, size(unitcell.lattice_vectors, 1)))
-    connectivity = getConnectionList(lattice)
+    # get the connectivity list of the unitcell
+    connectivity = getConnectionList(unitcell)
     # iterate over all positions
     for i in 1:size(positions, 1)
         # get the label of site i
@@ -4822,9 +4845,8 @@ export transformLatticeToSquaredLattice
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 function transformUnitcellToSquaredUnitcell(unitcell::Unitcell)
-    # get the connectivity matrix of the lattice of 1x1(x1)
-    lattice = getLatticePeriodic(unitcell, ones(Int64, size(unitcell.lattice_vectors, 1)))
-    connectivity = getConnectionList(lattice)
+    # get the connectivity matrix of the unitcell
+    connectivity = getConnectionList(unitcell)
     # define a list of new connections
     connections_new = Array[]
     # iterate over all sites and check if they host a NNN connection
@@ -4832,7 +4854,7 @@ function transformUnitcellToSquaredUnitcell(unitcell::Unitcell)
         # check the neighbors of site i
         for (i1,c1) in enumerate(connectivity[i])
         for (i2,c2) in enumerate(connectivity[i])
-            # propose a connection c1+c2 if they are different
+            # propose a connection c1+c2 if the connections c1 and c2 are different
             if i1 < i2
                 # build the offsets
                 if length(c1[4]) == 1
@@ -5885,9 +5907,108 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
 end
 export getInteractionMatrixKSpace
 
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Interaction matrix INFORMATION
+#   (returns two matrices that indicate the number of periodic and non-periodic connections between respective sites)
+#
+#   Parameters are
+#   - lattice: The complete lattice of which the interaction matrix should be constructed
+#   or
+#   - unitcell: The unitcell of which the interaction matrix should be constructed
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function getInteractionMatrixInformation(lattice::Lattice)
+    # matrices indicating the number of connections
+    con_periodic =  zeros(Int64, size(lattice.positions,1),size(lattice.positions,1))
+    con_inside   =  zeros(Int64, size(lattice.positions,1),size(lattice.positions,1))
+    # go through all connections of the lattice
+    for c in lattice.connections
+        # get the indices
+        index_from  = Int(c[1])
+        index_to    = Int(c[2])
+        strength    = c[3]
+        wrap        = c[4]
+        # check if inside or periodic and add to the counter
+        if sum([abs(el) for el in wrap]) == 0
+            con_inside[index_from, index_to] = con_inside[index_from, index_to] + 1
+        else
+            con_periodic[index_from, index_to] = con_periodic[index_from, index_to] + 1
+        end
+    end
+    # return the matrices
+    return con_inside, con_periodic
+end
+function getInteractionMatrixInformation(unitcell::Unitcell)
+    # matrices indicating the number of connections
+    con_periodic =  zeros(Int64, size(unitcell.basis,1),size(unitcell.basis,1))
+    con_inside   =  zeros(Int64, size(unitcell.basis,1),size(unitcell.basis,1))
+    # go through all connections of the lattice
+    for c in unitcell.connections
+        # get the indices
+        index_from  = Int(c[1])
+        index_to    = Int(c[2])
+        strength    = c[3]
+        wrap        = c[4]
+        # check if inside or periodic and add to the counter
+        if sum([abs(el) for el in wrap]) == 0
+            con_inside[index_from, index_to] = con_inside[index_from, index_to] + 1
+        else
+            con_periodic[index_from, index_to] = con_periodic[index_from, index_to] + 1
+        end
+    end
+    # return the matrices
+    return con_inside, con_periodic
+end
+export getInteractionMatrixInformation
 
-
-
+# print the interaction matrix information in compressed LaTeX format
+function printInteractionMatrixInformation(connections_inside, connections_periodic)
+    # get the dimension of the matrices
+    len = size(connections_periodic,1)
+    # starting lines
+    println("\\begin{equation*}")
+    println("   \\mathbf{H} = \\bordermatrix{")
+    print("       ")
+    for i in 1:len
+        print("& $(i) ")
+    end
+    println("\\cr")
+    # iterate over all lines of the matrix
+    for j in 1:len
+        # start line by printing the current index
+        print("       $(j) ")
+        # go through all respective numbers
+        for i in 1:len
+            # check if periodic or internal connections
+            if connections_inside[i,j] == 0 && connections_periodic[i,j] == 0
+                print("& 0 ")
+            elseif connections_inside[i,j] > 0 && connections_periodic[i,j] == 0
+                #print("& {\\color{blue} 0},{\\color{red} $(connections_inside[i,j])} ")
+                print("& {\\color{blue} $(connections_inside[i,j])} ")
+            elseif connections_inside[i,j] == 0 && connections_periodic[i,j] > 0
+                #print("& {\\color{blue} $(connections_periodic[i,j])},{\\color{red} 0} ")
+                print("& {\\color{red} $(connections_periodic[i,j])} ")
+            else
+                print("& {\\color{red} $(connections_periodic[i,j])},{\\color{blue} $(connections_inside[i,j])} ")
+            end
+        end
+        # end the line by printing a linebreak
+        println("\\cr")
+    end
+    # end lines
+    println("   }")
+    println("\\end{equation*}")
+end
+function printInteractionMatrixInformation(lattice::Lattice)
+    connections_inside, connections_periodic = getInteractionMatrixInformation(lattice)
+    printInteractionMatrixInformation(connections_inside, connections_periodic)
+end
+function printInteractionMatrixInformation(unitcell::Unitcell)
+    connections_inside, connections_periodic = getInteractionMatrixInformation(unitcell)
+    printInteractionMatrixInformation(connections_inside, connections_periodic)
+end
+export printInteractionMatrixInformation
 
 
 
