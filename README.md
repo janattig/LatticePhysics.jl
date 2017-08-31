@@ -5,7 +5,7 @@ Lattice based calculations and plotting for Julia v.0.5.2
 
 ## Usage
 
-See upcoming Wiki (to be done)
+See the [wiki pages](http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl/wikis/home).
 
 
 ## Installation:
