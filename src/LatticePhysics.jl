@@ -24,14 +24,14 @@
 #   -   TODO Modifying Lattices and Interaction Strengths
 #
 #   -   TODO SVG help methods
-#   -   TODO Plotting Lattices as SVG files
+#   -   Plotting Lattices as SVG files
 #   -   TODO Calculating dispersions for 1D and 2D fields of k values
 #   -   TODO Calculation of Fermi surfaces or surfaces of some energy value
 #
 #
 #   AUTHOR:             Jan Attig
 #   DATE started:       2017-08-16
-#   DATE last version:  2017-08-23
+#   DATE last version:  2017-08-31
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -465,14 +465,32 @@ end
 
 
 # METHOD FOR PRINTING INFORMATION ABOUT THE LATTICE
-function printInfo(lattice::Lattice)
+function printInfo(lattice::Lattice; detailed=false)
     println("Information on the lattice stored in file \"$(lattice.filename)\":")
     println(" - periodicity given by $(size(lattice.lattice_vectors,1)) lattice vectors:")
     for l in lattice.lattice_vectors
         println("     - $(l)")
     end
-    println(" - $(size(lattice.positions,1)) sites in the total lattice of dimension $(length(lattice.positions[1]))")
-    println(" - $(size(lattice.connections,1)) connections in the lattice")
+    if detailed
+        println(" - $(size(lattice.positions,1)) sites in lattice of dimension $(length(lattice.positions[1])):")
+        for site in lattice.positions
+            println("     - $(site)")
+        end
+    else
+        println(" - $(size(lattice.positions,1)) sites in lattice of dimension $(length(lattice.positions[1]))")
+    end    
+    if detailed
+        println(" - $(size(lattice.connections,1)) connections in the lattice:")
+        for c in lattice.connections
+            if typeof(c[3]) == String
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): \"$(c[3])\"")
+            else
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): $(c[3])")
+            end
+        end
+    else
+        println(" - $(size(lattice.connections,1)) connections in the lattice")
+    end
     println(" - $(size(lattice.connections,1)/size(lattice.positions,1)) connections per site")
     # check statistics of connections
     nc = zeros(Int64, size(lattice.positions,1))
@@ -1039,6 +1057,7 @@ export getUnitcellTriangular
 # 1 - simple, 2 sites per UC (symmetric around x axis, gives ZZ edge in strip)
 # 2 - simple, 2 sites per UC (symmetric around y axis, gives AC edge in strip)
 # 3 - anisotropic hopping, 2 sites per UC (symmetric around x axis, gives ZZ edge in strip)
+# 4 - Kitaev couplings
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellHoneycomb(version=1; save=true)
     # SIMPLE HONEYCOMB LATTICE
@@ -2259,7 +2278,7 @@ function getUnitcellFromSites2D(
         sites,
         lattice_vectors;
         max_ij::Int64=3,
-        epsilon=1e-8,
+        epsilon::Float64=1e-8,
         min_NN=-1,
         max_NN=-1,
         strength_NN=1.0,
@@ -2401,7 +2420,7 @@ function getUnitcellFromSites3D(
         sites,
         lattice_vectors;
         max_ijk::Int64=3,
-        epsilon=1e-8,
+        epsilon::Float64=1e-8,
         min_NN=-1,
         max_NN=-1,
         strength_NN=1.0,
@@ -2545,7 +2564,7 @@ function getUnitcellFromSites(
         sites,
         lattice_vectors;
         max_ijk::Int64=3,
-        epsilon=1e-8,
+        epsilon::Float64=1e-8,
         min_NN=-1,
         max_NN=-1,
         strength_NN=1.0,
@@ -3811,6 +3830,11 @@ function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=tru
     end
 
 end
+function getLattice(unitcell::Unitcell, repetitions::Int64; save=true, load=false)
+    # just parse through to more general method
+    return getLattice(unitcell, repetitions.*ones(size(unitcell.lattice_vectors,1)), save=save, load=load)
+end
+
 
 export getLattice
 
@@ -4195,7 +4219,7 @@ export getLatticeByBondDistance
 #   General building in shape for 2D and 3D and general lattices
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::String; origin=1, load=false, save=true)
+function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
     
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS) 
@@ -4343,7 +4367,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
     return lattice
 
 end
-function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::String; origin=1, load=false, save=true)
+function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS) 
@@ -4491,7 +4515,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
 
 end
 
-function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::String; origin=1, load=false, save=true)
+function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
 
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
@@ -4570,7 +4594,7 @@ export getLatticeInSphere
 
 
 # SPECIAL CASE: BOX / RECTANGLE with extent_array denoting the length of the different sides of the box (centered around the origin)
-function getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64}; origin=1, load=false, save=true)
+function getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64}; origin::Int64=1, load=false, save=true)
 
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
@@ -4591,7 +4615,7 @@ function getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64}; origi
         # determine the shape name
         shapename = "box_$(length_x)x$(length_y)_around_$(origin)"
         # determine the shape function
-        shape_box2d(point) = (abs(point[1])<length_x/2.0) && (abs(point[2])<length_y/2.0)
+        shape_box2d(point) = (abs(point[1])<=length_x/2.0) && (abs(point[2])<=length_y/2.0)
         # call the general shape function
         return getLatticeInShape2D(unitcell, shape_box2d, shapename, origin=origin, load=load, save=save)
     elseif N_dims == 3
@@ -4602,7 +4626,7 @@ function getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64}; origi
         # determine the shape name
         shapename = "box_$(length_x)x$(length_y)x$(length_z)_around_$(origin)"
         # determine the shape function
-        shape_box3d(point) = (abs(point[1])<length_x/2.0) && (abs(point[2])<length_y/2.0) && (abs(point[3])<length_z/2.0)
+        shape_box3d(point) = (abs(point[1])<=length_x/2.0) && (abs(point[2])<=length_y/2.0) && (abs(point[3])<=length_z/2.0)
         # call the general shape function
         return getLatticeInShape3D(unitcell, shape_box3d, shapename, origin=origin, load=load, save=save)
     else
@@ -6078,6 +6102,7 @@ export plotLattice3D
 
 function plotLattice(
 		lattice::Lattice;
+		conversion = 160,
 		border_percentage=0.1,
 		filename_output::String="AUTO",
 		site_radius=25,
@@ -6103,6 +6128,7 @@ function plotLattice(
     if dimension == 2
         return plotLattice2D(
             lattice,
+		    conversion=conversion,
             border_percentage=border_percentage,
             filename_output=filename_output,
             site_radius=site_radius,
@@ -6207,6 +6233,25 @@ function getInteractionMatrixRealSpace(lattice::Lattice; enforce_hermitian=false
     # return the matrix
     return matrix
 end
+function getInteractionMatrixRealSpace(unitcell::Unitcell; enforce_hermitian=false)
+    # generate a new matrix
+    matrix = zeros(size(unitcell.basis,1),size(unitcell.basis,1))
+    # iterate over all connections
+    for c in unitcell.connections
+        # get the indices
+        index_from  = Int(c[1])
+        index_to    = Int(c[2])
+        strength    = c[3]
+        # just add to the matrix
+        matrix[index_from, index_to] += strength
+    end
+    # eventually ensure the hermitian nature of the matrix
+    if enforce_hermitian
+        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+    end
+    # return the matrix
+    return matrix
+end
 export getInteractionMatrixRealSpace
 
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -6233,6 +6278,33 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
         pos_delta   = lattice.positions[index_to] .- lattice.positions[index_from]
         if size(lattice.lattice_vectors,1) > 0
             for pair in zip(wrap, lattice.lattice_vectors)
+                pos_delta .+= pair[1].*pair[2]
+            end 
+        end
+        # just add to the matrix
+        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im)
+    end
+    # eventually ensure the hermitian nature of the matrix
+    if enforce_hermitian
+        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+    end
+    # return the matrix
+    return matrix
+end
+function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}; enforce_hermitian=false)
+    # generate a new matrix
+    matrix = zeros(size(unitcell.basis,1),size(unitcell.basis,1)) .* im
+    # iterate over all connections
+    for c in unitcell.connections
+        # get the indices
+        index_from  = Int(c[1])
+        index_to    = Int(c[2])
+        strength    = c[3]
+        wrap        = c[4]
+        # get the difference vector
+        pos_delta   = unitcell.basis[index_to] .- unitcell.basis[index_from]
+        if size(unitcell.lattice_vectors,1) > 0
+            for pair in zip(wrap, unitcell.lattice_vectors)
                 pos_delta .+= pair[1].*pair[2]
             end 
         end
