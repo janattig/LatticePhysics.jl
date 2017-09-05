@@ -6373,7 +6373,7 @@ function getInteractionMatrixInformation(unitcell::Unitcell)
     # return the matrices
     return con_inside, con_periodic
 end
-export getInteractionMatrixInformation
+
 
 # print the interaction matrix information in compressed LaTeX format
 function printInteractionMatrixInformation(connections_inside, connections_periodic)
@@ -6623,7 +6623,6 @@ end
 function calculateBandStructureAlongPath(
         unitcell::Unitcell,
         path;
-        reduceLattice=true,
         percentages="EQUAL",
         resolution=1000,
         enforce_hermitian=false,
