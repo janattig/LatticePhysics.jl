@@ -5062,7 +5062,7 @@ export getIndependentSubunitcells
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
-#   Optimize the lattice in collapsing connections into fewer connections
+#   Optimize the lattice / unitcell by collapsing redundant connections into fewer connections and return a new object
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 function getLatticeWithOptimizedConnections(lattice::Lattice)
@@ -5103,11 +5103,6 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
 end
 export getLatticeWithOptimizedConnections
 
-#-----------------------------------------------------------------------------------------------------------------------------
-#
-#   Optimize the unitcell in collapsing connections into fewer connections
-#
-#-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
     # build up new connections
     connections_new = Array[]
@@ -5142,6 +5137,74 @@ function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
         unitcell.filename)
 end
 export getUnitcellWithOptimizedConnections
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Optimize the lattice / unitcell by collapsing redundant connections into fewer connections and modify given object
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function optimizeConnections!(lattice::Lattice)
+    # build up new connections
+    connections_new = Array[]
+    # go through all old connections
+    for c in lattice.connections
+        # check if the connection already is present in the list
+        found = false
+        for c_new in connections_new
+            if c[1] == c_new[1] && c[2] == c_new[2] && c[4] == c_new[4]
+                # found a redundent connection
+                found = true
+                # add connection strength
+                if typeof(c[3]) == String || typeof(c_new[3]) == String
+                    c_new[3] = "$(c_new[3])+$(c[3])"
+                else
+                    c_new[3] = c_new[3] + c[3]
+                end
+                # break the inner loop
+                break
+            end
+        end
+        # if not, add the current connection
+        if !found
+            push!(connections_new, c)
+        end
+    end
+    # overwrite the connections in the given lattice
+    lattice.connections = connections_new
+end
+function optimizeConnections!(unitcell::Unitcell)
+    # build up new connections
+    connections_new = Array[]
+    # go through all old connections
+    for c in unitcell.connections
+        # check if the connection already is present in the list
+        found = false
+        for c_new in connections_new
+            if c[1] == c_new[1] && c[2] == c_new[2] && c[4] == c_new[4]
+                # found a redundent connection
+                found = true
+                # add connection strength
+                if typeof(c[3]) == String || typeof(c_new[3]) == String
+                    c_new[3] = "$(c_new[3])+$(c[3])"
+                else
+                    c_new[3] = c_new[3] + c[3]
+                end
+                # break the inner loop
+                break
+            end
+        end
+        # if not, add the current connection
+        if !found
+            push!(connections_new, c)
+        end
+    end
+    # overwrite the connections in the given lattice
+    unitcell.connections = connections_new
+end
+export optimizeConnections!
 
 
 
