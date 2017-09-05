@@ -4670,7 +4670,7 @@ export getLatticeInBox
 #   Procedure replaces all bonds by sites
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformLatticeBondToSite(lattice::Lattice)
+function getTransformedLatticeBondToSite(lattice::Lattice)
     # new positions and connections
     positions = copy(lattice.positions)
     connections = Array[]
@@ -4723,7 +4723,7 @@ function transformLatticeBondToSite(lattice::Lattice)
     # return the new lattice
     return lattice_X
 end
-export transformLatticeBondToSite
+export getTransformedLatticeBondToSite
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
@@ -4731,7 +4731,7 @@ export transformLatticeBondToSite
 #   Procedure replaces all bonds by sites
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformUnitcellBondToSite(unitcell::Unitcell)
+function getTransformedUnitcellBondToSite(unitcell::Unitcell)
     # new positions and connections
     positions = copy(unitcell.basis)
     connections = Array[]
@@ -4784,7 +4784,7 @@ function transformUnitcellBondToSite(unitcell::Unitcell)
     # return the new unitcell
     return uc_X
 end
-export transformUnitcellBondToSite
+export getTransformedUnitcellBondToSite
 
 
 
@@ -5065,7 +5065,7 @@ export getIndependentSubunitcells
 #   Optimize the lattice in collapsing connections into fewer connections
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformLatticeOptimizeConnections(lattice::Lattice)
+function getLatticeWithOptimizedConnections(lattice::Lattice)
     # build up new connections
     connections_new = Array[]
     # go through all old connections
@@ -5101,14 +5101,14 @@ function transformLatticeOptimizeConnections(lattice::Lattice)
         connections_new,
         lattice.filename)
 end
-export transformLatticeOptimizeConnections
+export getLatticeWithOptimizedConnections
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
 #   Optimize the unitcell in collapsing connections into fewer connections
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformUnitcellOptimizeConnections(unitcell::Unitcell)
+function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
     # build up new connections
     connections_new = Array[]
     # go through all old connections
@@ -5141,7 +5141,7 @@ function transformUnitcellOptimizeConnections(unitcell::Unitcell)
         connections_new,
         unitcell.filename)
 end
-export transformUnitcellOptimizeConnections
+export getUnitcellWithOptimizedConnections
 
 
 
@@ -5151,7 +5151,7 @@ export transformUnitcellOptimizeConnections
 #   This maps all connections to NNN connections by multiplication
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformLatticeToSquaredLattice(lattice::Lattice)
+function getSquaredLattice(lattice::Lattice)
     # get the connectivity matrix of the lattice
     connectivity = getConnectionList(lattice)
     # define a list of new connections
@@ -5201,7 +5201,7 @@ function transformLatticeToSquaredLattice(lattice::Lattice)
             replace(lattice.filename, ".jld", "_squared.jld"))
     )
 end
-export transformLatticeToSquaredLattice
+export getSquaredLattice
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
@@ -5209,7 +5209,7 @@ export transformLatticeToSquaredLattice
 #   This maps all connections to NNN connections by multiplication
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function transformUnitcellToSquaredUnitcell(unitcell::Unitcell)
+function getSquaredUnitcell(unitcell::Unitcell)
     # get the connectivity matrix of the unitcell
     connectivity = getConnectionList(unitcell)
     # define a list of new connections
@@ -5256,7 +5256,7 @@ function transformUnitcellToSquaredUnitcell(unitcell::Unitcell)
             replace(unitcell.filename, ".jld", "_squared.jld"))
     )
 end
-export transformUnitcellToSquaredUnitcell
+export getSquaredUnitcell
 
 
 
