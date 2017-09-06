@@ -5773,7 +5773,7 @@ function getColorSequence(len::Int64)
         # only two colors --> black and red
         push!(colors, [0,0,0])
         push!(colors, [255,0,0])
-    elseif len == 2
+    elseif len == 3
         # only three colors --> red, green, blue (Kitaev)
         push!(colors, [255,0,0])
         push!(colors, [0,255,0])
@@ -5798,7 +5798,7 @@ function getGreySequence(len::Int64)
         # only two colors --> black and grey
         push!(colors, [0,0,0])
         push!(colors, [125,125,125])
-    elseif len == 2
+    elseif len == 3
         # only three colors --> black and two grey
         push!(colors, [0,0,0])
         push!(colors, [90,90,90])
