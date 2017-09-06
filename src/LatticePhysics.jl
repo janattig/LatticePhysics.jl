@@ -5627,9 +5627,9 @@ function setAllInteractionStrengths!(unitcell::Unitcell, strengthNew)
         c[3] = strengthNew
     end
 end
-function setAllInteractionStrengths!(unitcell::Lattice, strengthNew)
+function setAllInteractionStrengths!(lattice::Lattice, strengthNew)
     # go through all connections and modify their strength
-    for c in unitcell.connections
+    for c in lattice.connections
         c[3] = strengthNew
     end
 end
@@ -5637,9 +5637,65 @@ export setAllInteractionStrengths!
 
 
 
-
-
-
+function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_strings=true, evaluate=false)
+    # get the old strengths
+    old_strengths = mapping.keys()
+    # iterate for replacement
+    for old_strength in old_strengths
+        # new strength is given by mapping
+        new_strength = mapping[old_strength]
+        # check all connections that are identical
+        for c in unitcell.connections
+            if c[3] == old_strength
+                c[3] = new_strength
+            end
+        end
+        # check for string replacement
+        if replace_in_strings
+        for c in unitcell.connections
+            if contains(c[3], old_strength)
+                c[3] = replace(c[3], old_strength, new_strength)
+            end
+        end
+        end
+    end
+    # maybe even evaluate
+    if evaluate
+        for c in unitcell.connections
+            c[3] = eval(parse(c[3]))
+        end
+    end
+end
+function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=true, evaluate=false)
+    # get the old strengths
+    old_strengths = mapping.keys()
+    # iterate for replacement
+    for old_strength in old_strengths
+        # new strength is given by mapping
+        new_strength = mapping[old_strength]
+        # check all connections that are identical
+        for c in lattice.connections
+            if c[3] == old_strength
+                c[3] = new_strength
+            end
+        end
+        # check for string replacement
+        if replace_in_strings
+        for c in lattice.connections
+            if contains(c[3], old_strength)
+                c[3] = replace(c[3], old_strength, new_strength)
+            end
+        end
+        end
+    end
+    # maybe even evaluate
+    if evaluate
+        for c in lattice.connections
+            c[3] = eval(parse(c[3]))
+        end
+    end
+end
+export mapInteractionStrengths!
 
 
 
