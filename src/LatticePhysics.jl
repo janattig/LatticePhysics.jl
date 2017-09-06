@@ -295,6 +295,9 @@ function printInfo(unitcell::Unitcell; detailed=false)
             if c1[3] != c2[3]
                 continue # connection strength not equal
             end
+            if sum([abs(element) for element in collect(c1[4]) .+ collect(c2[4])]) > 1e-9
+                continue # wrap not equal
+            end
             counterpart = true
             break
         end
@@ -305,7 +308,7 @@ function printInfo(unitcell::Unitcell; detailed=false)
     if broken
         print(" - connectivity of unitcell is broken (connections not vice versa)")
     else
-        print(" - connectivity of unitcell is okay (up to periodic BC)")
+        print(" - connectivity of unitcell is okay (including periodic BC)")
     end
     println("")
 end
@@ -531,6 +534,9 @@ function printInfo(lattice::Lattice; detailed=false)
             if c1[3] != c2[3]
                 continue # connection strength not equal
             end
+            if sum([abs(element) for element in collect(c1[4]) .+ collect(c2[4])]) > 1e-9
+                continue # wrap not equal
+            end
             counterpart = true
             break
         end
@@ -541,7 +547,7 @@ function printInfo(lattice::Lattice; detailed=false)
     if broken
         print(" - connectivity of lattice is broken (connections not vice versa)")
     else
-        print(" - connectivity of lattice is okay (up to periodic BC)")
+        print(" - connectivity of lattice is okay (including periodic BC)")
     end
     println("")
 end
@@ -5267,7 +5273,7 @@ function getSquaredLattice(lattice::Lattice)
         end
     end
     # create new Lattice with only new connections (and leave out old ones)
-    return transformLatticeOptimizeConnections(
+    return getLatticeWithOptimizedConnections(
         Lattice(
             lattice.unitcell,
             lattice.unitcellRepetitions,
@@ -5325,7 +5331,7 @@ function getSquaredUnitcell(unitcell::Unitcell)
         end
     end
     # create new Lattice with only new connections (and leave out old ones)
-    return transformUnitcellOptimizeConnections(
+    return getUnitcellWithOptimizedConnections(
         Unitcell(
             unitcell.lattice_vectors,
             unitcell.basis,
@@ -5603,6 +5609,36 @@ export getTransformedUnitcellFCPToSite
 #
 #end
 #export getTransformedLatticeFCPToSite
+
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Set / Map interaction strengths of the unitcell / lattice
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function setAllInteractionStrengths!(unitcell::Unitcell, strengthNew)
+    # go through all connections and modify their strength
+    for c in unitcell.connections
+        c[3] = strengthNew
+    end
+end
+function setAllInteractionStrengths!(unitcell::Lattice, strengthNew)
+    # go through all connections and modify their strength
+    for c in unitcell.connections
+        c[3] = strengthNew
+    end
+end
+export setAllInteractionStrengths!
+
+
+
+
+
+
 
 
 
