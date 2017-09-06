@@ -6088,7 +6088,19 @@ function plotLattice2D(
     end
 	# if file shall be opened
 	if openfile
-		run(`ristretto $(filename_output)`)
+        if is_linux()
+		    run(`ristretto $(filename_output)`)
+        elseif is_windows()
+            if export_pdf
+                run(`$(filename_output[1:end-4]).pdf`)
+            else
+                run(`$(filename_output)`)
+            end                
+        elseif is_apple()
+            run(`open $(filename_output)`)
+        else
+            println("wanted to show file but operating system not supported for showing file")
+        end
 	end
 
 	# return the output filename
@@ -6519,9 +6531,21 @@ function plotLattice3D(
 	    run(`inkscape $(filename_output) --export-pdf $(filename_output[1:end-4]).pdf`)
     end
 	
-	# if file shall be opened
+	# if file shall be opened	
 	if openfile
-		run(`ristretto $(filename_output)`)
+        if is_linux()
+		    run(`ristretto $(filename_output)`)
+        elseif is_windows()
+            if export_pdf
+                run(`$(filename_output[1:end-4]).pdf`)
+            else
+                run(`$(filename_output)`)
+            end                
+        elseif is_apple()
+            run(`open $(filename_output)`)
+        else
+            println("wanted to show file but operating system not supported for showing file")
+        end
 	end
 
 	# return the output filename
