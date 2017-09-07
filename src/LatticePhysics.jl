@@ -4733,6 +4733,12 @@ function getTransformedLatticeBondToSite(lattice::Lattice; connection_strength="
             con_strength = "con$(size(connectionsTreated,1))"
         elseif typeof(connection_strength) == String && connection_strength == "SAME"
             con_strength = c[3]
+        elseif typeof(connection_strength) == String && connection_strength == "SQRT"
+            if typeof(c[3]) == String
+                con_strength = "sqrt($(c[3]))"
+            else
+                con_strength = sqrt(c[3])
+            end
         else
             con_strength = connection_strength
         end
@@ -4795,6 +4801,12 @@ function getTransformedUnitcellBondToSite(unitcell::Unitcell; connection_strengt
             con_strength = "con$(size(connectionsTreated,1))"
         elseif typeof(connection_strength) == String && connection_strength == "SAME"
             con_strength = c[3]
+        elseif typeof(connection_strength) == String && connection_strength == "SQRT"
+            if typeof(c[3]) == String
+                con_strength = "sqrt($(c[3]))"
+            else
+                con_strength = sqrt(c[3])
+            end
         else
             con_strength = connection_strength
         end
@@ -5639,7 +5651,7 @@ export setAllInteractionStrengths!
 
 function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_strings=true, evaluate=false)
     # get the old strengths
-    old_strengths = mapping.keys()
+    old_strengths = keys(mapping)
     # iterate for replacement
     for old_strength in old_strengths
         # new strength is given by mapping
@@ -5668,7 +5680,7 @@ function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_string
 end
 function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=true, evaluate=false)
     # get the old strengths
-    old_strengths = mapping.keys()
+    old_strengths = keys(mapping)
     # iterate for replacement
     for old_strength in old_strengths
         # new strength is given by mapping
@@ -6097,7 +6109,7 @@ function plotLattice2D(
                 else
                     run(`explorer $(filename_output)`)
                 end                
-            end 
+            end
         elseif is_apple()
             run(`open $(filename_output)`)
         else
