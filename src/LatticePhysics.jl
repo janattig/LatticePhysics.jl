@@ -6091,11 +6091,13 @@ function plotLattice2D(
         if is_linux()
 		    run(`ristretto $(filename_output)`)
         elseif is_windows()
-            if export_pdf
-                run(`explorer $(filename_output[1:end-4]).pdf`)
-            else
-                run(`explorer $(filename_output)`)
-            end                
+            try
+                if export_pdf
+                    run(`explorer $(filename_output[1:end-4]).pdf`)
+                else
+                    run(`explorer $(filename_output)`)
+                end                
+            end 
         elseif is_apple()
             run(`open $(filename_output)`)
         else
@@ -6536,11 +6538,13 @@ function plotLattice3D(
         if is_linux()
 		    run(`ristretto $(filename_output)`)
         elseif is_windows()
-            if export_pdf
-                run(`explorer $(filename_output[1:end-4]).pdf`)
-            else
-                run(`explorer $(filename_output)`)
-            end                
+            try
+                if export_pdf
+                    run(`explorer $(filename_output[1:end-4]).pdf`)
+                else
+                    run(`explorer $(filename_output)`)
+                end                
+            end 
         elseif is_apple()
             run(`open $(filename_output)`)
         else
