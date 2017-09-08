@@ -5858,6 +5858,136 @@ export addNextNearestNeighborsToConnections!
 
 
 
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Find Plaquettes of some site in the lattice with desired length len
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function getPlaquettesOfSite(lattice::Lattice, site, len)
+    # get the connectivity of the lattice
+    cl = getConnectionList(lattice)
+    # history includes all sites that are already visited, including the current site
+    function givePlaquettePaths(history, steps, patharray)
+        # check if steps = 0, if yes, return history only
+        if length(history) == steps+1
+            if history[end] == history[1]
+                push!(patharray, history)
+            end
+            return
+        elseif history[end] in history[1:end-1]
+            # building a closed loop
+            return
+        end
+        # current site
+        currentSite = history[end]
+        # get all options
+        options = []
+        for c in cl[currentSite]
+            push!(options, Int(c[2]))
+        end
+        # distinguish between origin and further apart sites
+        if length(history) == 1
+            # go for all options
+            for o in options
+                # get the new history
+                history_new = copy(history)
+                push!(history_new, o)
+                # get all subpaths
+                givePlaquettePaths(history_new, steps, patharray)
+            end
+        else
+            # go for all options that dont go back
+            for o in options
+                # check if going back
+                if o == history[end-1]
+                    continue
+                end
+                # get the new history
+                history_new = copy(history)
+                push!(history_new, o)
+                # get all subpaths
+                givePlaquettePaths(history_new, steps, patharray)
+            end
+        end
+        # return
+        return
+    end
+    # call the function to generate array of plaquettes
+    paths = Array[]
+    givePlaquettePaths([site], len, paths)
+    # check all paths if they are plaquettes
+    plaquettes = Array[]
+    for p in paths
+        if p[1] == p[end]
+            # check if the inverse path is already in the plaquettes list
+            if !(p[end:-1:1] in plaquettes) 
+                push!(plaquettes, p)
+            end
+        end
+    end
+    # return the array
+    return plaquettes
+end
+export getPlaquettesOfSite
+
+function getPlaquettesOfLattice(lattice::Lattice, len)
+    # get all plaquettes of all sites
+    plaquettes = Array[]
+    plaquettes_sorted = Array[]
+    for i in 1:size(lattice.positions,1)
+        # obtain plaquettes
+        plaquettes_site = getPlaquettesOfSite(lattice, i, len)
+        # push plaquettes into array
+        for p in plaquettes_site
+            # check if present
+            p_sorted = copy(p[1:end-1])
+            sort!(p_sorted)
+            # search if present
+            found = false
+            for ps in plaquettes_sorted
+                # check if lists equal
+                if findfirst([ps[i] == p_sorted[i] for i in 1:len], false) == 0
+                    found = true
+                    break
+                end
+            end
+            if !(found)
+                push!(plaquettes, p)
+                push!(plaquettes_sorted, p_sorted)
+            end
+        end
+    end
+    # return the list
+    return plaquettes
+end
+export getPlaquettesOfLattice
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------
 #
