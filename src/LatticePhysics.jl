@@ -1669,6 +1669,7 @@ export getUnitcellPyrochlore
 #-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (8,3)a
 # 1 - simple, 6 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
     if version == 1
@@ -1722,6 +1723,53 @@ function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_8_3_a_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a1 = [1.0, 0.0, 0.0]
+        a2 = [-0.5, sqrt(3)/2., 0.0]
+        a3 = [0.0, 0.0, (3*sqrt(2))/5.]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.5, sqrt(3)/10., 0.0],
+            [3/5., sqrt(3)/5., (2*sqrt(2))/5.],
+            [0.1, (3*sqrt(3))/10., sqrt(2)/5.],
+            [0.4, sqrt(3)/5., sqrt(2)/5.],
+            [0.0, (2*sqrt(3))/5., 0.0],
+            [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]   
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 4; "ty"; (0, 0, 0)], 
+            [4; 2; "tz"; (0, 0, 0)], # zz
+            [4; 3; "tx"; (0, 0, 0)], 
+            [5; 3; "ty"; (0, 0, 0)], 
+            [3; 6; "tz"; (0, 0, 0)], # zz
+
+            [4; 1; "ty"; (0, 0, 0)], 
+            [2; 4; "tz"; (0, 0, 0)], # zz
+            [3; 4; "tx"; (0, 0, 0)], 
+            [3; 5; "ty"; (0, 0, 0)], 
+            [6; 3; "tz"; (0, 0, 0)], # zz
+
+            [5; 1; "tz"; (0, 1, 0)], # zz
+            [1; 5; "tz"; (0, -1, 0)], # zz
+
+            [2; 6; "ty"; (1, 0, 0)], 
+            [6; 2; "ty"; (-1, 0, 0)],
+
+            [1; 2; "tx"; (0, 0, -1)], 
+            [2; 1; "tx"; (0, 0, 1)], 
+            
+            [5; 6; "tx"; (0, 0, -1)], 
+            [6; 5; "tx"; (0, 0, 1)]             
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_a_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1734,8 +1782,118 @@ end
 export getUnitcell_8_3_a
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# LATTICE (8,3)b
+# 1 - simple, 6 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitCell_8_3_b(version=1; save=true, J1=1.0)
+    if version == 1
+        # the lattice vectors
+        a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
+        a2 = [0, 1/sqrt(3), (2*sqrt(2))/(5*sqrt(3))]
+        a3 = [0, 0, sqrt(6)/5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [1/10., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))],
+            [1/5., sqrt(3)/5, sqrt(6)/5],
+            [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
+            [1/5., 2/(5*sqrt(3)), (2*sqrt(2))/(5*sqrt(3))],
+            [3/10., (3*sqrt(3))/10., sqrt(6)/5],
+            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]   
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 4; J1; (0, 0, 0)], # zz
+            [4; 2; J1; (0, 0, 0)], 
+            [2; 5; J1; (0, 0, 0)], # zz
+            [5; 3; J1; (0, 0, 0)], 
+            [3; 6; J1; (0, 0, 0)], # zz
+
+            [4; 1; J1; (0, 0, 0)], # zz
+            [2; 4; J1; (0, 0, 0)], 
+            [5; 2; J1; (0, 0, 0)], # zz
+            [3; 5; J1; (0, 0, 0)], 
+            [6; 3; J1; (0, 0, 0)], # zz
+
+            [6; 1; J1; (1, 0, 1)], 
+            [1; 6; J1; (-1, 0, -1)], 
+
+            [4; 3; J1; (0, -1, 0)], 
+            [3; 4; J1; (0, 1, 0)], 
+
+            [1; 2; J1; (0, 0, -1)], 
+            [2; 1; J1; (0, 0, 1)], 
+
+            [5; 6; J1; (0, 0, -1)], 
+            [6; 5; J1; (0, 0, 1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_b_unitcell.jld"
+    elseif version == 4
+        # the lattice vectors
+        a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
+        a2 = [0, 1/sqrt(3), (2*sqrt(2))/(5*sqrt(3))]
+        a3 = [0, 0, sqrt(6)/5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [1/10., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))],
+            [1/5., sqrt(3)/5, sqrt(6)/5],
+            [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
+            [1/5., 2/(5*sqrt(3)), (2*sqrt(2))/(5*sqrt(3))],
+            [3/10., (3*sqrt(3))/10., sqrt(6)/5],
+            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]   
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 4; "tz"; (0, 0, 0)], # zz
+            [4; 2; "ty"; (0, 0, 0)], 
+            [2; 5; "tz"; (0, 0, 0)], # zz
+            [5; 3; "ty"; (0, 0, 0)], 
+            [3; 6; "tz"; (0, 0, 0)], # zz
+
+            [4; 1; "tz"; (0, 0, 0)], # zz
+            [2; 4; "ty"; (0, 0, 0)], 
+            [5; 2; "tz"; (0, 0, 0)], # zz
+            [3; 5; "ty"; (0, 0, 0)], 
+            [6; 3; "tz"; (0, 0, 0)], # zz
+
+            [6; 1; "ty"; (1, 0, 1)], 
+            [1; 6; "ty"; (-1, 0, -1)], 
+
+            [4; 3; "tx"; (0, -1, 0)], 
+            [3; 4; "tx"; (0, 1, 0)], 
+
+            [1; 2; "tx"; (0, 0, -1)], 
+            [2; 1; "tx"; (0, 0, 1)], 
+
+            [5; 6; "tx"; (0, 0, -1)], 
+            [6; 5; "tx"; (0, 0, 1)]    
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_b_kitaev_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    saveUnitcell(uc)
+    # return the unitcell
+    return uc
+end
+export getUnitCell_8_3_b
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (8,3)c
 # 1 - simple, 8 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
     if version == 1
@@ -1798,6 +1956,62 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_8_3_c_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a1 = [1., 0., 0.]
+        a2 = [-1/2., sqrt(3)/2., 0.]
+        a3 = [0., 0., 2/5.]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [-1/5., 4/(5*sqrt(3)), 1/10.], #1
+            [ 0., 7/(5*sqrt(3)), 1/10.], #2		
+            [ 1/5., 4/(5*sqrt(3)), 1/10.], #3
+            [ 1/2., 1/(2*sqrt(3)), 3/10.], #4
+            [ 0., 1/sqrt(3), 1/10.], #5		
+            [ 3/10., 7/(10*sqrt(3)), 3/10.], #6
+            [ 1/2., 1/(10*sqrt(3)), 3/10.], #7
+            [ 7/10., 7/(10*sqrt(3)), 3/10.], #8    
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 5; "tx"; (0, 0, 0)],
+            [2; 5; "tz"; (0, 0, 0)], # zz
+            [5; 3; "ty"; (0, 0, 0)],
+            [3; 6; "tz"; (0, 0, 0)], # zz
+            [6; 4; "ty"; (0, 0, 0)],
+            [4; 7; "tz"; (0, 0, 0)], # zz
+            [4; 8; "tx"; (0, 0, 0)],
+
+            [5; 1; "tx"; (0, 0, 0)],
+            [5; 2; "tz"; (0, 0, 0)], # zz
+            [3; 5; "ty"; (0, 0, 0)],
+            [6; 3; "tz"; (0, 0, 0)], # zz
+            [4; 6; "ty"; (0, 0, 0)],
+            [7; 4; "tz"; (0, 0, 0)], # zz
+            [8; 4; "tx"; (0, 0, 0)],
+
+            [8; 1; "ty"; (1, 0, 0)],
+            [1; 8; "ty"; (-1, 0, 0)],
+
+            [8; 1; "tz"; (1, 0, 1)],   # zz
+            [1; 8; "tz"; (-1, 0, -1)], # zz 
+
+            [2; 7; "tx"; (0, 1, 0)],
+            [7; 2; "tx"; (0, -1, 0)],
+
+            [2; 7; "ty"; (0, 1, -1)],
+            [7; 2; "ty"; (0, -1, 1)],
+
+            [3; 6; "tx"; (0, 0, -1)],
+            [6; 3; "tx"; (0, 0, 1)]        
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_c_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1812,6 +2026,7 @@ export getUnitcell_8_3_c
 #-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (8,3)n
 # 1 - simple, 16 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
     if version == 1
@@ -1914,6 +2129,103 @@ function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_8_3_n_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a = [1.0, 0.0, 0.0]
+        b = [0.0, 1.0, 0.0]
+        c = [0.0, 0.0, 4/(2*sqrt(3) + sqrt(2))]
+        a1 = a
+        a2 = b
+        a3 = 0.5*(a+b+c)
+        x = (sqrt(3) + sqrt(2))/(2*(2*sqrt(3) + sqrt(2)))
+        z = 0.125
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            x*a + (0.5 - x)*b + c/4.,
+            (1-x)*a + (0.5 - x)*b + c/4.,
+            (0.5 + x)*a + b/2. + (0.5 - z)*c,
+            (1-x)*a + (0.5 + x)*b + c/4.,
+            x*a + (0.5 + x)*b + c/4.,
+            (0.5 - x)*a + b/2. + (0.5 - z)*c,
+            (1-x)*b + z*c,
+            x*b + z*c,
+            (0.5 - x)*a + x*b + c/4.,
+            a/2. + (0.5 - x)*b + (0.5 - z)*c,
+            (0.5 + x)*a + x*b + c/4.,
+            (0.5 + x)*a + (1 - x)*b + c/4.,
+            a/2. + (0.5 + x)*b + (0.5 - z)*c,
+            (0.5 - x)*a + (1 - x)*b + c/4.,
+            x*a + z*c,
+            (1-x)*a + z*c
+            
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 10; "tx"; (0, 0, 0)], 
+            [10; 2; "ty"; (0, 0, 0)], 
+            [2; 11; "tz"; (0, 0, 0)], # zz
+            [11; 3; "tx"; (0, 0, 0)], 
+            [3; 12; "ty"; (0, 0, 0)], 
+            [12; 4; "tz"; (0, 0, 0)], # zz
+            [4; 13; "tx"; (0, 0, 0)], 
+            [13; 5; "ty"; (0, 0, 0)], 
+            [5; 14; "tz"; (0, 0, 0)], # zz
+            [14; 6; "tx"; (0, 0, 0)], 
+            [6; 9; "ty"; (0, 0, 0)], 
+            [9; 8; "tx"; (0, 0, 0)], 
+            [9; 1; "tz"; (0, 0, 0)], # zz
+            [1; 15; "ty"; (0, 0, 0)], 
+            [2; 16; "tx"; (0, 0, 0)], 
+            [14; 7; "ty"; (0, 0, 0)], 
+
+            [10; 1; "tx"; (0, 0, 0)], 
+            [2; 10; "ty"; (0, 0, 0)], 
+            [11; 2; "tz"; (0, 0, 0)], # zz
+            [3; 11; "tx"; (0, 0, 0)], 
+            [12; 3; "ty"; (0, 0, 0)], 
+            [4; 12; "tz"; (0, 0, 0)], # zz
+            [13; 4; "tx"; (0, 0, 0)], 
+            [5; 13; "ty"; (0, 0, 0)], 
+            [14; 5; "tz"; (0, 0, 0)], # zz
+            [6; 14; "tx"; (0, 0, 0)], 
+            [9; 6; "ty"; (0, 0, 0)], 
+            [8; 9; "tx"; (0, 0, 0)], 
+            [1; 9; "tz"; (0, 0, 0)], # zz
+            [15; 1; "ty"; (0, 0, 0)], 
+            [16; 2; "tx"; (0, 0, 0)], 
+            [7; 14; "ty"; (0, 0, 0)], 
+
+            [11; 8; "ty"; (1, 0, 0)],
+            [8; 11; "ty"; (-1, 0, 0)],
+
+            [12; 7; "tx"; (1, 0, 0)],
+            [7; 12; "tx"; (-1, 0, 0)],
+
+            [7; 10; "tz"; (0, 1, -1)], # zz
+            [10; 7; "tz"; (0, -1, 1)], # zz
+
+            [8; 13; "tz"; (0, 0, -1)], # zz
+            [13; 8; "tz"; (0, 0, 1)],  # zz
+
+            [16; 4; "ty"; (0, -1, 0)],
+            [4; 16; "ty"; (0, 1, 0)],
+
+            [15; 5; "tx"; (0, -1, 0)],
+            [5; 15; "tx"; (0, 1, 0)],
+
+            [15; 3; "tz"; (0, 0, -1)], # zz
+            [3; 15; "tz"; (0, 0, 1)],  # zz
+
+            [16; 6; "tz"; (1, 0, -1)], # zz
+            [6; 16; "tz"; (-1, 0, 1)] # zz            
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_n_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1929,6 +2241,9 @@ export getUnitcell_8_3_n
 #-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (9,3)a
 # 1 - simple, 12 sites per UC, all connections have interaction strength J1
+# 2 - simple shifted
+# 4 - Kitaev
+# 5 - Kitaev shifted
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
     if version==1
@@ -2016,7 +2331,224 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_9_3_a_$(J1)_unitcell.jld"
         end
-    end
+    elseif version == 2
+        # the lattice vectors
+        a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
+        a2 = [0, -1, 1/sqrt(3)]
+        a3 = [sqrt(3)/2, 1/2, 1/sqrt(3)]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0, 0, 0],
+            a1/6. - a2/6.,
+            a1/3. - a2/3.,
+            a1/2. - a2/3. - a3/6.,
+            2/3.*a1 - a2/3. - a3/3.,
+            2/3.*a1 - a2/6. - a3/2.,
+            2/3.*a1 - 2/3.*a3,
+            a1/2. + a2/6. - 2/3.*a3,
+            a1/3. + a2/3. - 2/3.*a3,
+            a1/6. + a2/3. - a3/2.,
+            a2/3. - a3/3.,
+            a2/6. - a3/6.		
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; J1; (0, 0, 0)], 
+            [2; 3; J1; (0, 0, 0)], 
+            [3; 4; J1; (0, 0, 0)], 
+            [4; 5; J1; (0, 0, 0)], 
+            [5; 6; J1; (0, 0, 0)], 
+            [6; 7; J1; (0, 0, 0)], 
+            [7; 8; J1; (0, 0, 0)],
+            [8; 9; J1; (0, 0, 0)], 
+            [9; 10; J1; (0, 0, 0)], 
+            [10; 11; J1; (0, 0, 0)], 
+            [11; 12; J1; (0, 0, 0)], 
+            [12; 1; J1; (0, 0, 0)], 
+
+            [2; 1; J1; (0, 0, 0)], 
+            [3; 2; J1; (0, 0, 0)], 
+            [4; 3; J1; (0, 0, 0)], 
+            [5; 4; J1; (0, 0, 0)], 
+            [6; 5; J1; (0, 0, 0)], 
+            [7; 6; J1; (0, 0, 0)], 
+            [8; 7; J1; (0, 0, 0)],
+            [9; 8; J1; (0, 0, 0)], 
+            [10; 9; J1; (0, 0, 0)], 
+            [11; 10; J1; (0, 0, 0)], 
+            [12; 11; J1; (0, 0, 0)], 
+            [1; 12; J1; (0, 0, 0)], 
+
+            [1; 7; J1; (-1, 0, 1)],
+            [7; 1; J1; (1, 0, -1)],
+            [2; 8; J1; (0, 0, 1)],
+            [8; 2; J1; (0, 0, -1)],
+            [3; 9; J1; (0, -1, 1)],
+            [9; 3; J1; (0, 1, -1)],
+            [4; 10; J1; (0, -1, 0)],
+            [10; 4; J1; (0, 1, 0)],
+            [5; 11; J1; (1, -1, 0)],
+            [11; 5; J1; (-1, 1, 0)],
+            [6; 12; J1; (1, 0, 0)],
+            [12; 6; J1; (-1, 0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_V2_unitcell.jld"
+    elseif version == 4
+        # the lattice vectors
+        a = [1.0, 0.0, 0.0]
+        b = [-0.5, sqrt(3)/2., 0.0]
+        c = [0.0, 0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
+        a1 = -a/3. + b/3. + c/3.
+        a2 = -a/3. -2*b/3. + c/3.
+        a3 = 2*a/3. + b/3. + c/3.
+        d_f = sqrt(3)/(1+2*sqrt(3))
+        d_h = (29 - 3*sqrt(3))/132.
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            d_f * a,
+            2*d_h * a + d_h * b + c/12.,
+            d_f * (a + b),
+            d_h * a + 2*d_h * b - c/12.,
+            d_f * b,
+            -d_h *a + d_h * b + c/12.,
+            -d_f * a,
+            -2*d_h * a - d_h * b - c/12.,
+            -d_f * (a + b),
+            -d_h * a - 2*d_h*b + c/12.,
+            -d_f * b,
+            d_h * a - d_h * b - c/12.
+            
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tx"; (0, 0, 0)], 
+            [2; 3; "ty"; (0, 0, 0)], 
+            [3; 4; "tx"; (0, 0, 0)], 
+            [4; 5; "ty"; (0, 0, 0)], 
+            [5; 6; "tx"; (0, 0, 0)], 
+            [6; 7; "ty"; (0, 0, 0)], 
+            [7; 8; "tx"; (0, 0, 0)],
+            [8; 9; "ty"; (0, 0, 0)], 
+            [9; 10; "tx"; (0, 0, 0)], 
+            [10; 11; "ty"; (0, 0, 0)], 
+            [11; 12; "tx"; (0, 0, 0)], 
+            [12; 1; "ty"; (0, 0, 0)], 
+
+            [2; 1; "tx"; (0, 0, 0)], 
+            [3; 2; "ty"; (0, 0, 0)], 
+            [4; 3; "tx"; (0, 0, 0)], 
+            [5; 4; "ty"; (0, 0, 0)], 
+            [6; 5; "tx"; (0, 0, 0)], 
+            [7; 6; "ty"; (0, 0, 0)], 
+            [8; 7; "tx"; (0, 0, 0)],
+            [9; 8; "ty"; (0, 0, 0)], 
+            [10; 9; "tx"; (0, 0, 0)], 
+            [11; 10; "ty"; (0, 0, 0)], 
+            [12; 11; "tx"; (0, 0, 0)], 
+            [1; 12; "ty"; (0, 0, 0)], 
+
+
+            [3; 9; "tz"; (0, -1, 1)], # zz
+            [9; 3; "tz"; (0, 1, -1)], # zz
+
+            [1; 7; "tz"; (-1, 0, 1)], # zz
+            [7; 1; "tz"; (1, 0, -1)], # zz
+
+            [5; 11; "tz"; (1, -1, 0)], # zz
+            [11; 5; "tz"; (-1, 1, 0)], # zz
+            
+            [12; 6; "tz"; (-1, 0, 0)], # zz
+            [6; 12; "tz"; (1, 0, 0)], # zz
+
+            [8; 2; "tz"; (0, 0, -1)], # zz
+            [2; 8; "tz"; (0, 0, 1)], # zz
+    
+            [4; 10; "tz"; (0, -1, 0)], # zz
+            [10; 4; "tz"; (0, 1, 0)]   # zz 
+            
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_kitaev_unitcell.jld"
+    elseif version == 5
+        # the lattice vectors
+        a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
+        a2 = [0, -1, 1/sqrt(3)]
+        a3 = [sqrt(3)/2, 1/2, 1/sqrt(3)]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0, 0, 0],
+            a1/6. - a2/6.,
+            a1/3. - a2/3.,
+            a1/2. - a2/3. - a3/6.,
+            2/3.*a1 - a2/3. - a3/3.,
+            2/3.*a1 - a2/6. - a3/2.,
+            2/3.*a1 - 2/3.*a3,
+            a1/2. + a2/6. - 2/3.*a3,
+            a1/3. + a2/3. - 2/3.*a3,
+            a1/6. + a2/3. - a3/2.,
+            a2/3. - a3/3.,
+            a2/6. - a3/6.		
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tx"; (0, 0, 0)], 
+            [2; 3; "ty"; (0, 0, 0)], 
+            [3; 4; "tx"; (0, 0, 0)], 
+            [4; 5; "ty"; (0, 0, 0)], 
+            [5; 6; "tx"; (0, 0, 0)], 
+            [6; 7; "ty"; (0, 0, 0)], 
+            [7; 8; "tx"; (0, 0, 0)],
+            [8; 9; "ty"; (0, 0, 0)], 
+            [9; 10; "tx"; (0, 0, 0)], 
+            [10; 11; "ty"; (0, 0, 0)], 
+            [11; 12; "tx"; (0, 0, 0)], 
+            [12; 1; "ty"; (0, 0, 0)], 
+
+            [2; 1; "tx"; (0, 0, 0)], 
+            [3; 2; "ty"; (0, 0, 0)], 
+            [4; 3; "tx"; (0, 0, 0)], 
+            [5; 4; "ty"; (0, 0, 0)], 
+            [6; 5; "tx"; (0, 0, 0)], 
+            [7; 6; "ty"; (0, 0, 0)], 
+            [8; 7; "tx"; (0, 0, 0)],
+            [9; 8; "ty"; (0, 0, 0)], 
+            [10; 9; "tx"; (0, 0, 0)], 
+            [11; 10; "ty"; (0, 0, 0)], 
+            [12; 11; "tx"; (0, 0, 0)], 
+            [1; 12; "ty"; (0, 0, 0)], 
+
+            [1; 7; "tz"; (-1, 0, 1)],
+            [7; 1; "tz"; (1, 0, -1)],
+            [2; 8; "tz"; (0, 0, 1)],
+            [8; 2; "tz"; (0, 0, -1)],
+            [3; 9; "tz"; (0, -1, 1)],
+            [9; 3; "tz"; (0, 1, -1)],
+            [4; 10; "tz"; (0, -1, 0)],
+            [10; 4; "tz"; (0, 1, 0)],
+            [5; 11; "tz"; (1, -1, 0)],
+            [11; 5; "tz"; (-1, 1, 0)],
+            [6; 12; "tz"; (1, 0, 0)],
+            [12; 6; "tz"; (-1, 0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_V2_kitaev_unitcell.jld"    
+    end    
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
     if save
@@ -2031,6 +2563,7 @@ export getUnitcell_9_3_a
 #-----------------------------------------------------------------------------------------------------------------------------
 # HYPEROCTAGON LATTICE (10,3)a
 # 1 - simple, 4 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellHyperoctagon(version=1; save=true, J1=1.0)
     if version == 1
@@ -2075,6 +2608,44 @@ function getUnitcellHyperoctagon(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_hyperoctagon_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a1 = [1, 0, 0]
+        a2 = [0.5, 0.5, -0.5]
+        a3 = [0.5, 0.5, 0.5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.125, 0.125, 0.125],
+            [5/8., 3/8., -1/8.],
+            [3/8., 1/8., -1/8.],
+            [7/8., 3/8., 1/8.]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 3; "tx"; (0, 0, 0)],
+            [3; 2; "tz"; (0, 0, 0)],  # zz
+            [2; 4; "tx"; (0, 0, 0)],
+
+            [3; 1; "tx"; (0, 0, 0)],
+            [2; 3; "tz"; (0, 0, 0)],  # zz
+            [4; 2; "tx"; (0, 0, 0)],
+
+            [4; 1; "tz"; (1, 0, 0)],  # zz
+            [1; 4; "tz"; (-1, 0, 0)], # zz
+
+            [2; 1; "ty"; (0, 1, 0)],
+            [1; 2; "ty"; (0, -1, 0)],
+
+            [3; 4; "ty"; (0, 0, -1)],
+            [4; 3; "ty"; (0, 0, 1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_hyperoctagon_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -2094,6 +2665,8 @@ export getUnitcell_10_3_a
 # HYPERHONEYCOMB LATTICE (10,3)b
 # 1 - simple, 4 sites per UC, all connections have interaction strength J1
 # 2 - simple, 4 sites per UC, all connections have interaction strength J1, site 4 shifted through the unitcell
+# 4 - Kitaev
+# 5 - Kitaev shifted unitcell
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
     if version == 1
@@ -2178,6 +2751,80 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a1 = [-1, 1, -2]
+        a2 = [-1, 1, 2]
+        a3 = [2, 4, 0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [1.0, 2.0, 1.0],
+            [0.0, -1.0, 1.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tz"; (0, 0, 0)],
+            [1; 4; "tx"; (0, 0, 0)],
+            [1; 4; "ty"; (1, 0, 0)],
+
+            [2; 1; "tz"; (0, 0, 0)],
+            [2; 3; "tx"; (0, 0, 0)],
+            [2; 3; "ty"; (0, -1, 0)],
+
+            [3; 2; "tx"; (0, 0, 0)],
+            [3; 2; "ty"; (0, 1, 0)],
+            [3; 4; "tz"; (0, 0, 1)],
+
+            [4; 1; "tx"; (0, 0, 0)],
+            [4; 1; "ty"; (-1, 0, 0)],
+            [4; 3; "tz"; (0, 0, -1)]        
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_kitaev_unitcell.jld"
+    elseif version == 5
+        # the lattice vectors
+        a1 = [-1, 1, -2]
+        a2 = [-1, 1, 2]
+        a3 = [2, 4, 0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [1.0, 2.0, 1.0],
+            [2.0, 3.0, 1.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tz"; (0, 0, 0)],
+            [1; 4; "tx"; (0, 0, -1)],
+            [1; 4; "ty"; (1, 0, -1)],
+
+            [2; 1; "tz"; (0, 0, 0)],
+            [2; 3; "tx"; (0, 0, 0)],
+            [2; 3; "ty"; (0, -1, 0)],
+
+            [3; 2; "tx"; (0, 0, 0)],
+            [3; 2; "ty"; (0, 1, 0)],
+            [3; 4; "tz"; (0, 0, 0)],
+
+            [4; 1; "tx"; (0, 0, 1)],
+            [4; 1; "ty"; (-1, 0, 1)],
+            [4; 3; "tz"; (0, 0, 0)]        
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -2196,6 +2843,7 @@ export getUnitcell_10_3_b
 #-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (10,3)c
 # 1 - simple, 6 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
     if version == 1
@@ -2249,6 +2897,53 @@ function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
         else
             filename = "$(FOLDER_UNITCELLS)3d_10_3_c_$(J1)_unitcell.jld"
         end
+    elseif version == 4
+        # the lattice vectors
+        a1 = [1, 0, 0]
+        a2 = [-0.5, sqrt(3)/2., 0.0]
+        a3 = [0.0, 0.0, (3*sqrt(3))/2.]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.25, 1/(4*sqrt(3)), 1/(2*sqrt(3))],
+            [0.75, 1/(4*sqrt(3)), 2/sqrt(3)],
+            [0.5, 1/sqrt(3), 7/(2*sqrt(3))],
+            [0.75, 1/(4*sqrt(3)), 1/sqrt(3)],
+            [0.5, 1/sqrt(3), 5/(2*sqrt(3))],
+            [0.25, 1/(4*sqrt(3)), 4/sqrt(3)]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 4; "tx"; (0, 0, 0)],
+            [4; 2; "tz"; (0, 0, 0)],  # zz
+            [2; 5; "tx"; (0, 0, 0)],
+            [5; 3; "tz"; (0, 0, 0)],  # zz
+            [3; 6; "tx"; (0, 0, 0)],
+
+            [4; 1; "tx"; (0, 0, 0)],
+            [2; 4; "tz"; (0, 0, 0)],  # zz
+            [5; 2; "tx"; (0, 0, 0)],
+            [3; 5; "tz"; (0, 0, 0)],  # zz
+            [6; 3; "tx"; (0, 0, 0)],
+
+            [4; 1; "ty"; (1, 0, 0)],  
+            [1; 4; "ty"; (-1, 0, 0)], 
+
+            [5; 2; "ty"; (0, 1, 0)], 
+            [2; 5; "ty"; (0, -1, 0)],
+
+            [3; 6; "ty"; (1, 1, 0)], 
+            [6; 3; "ty"; (-1, -1, 0)], 
+
+            [1; 6; "tz"; (0, 0, -1)],  # zz
+            [6; 1; "tz"; (0, 0, 1)] # zz
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_10_3_c_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -2259,6 +2954,155 @@ function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
     return uc
 end
 export getUnitcell_10_3_c
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# LATTICE (10,3)d
+# 1 - simple, 8 sites per UC, all connections have interaction strength J1
+# 4 - Kitaev
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
+    if version == 1
+        # the lattice vectors
+        a = 0.25*(2 - sqrt(2))
+        c = 0.5
+        a1 = [1, 0, 0]
+        a2 = [0.5, 0.5, 0.0]
+        a3 = [0.0, 0.0, c]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1 - a2)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.0, -a, 0.75*c],
+            [-a, 0.0, 0.5*c],
+            [0, a, 0.25*c],
+            [a, 0.0, 0.0],
+            [-a, -0.5, 0.25*c],
+            [0, a - 0.5, 0.5*c],
+            [a, -0.5, 0.75*c],
+            [0, -a - 0.5, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; J1; (0, 0, 0)],
+            [3; 4; J1; (0, 0, 0)],  
+            [5; 6; J1; (0, 0, 0)],  
+
+            [2; 1; J1; (0, 0, 0)],
+            [4; 3; J1; (0, 0, 0)],  
+            [6; 5; J1; (0, 0, 0)],
+
+            [2; 3; J1; (0, 0, 0)], 
+            [3; 2; J1; (0, 0, 0)], 
+
+            [6; 7; J1; (0, 0, 0)], 
+            [7; 6; J1; (0, 0, 0)],
+
+            [1; 6; J1; (0, 0, 0)], #zz 
+            [6; 1; J1; (0, 0, 0)], #zz
+
+            [4; 5; J1; (0, 1, 0)], #zz
+            [5; 4; J1; (0, -1, 0)], #zz
+
+            [8; 5; J1; (0, 0, 0)], 
+            [5; 8; J1; (0, 0, 0)], 
+
+            [8; 7; J1; (0, 0, -1)], 
+            [7; 8; J1; (0, 0, 1)], 
+
+            [2; 7; J1; (-1, 0, 0)], # zz
+            [7; 2; J1; (1, 0, 0)],  # zz
+
+            [3; 8; J1; (-1, 1, 0)], # zz
+            [8; 3; J1; (1, -1, 0)],  # zz
+
+            [1; 4; J1; (0, 0, 1)], 
+            [4; 1; J1; (0, 0, -1)], 
+
+        ]
+        # filename
+        if J1==1.0
+            filename = "$(FOLDER_UNITCELLS)3d_10_3_d_unitcell.jld"
+        else
+            filename = "$(FOLDER_UNITCELLS)3d_10_3_d_$(J1)_unitcell.jld"
+        end
+    elseif version == 4
+        # the lattice vectors
+        a = 0.25*(2 - sqrt(2))
+        c = 0.5
+        a1 = [1, 0, 0]
+        a2 = [0.5, 0.5, 0.0]
+        a3 = [0.0, 0.0, c]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1 - a2)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array[
+            [0.0, -a, 0.75*c],
+            [-a, 0.0, 0.5*c],
+            [0, a, 0.25*c],
+            [a, 0.0, 0.0],
+            [-a, -0.5, 0.25*c],
+            [0, a - 0.5, 0.5*c],
+            [a, -0.5, 0.75*c],
+            [0, -a - 0.5, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tx"; (0, 0, 0)],
+            [3; 4; "tx"; (0, 0, 0)],  
+            [5; 6; "ty"; (0, 0, 0)],  
+
+            [2; 1; "tx"; (0, 0, 0)],
+            [4; 3; "tx"; (0, 0, 0)],  
+            [6; 5; "ty"; (0, 0, 0)],
+
+            [2; 3; "ty"; (0, 0, 0)], 
+            [3; 2; "ty"; (0, 0, 0)], 
+
+            [6; 7; "tx"; (0, 0, 0)], 
+            [7; 6; "tx"; (0, 0, 0)],
+
+            [1; 6; "tz"; (0, 0, 0)], #zz 
+            [6; 1; "tz"; (0, 0, 0)], #zz
+
+            [4; 5; "tz"; (0, 1, 0)], #zz
+            [5; 4; "tz"; (0, -1, 0)], #zz
+
+            [8; 5; "tx"; (0, 0, 0)], 
+            [5; 8; "tx"; (0, 0, 0)], 
+
+            [8; 7; "ty"; (0, 0, -1)], 
+            [7; 8; "ty"; (0, 0, 1)], 
+
+            [2; 7; "tz"; (-1, 0, 0)], # zz
+            [7; 2; "tz"; (1, 0, 0)],  # zz
+
+            [3; 8; "tz"; (-1, 1, 0)], # zz
+            [8; 3; "tz"; (1, -1, 0)],  # zz
+
+            [1; 4; "ty"; (0, 0, 1)], 
+            [4; 1; "ty"; (0, 0, -1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_10_3_d_kitaev_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcell_10_3_d
+
+
+
 
 
 
@@ -6121,6 +6965,26 @@ function getSVGStringLine(id, from, to, colorStroke, strokewidth; dashed=false, 
 end
 
 
+# STRING FOR A PLAQUETTE
+# Parameters are
+# - id: The id which the object has later on
+# - plaquette_points: list of point coordinates of points that form the plaquette
+# - colorFill: hex string of the color that the plaquette has
+# - opacity: Opacity of the plaquette
+function getSVGStringPlaquette(id, plaquette_points, colorFill; opacity=0.5)
+    plaquette_string = "M"
+    for p in plaquette_points
+        plaquette_string = "$(plaquette_string) $(p[1]),$(p[2])"
+    end
+    plaquette_string = "$(plaquette_string) z"
+    ps = """
+	<path
+		style=\"fill:$(colorFill);fill-opacity:$(opacity);fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\"
+		d=\"$(plaquette_string)\"
+		id=\"$(id)\" />
+"""
+end
+
 # CONVERSION OF RGB COLORS TO HEX STRINGS
 function color_hex(r::Int64,g::Int64,b::Int64)
     return "#$(hex(r,2))$(hex(g,2))$(hex(b,2))"
@@ -6316,10 +7180,10 @@ function plotLattice2D(
 	
 
 	# define the width and height of the canvas
-	width_UC 	= (maximum(xvals) + border) - (minimum(xvals) - border)
-	height_UC	= (maximum(yvals) + border) - (minimum(yvals) - border)
-	min_x	= minimum(xvals) - border
-	min_y	= minimum(yvals) - border
+	width_UC 	= (maximum(xvals) + site_radius/conversion + border) - (minimum(xvals) - site_radius/conversion - border)
+	height_UC	= (maximum(yvals) + site_radius/conversion + border) - (minimum(yvals) - site_radius/conversion - border)
+	min_x	= minimum(xvals) - site_radius/conversion - border
+	min_y	= minimum(yvals) - site_radius/conversion - border
 	width	= conversion*(width_UC)
 	height	= conversion*(height_UC)
 
@@ -6908,6 +7772,176 @@ export plotLattice
 
 
 
+function plotPlaquettes2D(
+		lattice::Lattice,
+        plaquettes,
+        plaquette_values;
+		conversion = 160,
+		border_percentage=0.1,
+		filename_output::String="AUTO",
+		site_radius=25,
+		site_border_width_percentage::Float64=0.2,
+		bond_thickness::Int64=8,
+		visualize_periodic=false,
+		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
+		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+		colorcode_plaquettes = Dict(0.0 => [0,0,0], 1.0 => [255,0,0], -1.0 => [0,100,255]),
+        colorcode_bonds_automation::String = "OFF",
+		openfile=false,
+        export_pdf=true
+		)
+
+    # define the filename_output if it is set to AUTO
+    if filename_output=="AUTO"
+        filename_output = "$(lattice.filename[1:end-4])_plq_plot.svg"
+        filename_output = replace(filename_output, FOLDER_LATTICES, "")
+    end
+
+	# load positions and connections
+	positions	= lattice.positions
+	connections = lattice.connections
+
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getGreySequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getColorSequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    end
+
+	# repair color dictonary
+	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
+	colorcode_sites[0] = get(colorcode_sites, 0, [255,255,255])
+    colorcode_plaquettes[0.0] = get(colorcode_plaquettes, 0.0, [0,0,0])
+
+	# define styles for the different sites, i.e. strings that are saved into the svg strings
+	site_r 				= "$(site_radius)px"
+	site_border			= "#000000"
+	site_border_width	= "$(site_border_width_percentage*site_radius)px"
+
+	# sites to plot
+	pos_x = zeros(size(positions,1))
+	pos_y = zeros(size(positions,1))
+	for i in 1:size(positions,1)
+		pos_x[i] = positions[i][1]
+		pos_y[i] = positions[i][2]
+	end
+	sites_to_plot = positions
+	indices_to_plot = lattice.positions_indices
+	xvals = pos_x
+	yvals = pos_y
+	border 			= border_percentage * (maximum(pos_x) + maximum(pos_y) - minimum(pos_x) - minimum(pos_y))/4
+
+	# connections to plot (all)
+	connections_to_plot = copy(connections)
+    # the neutral connection wrap, i.e. which wrap identifies a non-periodic connection
+	neutral_connection_wrap = (0,0)
+	if size(lattice.lattice_vectors,1) == 1
+		neutral_connection_wrap = (0)
+	end
+	
+
+	# define the width and height of the canvas
+	width_UC 	= (maximum(xvals) + site_radius/conversion + border) - (minimum(xvals) - site_radius/conversion - border)
+	height_UC	= (maximum(yvals) + site_radius/conversion + border) - (minimum(yvals) - site_radius/conversion - border)
+	min_x	= minimum(xvals) - site_radius/conversion - border
+	min_y	= minimum(yvals) - site_radius/conversion - border
+	width	= conversion*(width_UC)
+	height	= conversion*(height_UC)
+
+	# define the conversion functions for coordinates
+	function X(x)
+		return conversion*(x - min_x)
+	end
+	function Y(y)
+		return + conversion*(y - min_y)
+	end
+
+	# open the SVG file
+	file = open(filename_output, "w")
+
+	# write the headerstring
+	write(file, getSVGHeaderString(round(Int64, width), round(Int64, height)))
+
+    # write all plaquettes
+    for (i,p) in enumerate(plaquettes)
+        # get the color
+        color_plaquette = color_hex(get(colorcode_plaquettes, plaquette_values[i], colorcode_plaquettes[0.0]))
+        # get the plaquette point list
+        points = Array[]
+        for index in p
+            push!(points, [X(positions[index][1]), Y(positions[index][2])])
+        end
+        # plot plaquette
+        write(file, getSVGStringPlaquette("plaq$(i)", points, color_plaquette))
+    end
+	# write all connections
+	for (i,c) in enumerate(connections_to_plot)
+		if (c[4] == neutral_connection_wrap)
+			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
+			write(file, getSVGStringLine("path$(i)", [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])], [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])], connection_color, bond_thickness))
+		elseif visualize_periodic
+			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
+			write(file, getSVGStringLine("path$(i)", [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])], [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])], connection_color, bond_thickness, dashed=true))
+        end
+	end
+
+	# write all sites
+	for (i,s) in enumerate(sites_to_plot)
+		site_color = color_hex(get(colorcode_sites, indices_to_plot[i], colorcode_sites[0]))
+		write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+	end
+
+	# write the footerstring to close the svg file
+	write(file, getSVGFooterString())
+	# close the file
+	close(file)
+
+	# convert to pdf
+    if export_pdf
+	    run(`inkscape $(filename_output) --export-pdf $(filename_output[1:end-4]).pdf`)
+    end
+	# if file shall be opened
+	if openfile
+        if is_linux()
+		    run(`ristretto $(filename_output)`)
+        elseif is_windows()
+            try
+                if export_pdf
+                    run(`explorer $(filename_output[1:end-4]).pdf`)
+                else
+                    run(`explorer $(filename_output)`)
+                end                
+            end
+        elseif is_apple()
+            run(`open $(filename_output)`)
+        else
+            println("wanted to show file but operating system not supported for showing file")
+        end
+	end
+
+	# return the output filename
+	return filename_output
+
+end
+export plotPlaquettes2D
 
 
 
