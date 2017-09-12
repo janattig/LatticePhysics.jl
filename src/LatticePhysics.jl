@@ -6916,8 +6916,8 @@ function getSVGStringEllipse(id, centerX, centerY, radiusX, radiusY, color; labe
     $(es)
 
     <text
-    x=\"$(centerX+radiusX/6)\"
-    y=\"$(centerY+radiusY/3)\"
+    x=\"$(centerX)\"
+    y=\"$(centerY+radiusY/2)\"
     style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
     >
     $(label)
@@ -6953,8 +6953,8 @@ function getSVGStringEllipseStroked(id, centerX, centerY, radiusX, radiusY, colo
     $(es)
     
     <text
-    x=\"$(centerX+radiusX/6)\"
-    y=\"$(centerY+radiusY/3)\"
+    x=\"$(centerX)\"
+    y=\"$(centerY+radiusY/2)\"
     style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
     >
     $(label)
