@@ -31,7 +31,7 @@
 #
 #   AUTHOR:             Jan Attig
 #   DATE started:       2017-08-16
-#   DATE last version:  2017-09-11
+#   DATE last version:  2017-09-12
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -7247,7 +7247,7 @@ function plotLattice2D(
 		site_color = color_hex(site_color_basic)
         label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
         if site_labels == "POSITION INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=lattice.positions_indices[i], labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=indices_to_plot[i], labelcolor=label_color))
         elseif site_labels == "LATTICE INDEX"
 		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
         else
@@ -7822,6 +7822,7 @@ function plotPlaquettes2D(
 		filename_output::String="AUTO",
 		site_radius=25,
 		site_border_width_percentage::Float64=0.2,
+        site_labels="OFF",
 		bond_thickness::Int64=8,
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
@@ -7873,7 +7874,7 @@ function plotPlaquettes2D(
     colorcode_plaquettes[0.0] = get(colorcode_plaquettes, 0.0, [0,0,0])
 
 	# define styles for the different sites, i.e. strings that are saved into the svg strings
-	site_r 				= "$(site_radius)px"
+	site_r 				= site_radius
 	site_border			= "#000000"
 	site_border_width	= "$(site_border_width_percentage*site_radius)px"
 
@@ -7946,8 +7947,16 @@ function plotPlaquettes2D(
 
 	# write all sites
 	for (i,s) in enumerate(sites_to_plot)
-		site_color = color_hex(get(colorcode_sites, indices_to_plot[i], colorcode_sites[0]))
-		write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+        site_color_basic = get(colorcode_sites, indices_to_plot[i], colorcode_sites[0])
+		site_color = color_hex(site_color_basic)
+        label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+        if site_labels == "POSITION INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=indices_to_plot[i], labelcolor=label_color))
+        elseif site_labels == "LATTICE INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
+        else
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+        end
 	end
 
 	# write the footerstring to close the svg file
