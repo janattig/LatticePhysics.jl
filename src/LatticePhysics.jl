@@ -21,7 +21,7 @@
 #   -   Building Lattices by bond distance to an origin site
 #   -   Building Lattices in a shape around an origin site
 #
-#   -   TODO Modifying Lattices and Interaction Strengths
+#   -   Modifying Lattices and Interaction Strengths
 #
 #   -   TODO SVG help methods
 #   -   Plotting Lattices as SVG files
@@ -31,7 +31,7 @@
 #
 #   AUTHOR:             Jan Attig
 #   DATE started:       2017-08-16
-#   DATE last version:  2017-08-31
+#   DATE last version:  2017-09-11
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -6899,18 +6899,32 @@ end
 # - radiusX / radiusY: The radii of the ellipse
 # - color: hex string of the ellipse color
 # formerly: getEllipseString
-function getSVGStringEllipse(id, centerX, centerY, radiusX, radiusY, color)
+function getSVGStringEllipse(id, centerX, centerY, radiusX, radiusY, color; label=987654321, labelcolor="#000000")
 	es = """
 	<ellipse
 		style=\"color:$(color);fill:$(color);fill-opacity:1;fill-rule:nonzero\"
 		id=\"$(id)\"
 		cx=\"$(centerX)\"
 		cy=\"$(centerY)\"
-		rx=\"$(radiusX)\"
-		ry=\"$(radiusY)\" />
+		rx=\"$(radiusX)px\"
+		ry=\"$(radiusY)px\" />
 
 """
-	 return es
+    # check if to add a label
+    if label != 987654321
+        es = """
+    $(es)
+
+    <text
+    x=\"$(centerX+radiusX/6)\"
+    y=\"$(centerY+radiusY/3)\"
+    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
+    >
+    $(label)
+    </text>
+"""
+    end
+	return es
 end
 
 # STRING FOR A STROKED ELLIPSE
@@ -6922,18 +6936,32 @@ end
 # - colorStroke: hex string of the ellipse stroke color
 # - strokewidth: Float or Int giving the width of the surrounding stroke
 # formerly: getStrokedEllipseString
-function getSVGStringEllipseStroked(id, centerX, centerY, radiusX, radiusY, colorFill, colorStroke, strokewidth)
+function getSVGStringEllipseStroked(id, centerX, centerY, radiusX, radiusY, colorFill, colorStroke, strokewidth; label=987654321, labelcolor="#000000")
 	es = """
 	<ellipse
 		style=\"color:$(colorFill);fill:$(colorFill);fill-opacity:1;fill-rule:nonzero;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\"
 		id=\"$(id)\"
 		cx=\"$(centerX)\"
 		cy=\"$(centerY)\"
-		rx=\"$(radiusX)\"
-		ry=\"$(radiusY)\" />
+		rx=\"$(radiusX)px\"
+		ry=\"$(radiusY)px\" />
 
 """
-	 return es
+    # check if to add a label
+    if label != 987654321
+        es = """
+    $(es)
+    
+    <text
+    x=\"$(centerX+radiusX/6)\"
+    y=\"$(centerY+radiusY/3)\"
+    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
+    >
+    $(label)
+    </text>
+"""
+    end
+	return es
 end
 
 # STRING FOR A LINE
@@ -7103,6 +7131,7 @@ function plotLattice2D(
 		filename_output::String="AUTO",
 		site_radius=25,
 		site_border_width_percentage::Float64=0.2,
+        site_labels="OFF",
 		bond_thickness::Int64=8,
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
@@ -7153,7 +7182,7 @@ function plotLattice2D(
 
 
 	# define styles for the different sites, i.e. strings that are saved into the svg strings
-	site_r 				= "$(site_radius)px"
+	site_r 				= site_radius
 	site_border			= "#000000"
 	site_border_width	= "$(site_border_width_percentage*site_radius)px"
 
@@ -7214,8 +7243,16 @@ function plotLattice2D(
 
 	# write all sites
 	for (i,s) in enumerate(sites_to_plot)
-		site_color = color_hex(get(colorcode_sites, indices_to_plot[i], colorcode_sites[0]))
-		write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+        site_color_basic = get(colorcode_sites, indices_to_plot[i], colorcode_sites[0])
+		site_color = color_hex(site_color_basic)
+        label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+        if site_labels == "POSITION INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=lattice.positions_indices[i], labelcolor=label_color))
+        elseif site_labels == "LATTICE INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
+        else
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+        end
 	end
 
 	# write the footerstring to close the svg file
@@ -7259,6 +7296,7 @@ function plotLattice3D(
 		filename_output::String="AUTO",
 		site_radius=25,
 		site_border_width_percentage::Float64=0.2,
+        site_labels="OFF",
 		bond_thickness::Int64=8,
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
@@ -7707,6 +7745,7 @@ function plotLattice(
 		filename_output::String="AUTO",
 		site_radius=25,
 		site_border_width_percentage::Float64=0.2,
+        site_labels="OFF",
 		bond_thickness::Int64=8,
 		visualize_periodic=false,
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
@@ -7733,6 +7772,7 @@ function plotLattice(
             filename_output=filename_output,
             site_radius=site_radius,
             site_border_width_percentage=site_border_width_percentage,
+            site_labels = site_labels,
             bond_thickness=bond_thickness,
             visualize_periodic=visualize_periodic,
             colorcode_sites = colorcode_sites,
@@ -7747,6 +7787,7 @@ function plotLattice(
             filename_output=filename_output,
             site_radius=site_radius,
             site_border_width_percentage=site_border_width_percentage,
+            site_labels = site_labels,
             bond_thickness=bond_thickness,
             visualize_periodic=visualize_periodic,
             colorcode_sites = colorcode_sites,
