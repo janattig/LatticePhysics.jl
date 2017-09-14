@@ -8006,8 +8006,25 @@ function showLattice(
 		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
 		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
         colorcode_bonds_automation::String = "OFF",
-        background_color = [200,200,200]
+        background_color = [200,200,200],
+        forcePyPlot=false
     )
+    # if forcing PyPlot, do this and exit
+    if forcePyPlot
+        showLatticePyPlot(
+            lattice,
+            conversion = conversion,
+            site_radius=site_radius,
+            site_labels=site_labels,
+            bond_thickness=bond_thickness,
+            visualize_periodic=visualize_periodic,
+            colorcode_sites = colorcode_sites,
+            colorcode_bonds = colorcode_bonds,
+            colorcode_bonds_automation=colorcode_bonds_automation,
+            background_color = background_color
+        )
+        return
+    end
     # CHECK IF MAYAVI IS PRESENT
     try
         @pyimport mayavi.mlab as mlab
@@ -8028,21 +8045,24 @@ function showLattice(
         end
         return
     catch error
-        println("Error occured:")
-        println(error)
-        MAYAVI_AVAILABLE = false
-        showLatticePyPlot(
-            lattice,
-            conversion = conversion,
-            site_radius=site_radius,
-            site_labels=site_labels,
-            bond_thickness=bond_thickness,
-            visualize_periodic=visualize_periodic,
-            colorcode_sites = colorcode_sites,
-            colorcode_bonds = colorcode_bonds,
-            colorcode_bonds_automation=colorcode_bonds_automation,
-            background_color = background_color
-        )
+        if isa(error, PyError)
+            MAYAVI_AVAILABLE = false
+            showLatticePyPlot(
+                lattice,
+                conversion = conversion,
+                site_radius=site_radius,
+                site_labels=site_labels,
+                bond_thickness=bond_thickness,
+                visualize_periodic=visualize_periodic,
+                colorcode_sites = colorcode_sites,
+                colorcode_bonds = colorcode_bonds,
+                colorcode_bonds_automation=colorcode_bonds_automation,
+                background_color = background_color
+            )
+        else
+            println("Error occured:")
+            println(error)
+        end
     end
 
 end
