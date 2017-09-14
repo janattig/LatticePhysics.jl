@@ -8047,20 +8047,25 @@ function showLattice(
     catch error
         if isa(error, PyCall.PyError)
             MAYAVI_AVAILABLE = false
-            showLatticePyPlot(
-                lattice,
-                conversion = conversion,
-                site_radius=site_radius,
-                site_labels=site_labels,
-                bond_thickness=bond_thickness,
-                visualize_periodic=visualize_periodic,
-                colorcode_sites = colorcode_sites,
-                colorcode_bonds = colorcode_bonds,
-                colorcode_bonds_automation=colorcode_bonds_automation,
-                background_color = background_color
-            )
+            try
+                showLatticePyPlot(
+                    lattice,
+                    conversion = conversion,
+                    site_radius=site_radius,
+                    site_labels=site_labels,
+                    bond_thickness=bond_thickness,
+                    visualize_periodic=visualize_periodic,
+                    colorcode_sites = colorcode_sites,
+                    colorcode_bonds = colorcode_bonds,
+                    colorcode_bonds_automation=colorcode_bonds_automation,
+                    background_color = background_color
+                )
+            catch error2
+                println("Error occured when plotting:")
+                println(error2)
+            end
         else
-            println("Error occured:")
+            println("Error occured when loading:")
             println(error)
         end
     end
