@@ -57,10 +57,10 @@ using JLD
 
 # PyPlot is used for all plotting of band structures (plotting of lattices is done via SVG file creation)
 using PyPlot
+using PyCall
 
 # Optim is used for minimizing the band structure to find the ground state energy of the system
 using Optim
-
 
 
 
@@ -7812,7 +7812,6 @@ export plotLattice
 
 
 
-
 function plotPlaquettes2D(
 		lattice::Lattice,
         plaquettes,
@@ -7992,6 +7991,311 @@ function plotPlaquettes2D(
 
 end
 export plotPlaquettes2D
+
+
+
+
+# function to show the lattice
+function showLattice(
+		lattice::Lattice;
+		conversion = 160,
+		site_radius=25,
+        site_labels="OFF",
+		bond_thickness::Int64=8,
+		visualize_periodic=false,
+		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
+		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
+        background_color = [200,200,200]
+    )
+    # CHECK IF MAYAVI IS PRESENT
+    try
+        @pyimport mayavi.mlab as mlab
+        MAYAVI_AVAILABLE = true
+        try
+        showLatticeMayavi(
+            lattice,
+            conversion = conversion,
+            site_radius=site_radius,
+            site_labels=site_labels,
+            bond_thickness=bond_thickness,
+            visualize_periodic=visualize_periodic,
+            colorcode_sites = colorcode_sites,
+            colorcode_bonds = colorcode_bonds,
+            colorcode_bonds_automation=colorcode_bonds_automation,
+            background_color = background_color
+        )
+        end
+        return
+    catch Error
+        MAYAVI_AVAILABLE = false
+        showLatticePyPlot(
+            lattice,
+            conversion = conversion,
+            site_radius=site_radius,
+            site_labels=site_labels,
+            bond_thickness=bond_thickness,
+            visualize_periodic=visualize_periodic,
+            colorcode_sites = colorcode_sites,
+            colorcode_bonds = colorcode_bonds,
+            colorcode_bonds_automation=colorcode_bonds_automation,
+            background_color = background_color
+        )
+    end
+
+end
+export showLattice
+
+
+# show Lattice function to plot in pyplot
+function showLatticePyPlot(
+		lattice::Lattice;
+		conversion = 160,
+		site_radius=25,
+        site_labels="OFF",
+		bond_thickness::Int64=8,
+		visualize_periodic=false,
+		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
+		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
+        background_color = [200,200,200]
+    )
+
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getGreySequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getColorSequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    end
+
+	# repair color dictonary
+	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
+	colorcode_sites[0] = get(colorcode_sites, 0, [255,255,255])
+
+    # PLOTTING WITH PYPLOT
+    # create a figure
+    fig = figure(figsize=(10,10), facecolor=background_color ./ 255.0)
+    # add a 3d projection subplot
+    ax = fig[:add_subplot](111, projection="3d", axisbg=background_color ./ 255.0)
+    # define a function to plot a sphere for every site
+    function plotSite(site,radius,color; detail=10)
+        x = site[1]
+        y = site[2]
+        if length(site) == 3
+            z = site[3]
+        else
+            z = 0.0
+        end
+        # Make data
+        n = detail
+        u = linspace(0,2*pi,n);
+        v = linspace(0,pi,n);
+        px = cos(u) * sin(v)';
+        py = sin(u) * sin(v)';
+        pz = ones(n) * cos(v)';
+        px = (px.*radius) .+ x
+        py = (py.*radius) .+ y
+        pz = (pz.*radius) .+ z
+        # Plot the surface
+        surf(px,py,pz, rstride=1, cstride=1, linewidth=0, antialiased=true, color=color)
+    end
+    # define a function to plot a bond as a tube
+    function plotBond(from, to, radius, color; detail_ring=8, detail_length=3)
+        # check to be 3d
+        if length(from) == 2
+            from = [from[1], from[2], 0.0]
+        end        
+        if length(to) == 2
+            to = [to[1], to[2], 0.0]
+        end        
+        # https://de.mathworks.com/matlabcentral/answers/151235-tube-plot-with-x-y-coordinates-and-radius?requestedDomain=www.mathworks.com
+        # plot bond
+        vec_u = to .- from;
+        t = nullspace(vec_u')';
+        vec_v = t[1,:]
+        vec_w = t[2,:]
+        # normalize
+        vec_v = radius.* vec_v ./ norm(vec_v)
+        vec_w = radius.* vec_w ./ norm(vec_w)
+        #println("v=$(vec_v)    w=$(vec_w)")
+        #[S,T] = linspace(0,1,detail)*linspace(0,2*pi,detail)';
+        S = linspace(0,1,detail_length)
+        T = linspace(0,2*pi,detail_ring)
+        px = zeros(detail_length, detail_ring)
+        py = zeros(detail_length, detail_ring)
+        pz = zeros(detail_length, detail_ring)
+        for i in 1:detail_length
+        for j in 1:detail_ring        
+            #P = repmat(from',m*n,1) .+ S.*vec_u .+ cos(T).*vec_v .+ sin(T).*vec_w;
+            px[i,j] = from[1] + S[i]*vec_u[1] + cos(T[j])*vec_v[1] + sin(T[j])*vec_w[1];
+            py[i,j] = from[2] + S[i]*vec_u[2] + cos(T[j])*vec_v[2] + sin(T[j])*vec_w[2];
+            pz[i,j] = from[3] + S[i]*vec_u[3] + cos(T[j])*vec_v[3] + sin(T[j])*vec_w[3];
+        end
+        end
+        surf(px,py,pz, rstride=1, cstride=1, linewidth=0, antialiased=true, color=color)
+    end
+   
+    # plot all bonds
+    for c in lattice.connections
+        # skip if wrong directioin
+        if c[1] < c[2] || (!visualize_periodic && sum([abs(el) for el in c[4]]) != 0)
+            continue
+        end
+        # get data
+        from = lattice.positions[Int(c[1])] .* conversion
+        to = lattice.positions[Int(c[2])] .* conversion
+        color = get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]) ./ 255.0
+        # plot
+        plotBond(from, to, bond_thickness, color)
+    end
+    # plot all sites
+    for index in 1:size(lattice.positions,1)
+        p = lattice.positions[index]
+        plotSite(p.*conversion, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
+    end
+
+
+    # turn off everthing but the plot
+    ax[:set_axis_off]()
+    # get the current limits    
+    x_limits = ax[:get_xlim3d]()
+    y_limits = ax[:get_ylim3d]()
+    z_limits = ax[:get_zlim3d]()
+    # build the current ranges
+    x_range = abs(x_limits[2] - x_limits[1])
+    x_middle = (x_limits[2] + x_limits[1]) / 2.0
+    y_range = abs(y_limits[2] - y_limits[1])
+    y_middle = (y_limits[2] + y_limits[1]) / 2.0
+    z_range = abs(z_limits[2] - z_limits[1])
+    z_middle = (z_limits[2] + z_limits[1]) / 2.0
+    # The plot bounding box is a sphere in the sense of the infinity
+    # norm, hence I call half the max range the plot radius.
+    plot_radius = 0.5*maximum([x_range, y_range, z_range])
+    ax[:set_xlim3d](x_middle - plot_radius, x_middle + plot_radius)
+    ax[:set_ylim3d](y_middle - plot_radius, y_middle + plot_radius)
+    ax[:set_zlim3d](z_middle - plot_radius, z_middle + plot_radius)
+    # tighten layout
+    tight_layout()
+    # show
+    show()
+end
+# show Lattice function to plot in mayavi
+function showLatticeMayavi(
+		lattice::Lattice;
+		conversion = 160,
+		site_radius=25,
+        site_labels="OFF",
+		bond_thickness::Int64=8,
+		visualize_periodic=false,
+		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
+		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
+        background_color = [200,200,200]
+    )
+
+    # CHECK IF MAYAVI IS PRESENT
+    @pyimport mayavi.mlab as mlab
+
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getGreySequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # construct the list of interaction strengths
+        cs_list = getConnectionStrengthList(lattice)
+        # get the color code list
+        cc_list = getColorSequence(size(cs_list, 1))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[string(cs_list[i])] = cc_list[i]
+        end
+    end
+
+	# repair color dictonary
+	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
+	colorcode_sites[0] = get(colorcode_sites, 0, [255,255,255])
+
+    
+    # PLOTTING WITH MAYAVI
+    # create a figure
+    mlab.figure()
+    # define a function to plot a sphere for every site
+    function plotSite(site,radius,color; detail=10)
+        x = site[1]
+        y = site[2]
+        if length(site) == 3
+            z = site[3]
+        else
+            z = 0.0
+        end
+        mlab.points3d([x],[y],[z],scale_factor=radius, color=(color[1], color[2], color[3]))
+    end
+    # define a function to plot a bond as a tube
+    function plotBond(from, to, radius, color; detail_ring=8, detail_length=3)
+        # check to be 3d
+        if length(from) == 2
+            from = [from[1], from[2], 0.0]
+        end        
+        if length(to) == 2
+            to = [to[1], to[2], 0.0]
+        end        
+        mlab.plot3d([from[1], to[1]], [from[2], to[2]], [from[3], to[3]], color=(color[1], color[2], color[3]), tube_radius=radius)
+    end
+   
+    # plot all bonds
+    for c in lattice.connections
+        # skip if wrong directioin
+        if c[1] < c[2] || (!visualize_periodic && sum([abs(el) for el in c[4]]) != 0)
+            continue
+        end
+        # get data
+        from = lattice.positions[Int(c[1])] .* conversion
+        to = lattice.positions[Int(c[2])] .* conversion
+        color = get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]) ./ 255.0
+        # plot
+        plotBond(from, to, bond_thickness, color)
+    end
+    # plot all sites
+    for index in 1:size(lattice.positions,1)
+        p = lattice.positions[index]
+        plotSite(p.*conversion, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
+    end
+
+    # show plot
+    mlab.show()
+
+
+    # return the figure
+    return fig
+end
 
 
 
