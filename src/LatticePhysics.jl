@@ -8027,7 +8027,9 @@ function showLattice(
         )
         end
         return
-    catch Error
+    catch error
+        println("Error occured:")
+        println(error)
         MAYAVI_AVAILABLE = false
         showLatticePyPlot(
             lattice,
