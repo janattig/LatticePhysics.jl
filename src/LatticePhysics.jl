@@ -8045,7 +8045,7 @@ function showLattice(
         end
         return
     catch error
-        if isa(error, PyError)
+        if isa(error, PyCall.PyError)
             MAYAVI_AVAILABLE = false
             showLatticePyPlot(
                 lattice,
