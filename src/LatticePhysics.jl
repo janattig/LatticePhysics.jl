@@ -6812,9 +6812,43 @@ export getPlaquettesOfLattice
 
 
 
+function printPlaquetteStatisticsOfLattice(lattice::Lattice; detailed=false, max_length=12)
+    # print header information
+    println("printing plaquette information for lattice:")
+    # iterate over all lengths
+    for l in 3:max_length
+        # get plaquettes
+        plaquettes = getPlaquettesOfLattice(lattice, l)
+        # print statistics
+        println("- length $(l) bonds: $(size(plaquettes,1)) plaquettes")
+        # print more information
+        if detailed
+            for p in plaquettes
+                println("    - $(p)")
+            end
+        end
+    end
+end
+export printPlaquetteStatisticsOfLattice
 
-
-
+function printPlaquetteStatisticsOfSite(lattice::Lattice, site; detailed=false, max_length=12)
+    # print header information
+    println("printing plaquette information for site $(site) of lattice:")
+    # iterate over all lengths
+    for l in 3:max_length
+        # get plaquettes
+        plaquettes = getPlaquettesOfSite(lattice, site, l)
+        # print statistics
+        println("- length $(l) bonds: $(size(plaquettes,1)) plaquettes")
+        # print more information
+        if detailed
+            for p in plaquettes
+                println("    - $(p)")
+            end
+        end
+    end
+end
+export printPlaquetteStatisticsOfSite
 
 
 
@@ -7456,7 +7490,7 @@ function plotLattice3D(
 			site_color_desired[i] = grey
 		end
 		# return the hex version of the proper site color
-		return color_hex(site_color_desired)
+		return site_color_desired
 	end
 
 	# proper radius
@@ -7470,7 +7504,7 @@ function plotLattice3D(
 		b = radius_max - a * 1/max_distance
 		# get the best radius
 		radius = Int(floor((a / distance) + b))
-		return "$(radius)px"
+		return radius
 	end
 	function getProperSiteBorderRadius(distance)
 		# overwrite the radius
@@ -7549,7 +7583,11 @@ function plotLattice3D(
 	# sites to plot
 	sites_to_plot = Array[]
 	for index in 1:length(b_x)
-		push!(sites_to_plot, [b_x[index], b_y[index], distances_to_camera[index], sum(positions[index].*c_vec), lattice.positions_indices[index]])
+        if site_labels == "LATTICE INDEX"
+		    push!(sites_to_plot, [b_x[index], b_y[index], distances_to_camera[index], sum(positions[index].*c_vec), lattice.positions_indices[index], index])
+        else 
+            push!(sites_to_plot, [b_x[index], b_y[index], distances_to_camera[index], sum(positions[index].*c_vec), lattice.positions_indices[index]])
+        end
 	end
 
 	# sort the sites s.t. the z values arrange in descending order
@@ -7642,12 +7680,24 @@ function plotLattice3D(
 		if size(connections_to_plot,1) == 0
 			# pop the first site
 			site_to_plot = pop!(sites_to_plot)
-			# write 
-			write(file, getSVGStringEllipseStroked("el$(i)", 
-				X(site_to_plot[1]), Y(site_to_plot[2]),
-				getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
-				getProperSiteColor(site_to_plot[3],site_to_plot[5]),
-				getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3])))
+            site_color_basic = getProperSiteColor(site_to_plot[3],site_to_plot[5])
+            site_color = color_hex(site_color_basic)
+            label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+            # write 
+            if site_labels == "POSITION INDEX" || site_labels == "LATTICE INDEX"
+                write(file, getSVGStringEllipseStroked("el$(i)", 
+                    X(site_to_plot[1]), Y(site_to_plot[2]),
+                    getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
+                    site_color,
+                    getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3]),
+                    label=Int(site_to_plot[end]), labelcolor=label_color))
+            else
+                write(file, getSVGStringEllipseStroked("el$(i)", 
+                    X(site_to_plot[1]), Y(site_to_plot[2]),
+                    getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
+                    site_color,
+                    getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3])))
+            end
 			# increase index
 			i = i+1
 		elseif size(sites_to_plot,1) == 0
@@ -7670,12 +7720,24 @@ function plotLattice3D(
 			if sites_to_plot[end][4] < connections_to_plot[end][6] #min(connections_to_plot[end][5],connections_to_plot[end][6]) - 0.0001
 				# pop the first site
 				site_to_plot = pop!(sites_to_plot)
-				# write 
-				write(file, getSVGStringEllipseStroked("el$(i)", 
-					X(site_to_plot[1]), Y(site_to_plot[2]),
-					getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
-					getProperSiteColor(site_to_plot[3],site_to_plot[5]),
-					getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3])))
+                site_color_basic = getProperSiteColor(site_to_plot[3],site_to_plot[5])
+                site_color = color_hex(site_color_basic)
+                label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+                # write 
+                if site_labels == "POSITION INDEX" || site_labels == "LATTICE INDEX"
+                    write(file, getSVGStringEllipseStroked("el$(i)", 
+                        X(site_to_plot[1]), Y(site_to_plot[2]),
+                        getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
+                        site_color,
+                        getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3]),
+                        label=Int(site_to_plot[end]), labelcolor=label_color))
+                else
+                    write(file, getSVGStringEllipseStroked("el$(i)", 
+                        X(site_to_plot[1]), Y(site_to_plot[2]),
+                        getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
+                        site_color,
+                        getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3])))
+                end
 				# increase index
 				i = i+1
 			else
