@@ -8042,11 +8042,15 @@ function showLattice(
             colorcode_bonds_automation=colorcode_bonds_automation,
             background_color = background_color
         )
+        catch x
         end
         return
     catch error
         if isa(error, PyCall.PyError)
+            #println("PyError occured when importing:")
+            #println(error)
             MAYAVI_AVAILABLE = false
+            #println("Using PyPlot now")
             try
                 showLatticePyPlot(
                     lattice,
