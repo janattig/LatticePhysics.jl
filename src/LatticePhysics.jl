@@ -1786,7 +1786,7 @@ export getUnitcell_8_3_a
 # 1 - simple, 6 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitCell_8_3_b(version=1; save=true, J1=1.0)
+function getUnitcell_8_3_b(version=1; save=true, J1=1.0)
     if version == 1
         # the lattice vectors
         a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
@@ -1888,7 +1888,7 @@ function getUnitCell_8_3_b(version=1; save=true, J1=1.0)
     # return the unitcell
     return uc
 end
-export getUnitCell_8_3_b
+export getUnitcell_8_3_b
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # LATTICE (8,3)c
@@ -8262,7 +8262,25 @@ function showLatticePyPlot(
     # plot all sites
     for index in 1:size(lattice.positions,1)
         p = lattice.positions[index]
-        plotSite(p.*conversion, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
+        if length(p) == 2
+            p = [p[1], p[2], 0.0]
+        end
+        p = p.*conversion
+        plotSite(p, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
+    end
+    # plot all site labels
+    for index in 1:size(lattice.positions,1)
+        p = lattice.positions[index]
+        if length(p) == 2
+            p = [p[1], p[2], 0.0]
+        end
+        p = p.*conversion
+        # add label
+        if site_labels == "LATTICE INDEX"
+            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(index)", zorder=1, size=site_radius, color="k") 
+        elseif site_labels == "POSITION INDEX"
+            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(lattice.positions_indices[index])", zorder=1, size=site_radius, color="k") 
+        end
     end
 
 
@@ -8379,8 +8397,27 @@ function showLatticeMayavi(
     # plot all sites
     for index in 1:size(lattice.positions,1)
         p = lattice.positions[index]
-        plotSite(p.*conversion, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
+        if length(p) == 2
+            p = [p[1], p[2], 0.0]
+        end
+        p = p.*conversion
+        plotSite(p, site_radius, get(colorcode_sites, lattice.positions_indices[index], colorcode_sites[0])./255.0)
     end
+    # plot all site labels
+    for index in 1:size(lattice.positions,1)
+        p = lattice.positions[index]
+        if length(p) == 2
+            p = [p[1], p[2], 0.0]
+        end
+        p = p.*conversion
+        # add label
+        if site_labels == "LATTICE INDEX"
+            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(index)", scale=site_radius, color=(0,0,0)) 
+        elseif site_labels == "POSITION INDEX"
+            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(lattice.positions_indices[index])", scale=site_radius, color=(0,0,0)) 
+        end
+    end
+
 
     # show plot
     mlab.show()
