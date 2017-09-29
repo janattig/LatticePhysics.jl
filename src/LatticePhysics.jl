@@ -8357,7 +8357,7 @@ function showLatticeMayavi(
     
     # PLOTTING WITH MAYAVI
     # create a figure
-    mlab.figure()
+    mlab.figure(bgcolor=(background_color[1], background_color[2], background_color[3]))
     # define a function to plot a sphere for every site
     function plotSite(site,radius,color; detail=10)
         x = site[1]
