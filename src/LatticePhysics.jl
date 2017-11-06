@@ -867,6 +867,38 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_unitcell.jld"
+    elseif version == 4
+        # the lattice vectors
+        a1 = [3*sqrt(3.0)/4., -3*sqrt(3.0)/4.]
+        a2 = [3*sqrt(3.0)/4., 3*sqrt(3.0)/4.]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.0, 1/sqrt(3.0)],
+			[-1/sqrt(3.0), 0.0],
+			[-1/sqrt(3.0), 1/sqrt(3.0)]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tz"; (0,0)],
+            [2; 4; "tx"; (0,0)],
+            [3; 4; "tz"; (0,0)],
+            [3; 1; "tx"; (0,0)],
+            [2; 1; "tz"; (0,0)],
+            [4; 2; "tx"; (0,0)],
+            [4; 3; "tz"; (0,0)],
+            [1; 3; "tx"; (0,0)],
+            [3; 2; "ty"; (0,-1)],
+            [2; 3; "ty"; (0,1)],
+            [4; 1; "ty"; (-1,0)],
+            [1; 4; "ty"; (1,0)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
