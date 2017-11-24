@@ -883,19 +883,19 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
-            [1; 2; "tz"; (0,0)],
-            [2; 4; "tx"; (0,0)],
-            [3; 4; "tz"; (0,0)],
-            [3; 1; "tx"; (0,0)],
-            [2; 1; "tz"; (0,0)],
-            [4; 2; "tx"; (0,0)],
-            [4; 3; "tz"; (0,0)],
-            [1; 3; "tx"; (0,0)],
-            [3; 2; "ty"; (0,-1)],
-            [2; 3; "ty"; (0,1)],
-            [4; 1; "ty"; (-1,0)],
-            [1; 4; "ty"; (1,0)],
+        connections = Array[          
+            [1; 2; "tx"; (0,0)],
+            [2; 4; "ty"; (0,0)],
+            [3; 4; "tx"; (0,0)],
+            [3; 1; "ty"; (0,0)],
+            [2; 1; "tx"; (0,0)],
+            [4; 2; "ty"; (0,0)],
+            [4; 3; "tx"; (0,0)],
+            [1; 3; "ty"; (0,0)],
+            [3; 2; "tz"; (0,-1)],
+            [2; 3; "tz"; (0,1)],
+            [4; 1; "tz"; (-1,0)],
+            [1; 4; "tz"; (1,0)],
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_kitaev_unitcell.jld"
