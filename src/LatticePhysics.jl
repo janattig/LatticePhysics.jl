@@ -1194,7 +1194,31 @@ function getUnitcellHoneycomb(version=1; save=true)
             [2; 1; "tz"; (0, 1)]
         ]
         # filename
-        filename = "$(FOLDER_UNITCELLS)2d_honeycomb_kitaev_unitcell.jld"
+        filename = "$(FOLDER_UNITCELLS)2d_honeycomb_ZZ_kitaev_unitcell.jld"
+    elseif version == 5
+        # the lattice vectors
+        a1 = [sqrt(3.0)/2, -0.5]
+        a2 = [sqrt(3.0), 0.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [1/sqrt(3.0), 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tx"; (0, 0)],
+            [1; 2; "ty"; (-1, 0)],
+            [1; 2; "tz"; (1, -1)],
+            [2; 1; "tx"; (0, 0)],
+            [2; 1; "ty"; (1, 0)],
+            [2; 1; "tz"; (-1, 1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_honeycomb_AC_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1205,6 +1229,7 @@ function getUnitcellHoneycomb(version=1; save=true)
     return uc
 end
 export getUnitcellHoneycomb
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # KAGOME LATTICE
@@ -1255,6 +1280,104 @@ function getUnitcellKagome(version=1; save=true)
     return uc
 end
 export getUnitcellKagome
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# KAGOME MINUS LATTICE
+# 1 - simple, 6 sites per UC (symmetric around x axis)
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitcellKagomeMinus(version=1; save=true)
+    # SIMPLE KAGOME MINUS LATTICE
+    if version == 1
+        # the lattice vectors
+        a1 = [sqrt(3.0)/2, -0.5]
+        a2 = [sqrt(3.0)/2, +0.5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.144338,0.0],
+            [-0.0721688,0.125],
+            [-0.0721688,-0.125],
+            [0.433013,0.0],
+            [-0.216506,0.375],
+            [-0.216506,-0.375]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; 1.0; (0,0)],
+            [2; 1; 1.0; (0,0)],
+            [1; 3; 1.0; (0,0)],
+            [3; 1; 1.0; (0,0)],
+            [2; 3; 1.0; (0,0)],
+            [3; 2; 1.0; (0,0)],
+            [4; 5; 1.0; (1,0)],
+            [5; 4; 1.0; (-1,0)],
+            [4; 6; 1.0; (0,1)],
+            [6; 4; 1.0; (0,-1)],
+            [5; 6; 1.0; (-1,1)],
+            [6; 5; 1.0; (1,-1)],
+            [1; 4; 1.0; (0,0)],
+            [4; 1; 1.0; (0,0)],
+            [2; 5; 1.0; (0,0)],
+            [5; 2; 1.0; (0,0)],
+            [3; 6; 1.0; (0,0)],
+            [6; 3; 1.0; (0,0)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_kagome_minus_unitcell.jld"
+    elseif version == 4
+        # the lattice vectors
+        a1 = [sqrt(3.0)/2, -0.5]
+        a2 = [sqrt(3.0)/2, +0.5]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.144338,0.0],
+            [-0.0721688,0.125],
+            [-0.0721688,-0.125],
+            [0.433013,0.0],
+            [-0.216506,0.375],
+            [-0.216506,-0.375]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "tzp"; (0,0)],
+            [2; 1; "tzp"; (0,0)],
+            [1; 3; "txp"; (0,0)],
+            [3; 1; "txp"; (0,0)],
+            [2; 3; "typ"; (0,0)],
+            [3; 2; "typ"; (0,0)],
+            [4; 5; "tzp"; (1,0)],
+            [5; 4; "tzp"; (-1,0)],
+            [4; 6; "txp"; (0,1)],
+            [6; 4; "txp"; (0,-1)],
+            [5; 6; "typ"; (-1,1)],
+            [6; 5; "typ"; (1,-1)],
+            [1; 4; "ty"; (0,0)],
+            [4; 1; "ty"; (0,0)],
+            [2; 5; "tx"; (0,0)],
+            [5; 2; "tx"; (0,0)],
+            [3; 6; "tz"; (0,0)],
+            [6; 3; "tz"; (0,0)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_kagome_minus_kitaev_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcellKagomeMinus
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # HONEYCOMB-XXX LATTICE
