@@ -8550,9 +8550,9 @@ export getInteractionMatrixRealSpace
 #   - enforce_hermitian (optional): if the matrix should be made hermitian by 0.5*(A + A_dagger)
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}; enforce_hermitian=false)
+function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}; enforce_hermitian=false, majorana=false)
     # generate a new matrix
-    matrix = zeros(size(lattice.positions,1),size(lattice.positions,1)) .* im
+    matrix = zeros(Complex, size(lattice.positions,1),size(lattice.positions,1))
     # iterate over all connections
     for c in lattice.connections
         # get the indices
@@ -8567,8 +8567,15 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
                 pos_delta .+= pair[1].*pair[2]
             end 
         end
+        # take majorana fermionic statistics into account
+        majorana_factor = 1
+        if majorana && index_from < index_to
+            majorana_factor = 1.0im
+        elseif majorana && index_from > index_to
+            majorana_factor = -1.0im
+        end
         # just add to the matrix
-        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im)
+        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im) * majorana_factor
     end
     # eventually ensure the hermitian nature of the matrix
     if enforce_hermitian
@@ -8577,9 +8584,9 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
     # return the matrix
     return matrix
 end
-function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}; enforce_hermitian=false)
+function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}; enforce_hermitian=false, majorana=false)
     # generate a new matrix
-    matrix = zeros(size(unitcell.basis,1),size(unitcell.basis,1)) .* im
+    matrix = zeros(Complex, size(unitcell.basis,1),size(unitcell.basis,1))
     # iterate over all connections
     for c in unitcell.connections
         # get the indices
@@ -8594,8 +8601,15 @@ function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,
                 pos_delta .+= pair[1].*pair[2]
             end 
         end
+        # take majorana fermionic statistics into account
+        majorana_factor = 1
+        if majorana && index_from < index_to
+            majorana_factor = 1.0im
+        elseif majorana && index_from > index_to
+            majorana_factor = -1.0im
+        end
         # just add to the matrix
-        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im)
+        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im) * majorana_factor
     end
     # eventually ensure the hermitian nature of the matrix
     if enforce_hermitian
@@ -8756,6 +8770,152 @@ export printInteractionMatrixInformation
 #-----------------------------------------------------------------------------------------------------------------------------
 # BAND STRUCTURE ALONG PATH
 function calculateBandStructureAlongPath(
+        interaction_matrix::Array{Complex,2},
+        path;
+        percentages="EQUAL",
+        resolution=1000,
+        enforce_hermitian=false,
+        limits_energy="AUTO",
+        plot_title="",
+        plot_color="b",
+        figsize=(6,4),
+        showPlot=true
+            )
+    
+    # normalize percentages
+    if percentages == "EQUAL"
+        percentages = ones(size(path,1)-1)
+    end
+    percentages = percentages ./ sum(percentages)
+    # build up the segment list
+    segments = Array[]
+    for i in 1:size(path,1)-1
+        segment = [i, i+1, percentages[i]]
+        push!(segments, segment)
+    end
+    # if LT is checked
+    #if check_LT
+    #    LT_k = Array[]
+    #end
+    # segment data, i.e. the bandstructure over the segments
+    segments_data = Array[]
+    resolution_actual = 0
+    hlines = []
+    # iterate over all segments
+    for segment in segments
+        # get the grid in between two points
+        resolution_local = Int(floor(segment[3]*resolution))
+        multipliers = linspace(0, 1, resolution_local)
+        resolution_actual += resolution_local
+        push!(hlines, resolution_actual+0)
+        #println(segment)
+        k1 = convert(Array{Float64,1}, path[Int(segment[1])][2:end])
+        k2 = convert(Array{Float64,1}, path[Int(segment[2])][2:end])
+        #println(k1)
+        #println(k2)
+        # insert bands
+        bands = Array[]
+        for b in 1:size(interaction_matrix,1)
+            push!(bands, zeros(resolution_local))
+        end
+        # calculate all energies
+        for i in 1:resolution_local
+            # get the current k
+            k = k2 .* multipliers[i] .+ k1 .* (1-multipliers[i])
+            # if LT is checked, push current k
+            #if check_LT
+            #    push!(LT_k, k)
+            #end
+            # get the interaction matrix for this k
+            matrix = copy(interaction_matrix)
+            # diagonalize the matrix
+            eigenvalues = eigvals(matrix)
+            # save all the eigenvalues
+            for b in 1:size(bands, 1)
+                if imag(eigenvalues[b]) > 0
+                    if imag(eigenvalues[b]) > 1e-15
+                        println(imag(eigenvalues[b]))
+                        println(matrix)
+                        bands[b][i] = eigenvalues[b]
+                    else
+                        bands[b][i] = real(eigenvalues[b])
+                    end                    
+                else
+                    bands[b][i] = eigenvalues[b]
+                end
+            end
+        end
+        # push the obtained back structure into the data array
+        push!(segments_data, bands)
+    end
+    # generate the complete band structure
+    bandstructure = Array[zeros(resolution_actual) for b in segments_data[1]]
+    index = 1
+    for i in 1:size(segments_data,1)
+        segment = segments[i]
+        data = segments_data[i]
+        for b in 1:size(bandstructure,1)
+            bandstructure[b][index:hlines[i]] = data[b]
+        end
+        index = hlines[i]+1
+    end
+    # if LT is checked, give the results
+    #if check_LT
+    #    LT_v = checkLuttingerTisza(lattice, LT_k, only_GS=false)
+    #    println("$(100.0*sum(LT_v)/length(LT_v)) % of all eigenvalues are valid in LT")
+    #end
+    # plot the eigenvalues
+    rc("font", family="serif")
+    fig = figure(figsize=figsize)
+    if plot_title == "AUTO"
+        title("energy spectrum along path of interaction matrix")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        title(plot_title)
+    end
+    for l in hlines[1:end-1]
+        axvline(l,color=[0.6, 0.6, 0.6], linestyle="--")
+    end
+    xlabel("momentum")
+    ylabel("energy")
+    for b in bandstructure
+        plot(collect(1:resolution_actual), b, "-$(plot_color)")
+    end
+    ax = gca()
+    axx = ax[:get_xaxis]()
+    xtpos = []
+    push!(xtpos, 0)
+    for h in hlines
+        push!(xtpos, h)
+    end
+    xtlabs = [p[1] for p in path]
+    xticks(xtpos, xtlabs)
+    #axx[:set_ticks]([])
+    axx[:set_tick_params](which="both", direction="out")
+    axx[:set_tick_params](which="top", color="none")
+    axy = ax[:get_yaxis]()
+    axy[:set_tick_params](which="both", direction="out")
+    # check if specific boundaries are desired
+    if !(limits_energy == "AUTO")
+        ylim(limits_energy[1], limits_energy[2])
+    end
+    # tighten the layout
+    tight_layout()
+    # save the plot
+    figurename = "interaction_matrix"
+    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    savefig(figurename1)
+    savefig(figurename2)
+    if showPlot
+        show()
+        print("Continue? ")
+        readline()
+    end
+    return fig
+end
+function calculateBandStructureAlongPath(
         lattice::Lattice,
         path;
         reduceLattice=true,
@@ -8766,7 +8926,8 @@ function calculateBandStructureAlongPath(
         plot_title="",
         plot_color="b",
         figsize=(6,4),
-        showPlot=true
+        showPlot=true,
+        majorana=false
             )
     
     # check if to reduce the lattice
@@ -8818,7 +8979,7 @@ function calculateBandStructureAlongPath(
             #    push!(LT_k, k)
             #end
             # get the interaction matrix for this k
-            matrix = getInteractionMatrixKSpace(lattice, k, enforce_hermitian=enforce_hermitian)
+            matrix = getInteractionMatrixKSpace(lattice, k, enforce_hermitian=enforce_hermitian, majorana=majorana)
             # diagonalize the matrix
             eigenvalues = eigvals(matrix)
             # save all the eigenvalues
@@ -8859,7 +9020,11 @@ function calculateBandStructureAlongPath(
     rc("font", family="serif")
     fig = figure(figsize=figsize)
     if plot_title == "AUTO"
-        title("energy spectrum along path of lattice \"$(lattice.filename)\"")
+        if majorana
+            title("majorana energy spectrum along path of lattice \"$(lattice.filename)\"")
+        else
+            title("energy spectrum along path of lattice \"$(lattice.filename)\"")
+        end
     elseif plot_title == ""
         # do nothing title related
     else
@@ -8895,8 +9060,13 @@ function calculateBandStructureAlongPath(
     tight_layout()
     # save the plot
     figurename = split(lattice.filename, FOLDER_SPECTRA[end])[end]
-    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
-    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    if majorana
+        figurename1 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).pdf"
+        figurename2 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).png"
+    else
+        figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+        figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    end
     savefig(figurename1)
     savefig(figurename2)
     if showPlot
@@ -8916,7 +9086,8 @@ function calculateBandStructureAlongPath(
         plot_title="",
         plot_color="b",
         figsize=(6,4),
-        showPlot=true
+        showPlot=true,
+        majorana=false
             )
     
     # make a lattice from the unitcell
@@ -8933,7 +9104,8 @@ function calculateBandStructureAlongPath(
         plot_title=plot_title,
         plot_color=plot_color,
         figsize=figsize,
-        showPlot=showPlot
+        showPlot=showPlot,
+        majorana=majorana
             )
 end
 export calculateBandStructureAlongPath
