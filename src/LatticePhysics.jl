@@ -867,6 +867,38 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_unitcell.jld"
+    elseif version == 2
+        # the lattice vectors
+        a1 = [1.0 + 1./sqrt(2.0), -(1.0 + 1./sqrt(2.0))]
+        a2 = [1.0 + 1./sqrt(2.0),  (1.0 + 1./sqrt(2.0))]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [ 0.0, 0.0],
+            [ 0.0, 1.0],
+            [-1.0, 0.0],
+            [-1.0, 1.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; 1.0; (0, 0)],
+            [2; 4; 1.0; (0, 0)],
+            [3; 4; 1.0; (0, 0)],
+            [3; 1; 1.0; (0, 0)],
+            [2; 1; 1.0; (0, 0)],
+            [4; 2; 1.0; (0, 0)],
+            [4; 3; 1.0; (0, 0)],
+            [1; 3; 1.0; (0, 0)],
+            [3; 2; 1.0; (0, -1)],
+            [2; 3; 1.0; (0, 1)],
+            [4; 1; 1.0; (-1, 0)],
+            [1; 4; 1.0; (1, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_alternative_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a1 = [3*sqrt(3.0)/4., -3*sqrt(3.0)/4.]
@@ -899,6 +931,38 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_kitaev_unitcell.jld"
+    elseif version == 5
+        # the lattice vectors
+        a1 = [1.0 + 1./sqrt(2.0), -(1.0 + 1./sqrt(2.0))]
+        a2 = [1.0 + 1./sqrt(2.0),  (1.0 + 1./sqrt(2.0))]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [ 0.0, 0.0],
+            [ 0.0, 1.0],
+            [-1.0, 0.0],
+            [-1.0, 1.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[          
+            [1; 2; "tx"; (0,0)],
+            [2; 4; "ty"; (0,0)],
+            [3; 4; "tx"; (0,0)],
+            [3; 1; "ty"; (0,0)],
+            [2; 1; "tx"; (0,0)],
+            [4; 2; "ty"; (0,0)],
+            [4; 3; "tx"; (0,0)],
+            [1; 3; "ty"; (0,0)],
+            [3; 2; "tz"; (0,-1)],
+            [2; 3; "tz"; (0,1)],
+            [4; 1; "tz"; (-1,0)],
+            [1; 4; "tz"; (1,0)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_squareoctagon_alternative_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1296,13 +1360,15 @@ function getUnitcellKagomeMinus(version=1; save=true)
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
+        b1 = [0.0, 0.0]
+        b2 = [1/sqrt(3.0), 0.0]
         basis = Array[
-            [0.144338,0.0],
-            [-0.0721688,0.125],
-            [-0.0721688,-0.125],
-            [0.433013,0.0],
-            [-0.216506,0.375],
-            [-0.216506,-0.375]
+            b1 .+ 1/4 * (b2 .- b1),
+            b1 .+ 1/4 * (b2 .- a2),
+            b1 .+ 1/4 * (b2 .- a1),
+            b2 .+ 1/4 * (b1 .- b2),
+            b2 .+ 1/4 * (a2 .- b2),
+            b2 .+ 1/4 * (a1 .- b2)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -1313,18 +1379,18 @@ function getUnitcellKagomeMinus(version=1; save=true)
             [3; 1; 1.0; (0,0)],
             [2; 3; 1.0; (0,0)],
             [3; 2; 1.0; (0,0)],
-            [4; 5; 1.0; (1,0)],
-            [5; 4; 1.0; (-1,0)],
-            [4; 6; 1.0; (0,1)],
-            [6; 4; 1.0; (0,-1)],
-            [5; 6; 1.0; (-1,1)],
-            [6; 5; 1.0; (1,-1)],
+            [4; 5; 1.0; (0,0)],
+            [5; 4; 1.0; (0,0)],
+            [4; 6; 1.0; (0,0)],
+            [6; 4; 1.0; (0,0)],
+            [5; 6; 1.0; (0,0)],
+            [6; 5; 1.0; (0,0)],
             [1; 4; 1.0; (0,0)],
             [4; 1; 1.0; (0,0)],
-            [2; 5; 1.0; (0,0)],
-            [5; 2; 1.0; (0,0)],
-            [3; 6; 1.0; (0,0)],
-            [6; 3; 1.0; (0,0)],
+            [2; 5; 1.0; (0,-1)],
+            [5; 2; 1.0; (0,1)],
+            [3; 6; 1.0; (-1,0)],
+            [6; 3; 1.0; (1,0)],
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_kagome_minus_unitcell.jld"
@@ -1336,13 +1402,15 @@ function getUnitcellKagomeMinus(version=1; save=true)
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
+        b1 = [0.0, 0.0]
+        b2 = [1/sqrt(3.0), 0.0]
         basis = Array[
-            [0.144338,0.0],
-            [-0.0721688,0.125],
-            [-0.0721688,-0.125],
-            [0.433013,0.0],
-            [-0.216506,0.375],
-            [-0.216506,-0.375]
+            b1 .+ 1/4 * (b2 .- b1),
+            b1 .+ 1/4 * (b2 .- a2),
+            b1 .+ 1/4 * (b2 .- a1),
+            b2 .+ 1/4 * (b1 .- b2),
+            b2 .+ 1/4 * (a2 .- b2),
+            b2 .+ 1/4 * (a1 .- b2)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -1353,18 +1421,18 @@ function getUnitcellKagomeMinus(version=1; save=true)
             [3; 1; "txp"; (0,0)],
             [2; 3; "typ"; (0,0)],
             [3; 2; "typ"; (0,0)],
-            [4; 5; "tzp"; (1,0)],
-            [5; 4; "tzp"; (-1,0)],
-            [4; 6; "txp"; (0,1)],
-            [6; 4; "txp"; (0,-1)],
-            [5; 6; "typ"; (-1,1)],
-            [6; 5; "typ"; (1,-1)],
+            [4; 5; "tzp"; (0,0)],
+            [5; 4; "tzp"; (0,0)],
+            [4; 6; "txp"; (0,0)],
+            [6; 4; "txp"; (0,0)],
+            [5; 6; "typ"; (0,0)],
+            [6; 5; "typ"; (0,0)],
             [1; 4; "ty"; (0,0)],
             [4; 1; "ty"; (0,0)],
-            [2; 5; "tx"; (0,0)],
-            [5; 2; "tx"; (0,0)],
-            [3; 6; "tz"; (0,0)],
-            [6; 3; "tz"; (0,0)],
+            [2; 5; "tx"; (0,-1)],
+            [5; 2; "tx"; (0,1)],
+            [3; 6; "tz"; (-1,0)],
+            [6; 3; "tz"; (1,0)],
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_kagome_minus_kitaev_unitcell.jld"
@@ -9056,7 +9124,7 @@ function calculateBandStructureAlongPath(
     # check if to reduce the lattice
     if reduceLattice && lattice.unitcell.filename != UNITCELL_DUMMY_FILENAME
         lattice = getLatticePeriodic(lattice.unitcell, ones(Int64, size(lattice.unitcell.lattice_vectors,1)))
-    end    
+    end
     # normalize percentages
     if percentages == "EQUAL"
         percentages = ones(size(path,1)-1)
@@ -9194,8 +9262,8 @@ function calculateBandStructureAlongPath(
     savefig(figurename2)
     if showPlot
         show()
-        print("Continue? ")
-        readline()
+        #print("Continue? ")
+        #readline()
     end
     return fig
 end
@@ -9233,6 +9301,62 @@ function calculateBandStructureAlongPath(
 end
 export calculateBandStructureAlongPath
 
+# BAND STRUCTURE OF STRIP (1D periodic)
+function calculateBandStructureOfStrip(
+        unitcell::Unitcell,
+        periodic_direction::Int64,
+        finite_direction_N::Int64;
+        percentages="EQUAL",
+        resolution=1000,
+        enforce_hermitian=false,
+        limits_energy="AUTO",
+        plot_title="",
+        plot_color="b",
+        figsize=(6,4),
+        showPlot=true,
+        majorana=false
+    )
+
+    # obtain the lattice
+    dimensions = ones(Int64, size(unitcell.lattice_vectors, 1)) .* finite_direction_N
+    dimensions[periodic_direction] = -1
+    lattice = getLattice(unitcell, dimensions)
+
+    # obtain the path
+    last_vector = lattice.lattice_vectors[1]
+    last_vector = last_vector
+    a = sqrt(sum(last_vector.*last_vector))
+    gamma_zero  = last_vector .* 0.0
+    gamma_minus = last_vector .* (-2*pi) / (a*a)
+    gamma_plus  = last_vector .* ( 2*pi) / (a*a)
+    K_minus     = last_vector .* (-1*pi) / (a*a)
+    K_plus      = last_vector .* ( 1*pi) / (a*a)
+
+    path = Array[
+        ["Gamma (-1)";  gamma_minus],
+        ["-pi";         K_minus],
+        ["Gamma (0)";   gamma_zero],
+        ["pi";          K_plus],
+        ["Gamma (+1)";  gamma_plus]
+    ]
+
+    # calculate the band structure
+    calculateBandStructureAlongPath(
+        lattice,
+        path;
+        reduceLattice=false,
+        percentages=percentages,
+        resolution=resolution,
+        enforce_hermitian=enforce_hermitian,
+        limits_energy=limits_energy,
+        plot_title=plot_title,
+        plot_color=plot_color,
+        figsize=figsize,
+        showPlot=showPlot,
+        majorana=majorana
+    )
+end
+export calculateBandStructureOfStrip
 
 # SOME DEFAULT PATHS
 DEFAULT_PATH_FCC = Array[
