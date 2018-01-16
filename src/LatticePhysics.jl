@@ -876,10 +876,10 @@ function getUnitcellSquareOctagon(version=1; save=true)
         push!(lattice_vectors, a2)
         # Basis Definition
         basis = Array[
-            [ 0.0, 0.0],
-            [ 0.0, 1.0],
-            [-1.0, 0.0],
-            [-1.0, 1.0]
+            [ 0.5, -0.5],
+            [ 0.5,  0.5],
+            [-0.5, -0.5],
+            [-0.5,  0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -940,10 +940,10 @@ function getUnitcellSquareOctagon(version=1; save=true)
         push!(lattice_vectors, a2)
         # Basis Definition
         basis = Array[
-            [ 0.0, 0.0],
-            [ 0.0, 1.0],
-            [-1.0, 0.0],
-            [-1.0, 1.0]
+            [ 0.5, -0.5],
+            [ 0.5,  0.5],
+            [-0.5, -0.5],
+            [-0.5,  0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -9377,6 +9377,123 @@ DEFAULT_PATH_TRIANGULAR = Array[
     ["gamma"; [0,0]]
 ]
 export DEFAULT_PATH_TRIANGULAR
+
+DEFAULT_PATH_SQUAREOCTAGON_2 = Array[
+    ["gamma"; [0,0]],
+    ["K"; [2,  0].*(pi / (1.0 + 1.0/sqrt(2.0)))],
+    ["M"; [1, -1].*(pi / (1.0 + 1.0/sqrt(2.0)))],
+    ["gamma"; [0,0]]
+]
+export DEFAULT_PATH_SQUAREOCTAGON_2
+
+
+
+
+
+
+
+# FULL 2D Bandstructure
+function calculateBandStructure2D(
+        unitcell::Unitcell,
+        kx, ky;
+        enforce_hermitian=false,
+        limits_energy="AUTO",
+        plot_title="",
+        plot_color="b",
+        figsize=(6,4),
+        showPlot=true,
+        majorana=false
+            )
+    
+    
+    # insert bands
+    bands = Array[]
+    kx_vals = zeros(length(kx), length(ky))
+    ky_vals = zeros(length(kx), length(ky))
+    for b in 1:size(unitcell.basis,1)
+        push!(bands, zeros(length(kx), length(ky)))
+    end
+    # calculate all energies
+    for i in 1:length(kx)
+    for j in 1:length(ky)
+        # get the current k
+        k = [kx[i], ky[j]]
+        kx_vals[i,j] = k[1]
+        ky_vals[i,j] = k[2]
+        # get the interaction matrix for this k
+        matrix = getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=enforce_hermitian, majorana=majorana)
+        # diagonalize the matrix
+        eigenvalues = eigvals(matrix)
+        # save all the eigenvalues
+        for b in 1:size(bands, 1)
+            if imag(eigenvalues[b]) > 0
+                if imag(eigenvalues[b]) > 1e-15
+                    println(imag(eigenvalues[b]))
+                    println(matrix)
+                    bands[b][i,j] = eigenvalues[b]
+                else
+                    bands[b][i,j] = real(eigenvalues[b])
+                end                    
+            else
+                bands[b][i,j] = eigenvalues[b]
+            end
+        end
+    end
+    end
+    # generate the complete band structure
+    bandstructure = bands
+    # if LT is checked, give the results
+    #if check_LT
+    #    LT_v = checkLuttingerTisza(lattice, LT_k, only_GS=false)
+    #    println("$(100.0*sum(LT_v)/length(LT_v)) % of all eigenvalues are valid in LT")
+    #end
+    # plot the eigenvalues
+    rc("font", family="serif")
+    fig = figure(figsize=figsize)
+    ax = fig[:add_subplot](111, projection="3d")
+    if plot_title == "AUTO"
+        if majorana
+            title("majorana energy spectrum along path of unitcell \"$(unitcell.filename)\"")
+        else
+            title("energy spectrum along path of unitcell \"$(unitcell.filename)\"")
+        end
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        title(plot_title)
+    end
+    xlabel("momentum kx")
+    ylabel("momentum ky")
+    zlabel("energy")
+    for b in bandstructure
+        ax[:plot_surface](kx_vals,ky_vals,b, rstride=1, cstride=1, cmap="coolwarm", linewidth=0)
+    end
+    axx = ax[:get_xaxis]()
+    # check if specific boundaries are desired
+    if !(limits_energy == "AUTO")
+        ylim(limits_energy[1], limits_energy[2])
+    end
+    # tighten the layout
+    tight_layout()
+    # save the plot
+    figurename = split(unitcell.filename, FOLDER_SPECTRA[end])[end]
+    if majorana
+        figurename1 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).pdf"
+        figurename2 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).png"
+    else
+        figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+        figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    end
+    savefig(figurename1)
+    savefig(figurename2)
+    if showPlot
+        show()
+        #print("Continue? ")
+        #readline()
+    end
+    return fig   
+end
+export calculateBandStructure2D
 
 
 # MODULE END
