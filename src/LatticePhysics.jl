@@ -828,6 +828,67 @@ function getUnitcellCheckerboard(version=1; save=true)
 end
 export getUnitcellCheckerboard
 
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# SHASTRY SUTHERLAND LATTICE
+# 1 - simple, 4 sites per UC
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitcellShastrySutherland(version=1; save=true)
+    # SIMPLE CHECKERBOARD LATTICE
+    if version == 1
+        # the lattice vectors
+        a1 = [1.0, 0.0]
+        a2 = [0.0, 1.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [0.5, 0.5],
+            [0.0, 0.5]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 3; "t1"; (0, 0)],
+            [1; 2; "t2"; (-1,0)],
+            [1; 4; "t3"; (0,-1)],
+            [1; 2; "t4"; (0, 0)],
+            [1; 4; "t5"; (0, 0)],
+
+            [2; 4; "t1"; (1,-1)],
+            [2; 1; "t2"; (1, 0)],
+            [2; 3; "t3"; (0, 0)],
+            [2; 1; "t4"; (0, 0)],
+            [2; 3; "t5"; (0,-1)],
+
+            [3; 1; "t1"; (0, 0)],
+            [3; 4; "t2"; (0, 0)],
+            [3; 2; "t3"; (0, 0)],
+            [3; 4; "t4"; (1, 0)],
+            [3; 2; "t5"; (0, 1)],
+
+            [4; 2; "t1"; (-1,1)],
+            [4; 3; "t2"; (0, 0)],
+            [4; 1; "t3"; (0, 1)],
+            [4; 3; "t4"; (-1,0)],
+            [4; 1; "t5"; (0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_shastry_sutherland_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcellShastrySutherland
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # SQUARE OCTAGON LATTICE
 # 1 - simple, 4 sites per UC
