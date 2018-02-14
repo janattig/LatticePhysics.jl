@@ -105,19 +105,35 @@ export FOLDER_SPECTRA
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
-#   ENSURE DEFAULT PATHS EXIST
+#   FUNCTIONS TO ENSURE DEFAULT PATHS EXIST
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-if !isdir(FOLDER_UNITCELLS)
-    mkdir(FOLDER_UNITCELLS)
+function buildFolderUnitcells()
+    if !isdir(FOLDER_UNITCELLS)
+        mkdir(FOLDER_UNITCELLS)
+    end
 end
-if !isdir(FOLDER_LATTICES)
-    mkdir(FOLDER_LATTICES)
+export buildFolderUnitcells
+function buildFolderLattices()
+    if !isdir(FOLDER_LATTICES)
+        mkdir(FOLDER_LATTICES)
+    end
 end
-if !isdir(FOLDER_SPECTRA)
-    mkdir(FOLDER_SPECTRA)
+export buildFolderLattices
+function buildFolderSpectra()
+    if !isdir(FOLDER_SPECTRA)
+        mkdir(FOLDER_SPECTRA)
+    end
 end
+export buildFolderSpectra
 
+
+function buildFolders()
+    buildFolderUnitcells()
+    buildFolderLattices()
+    buildFolderSpectra()
+end
+export buildFolders
 
 
 
@@ -177,6 +193,8 @@ end
 
 # methods for saving the unit cell
 function saveUnitcell(uc::Unitcell)
+    # ensure default path is build
+    buildFolderUnitcells()
     # open the file and write the fields into it
     save(uc.filename,
         "basis",            uc.basis,
@@ -190,6 +208,8 @@ end
 function saveUnitcell(uc::Unitcell, filename_new)
     # set the new filename
     uc.filename = filename_new
+    # ensure default path is build
+    buildFolderUnitcells()
     # open the file and write the fields into it
     save(uc.filename,
         "basis",            uc.basis,
@@ -203,6 +223,8 @@ end
 
 # methods for loading the unit cell
 function loadUnitcell(uc::Unitcell)
+    # ensure default path is build
+    buildFolderUnitcells()
     # open the file and load all fields from it
     uc.basis            = load(uc.filename, "basis")
     uc.connections      = load(uc.filename, "connections")
@@ -213,6 +235,8 @@ end
 function loadUnitcell(uc::Unitcell, filename_new)
     # overwrite the existing filename
     uc.filename         = filename_new
+    # ensure default path is build
+    buildFolderUnitcells()
     # open the file and load all fields from it
     uc.basis            = load(uc.filename, "basis")
     uc.connections      = load(uc.filename, "connections")
@@ -402,6 +426,8 @@ end
 
 # save a lattice to the lattice file specified
 function saveLattice(lattice::Lattice)
+    # ensure default path is build
+    buildFolderLattices()
     # open the file and write the fields into it
     save(lattice.filename,
         "unitcell",             lattice.unitcell,
@@ -419,6 +445,8 @@ end
 function saveLattice(lattice::Lattice, filename)
     # set the new filename
     lattice.filename = filename
+    # ensure default path is build
+    buildFolderLattices()
     # open the file and write the fields into it
     save(lattice.filename,
         "unitcell",             lattice.unitcell,
@@ -439,6 +467,8 @@ end
 
 # method for loading the lattice
 function loadLattice(lattice::Lattice)
+    # ensure default path is build
+    buildFolderLattices()
     # open the file and load all fields from it
     lattice.unitcell            = load(lattice.filename, "unitcell")
     lattice.unitcellRepetitions = load(lattice.filename, "unitcell repetitions")
@@ -453,6 +483,8 @@ end
 function loadLattice(lattice::Lattice, filename_new)
     # overwrite the existing filename
     lattice.filename            = filename_new
+    # ensure default path is build
+    buildFolderLattices()
     # open the file and load all fields from it
     lattice.unitcell            = load(lattice.filename, "unitcell")
     lattice.unitcellRepetitions = load(lattice.filename, "unitcell repetitions")
@@ -834,7 +866,7 @@ export getUnitcellCheckerboard
 # 1 - simple, 4 sites per UC
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellShastrySutherland(version=1; save=true)
-    # SIMPLE CHECKERBOARD LATTICE
+    # SIMPLE SHASTRY SUTHERLAND LATTICE
     if version == 1
         # the lattice vectors
         a1 = [1.0, 0.0]
@@ -889,6 +921,62 @@ function getUnitcellShastrySutherland(version=1; save=true)
 end
 export getUnitcellShastrySutherland
 
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# ADVANCED SQUARE LATTICE
+# 1 - simple, 4 sites per UC, 2 different couplings
+#-----------------------------------------------------------------------------------------------------------------------------
+function getUnitcellAdvancedSquare(version=1; save=true)
+    # SIMPLE ADVANCED SQUARE LATTICE
+    if version == 1
+        # the lattice vectors
+        a1 = [1.0, 0.0]
+        a2 = [0.0, 1.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [0.5, 0.5],
+            [0.0, 0.5]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "t2"; (-1,0)],
+            [1; 4; "t2"; (0,-1)],
+            [1; 2; "t1"; (0, 0)],
+            [1; 4; "t1"; (0, 0)],
+
+            [2; 1; "t2"; (1, 0)],
+            [2; 3; "t1"; (0, 0)],
+            [2; 1; "t1"; (0, 0)],
+            [2; 3; "t2"; (0,-1)],
+
+            [3; 4; "t1"; (0, 0)],
+            [3; 2; "t1"; (0, 0)],
+            [3; 4; "t2"; (1, 0)],
+            [3; 2; "t2"; (0, 1)],
+
+            [4; 3; "t1"; (0, 0)],
+            [4; 1; "t2"; (0, 1)],
+            [4; 3; "t2"; (-1,0)],
+            [4; 1; "t1"; (0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_advanced_square_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcellAdvancedSquare
 #-----------------------------------------------------------------------------------------------------------------------------
 # SQUARE OCTAGON LATTICE
 # 1 - simple, 4 sites per UC
@@ -9158,6 +9246,7 @@ function calculateBandStructureAlongPath(
     figurename = "interaction_matrix"
     figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
     figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    buildFolderSpectra()
     savefig(figurename1)
     savefig(figurename2)
     if showPlot
@@ -9319,6 +9408,7 @@ function calculateBandStructureAlongPath(
         figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
         figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
     end
+    buildFolderSpectra()
     savefig(figurename1)
     savefig(figurename2)
     if showPlot
@@ -9545,6 +9635,7 @@ function calculateBandStructure2D(
         figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
         figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
     end
+    buildFolderSpectra()
     savefig(figurename1)
     savefig(figurename2)
     if showPlot
