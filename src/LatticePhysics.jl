@@ -6727,7 +6727,7 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
-            if c[3] > 1e-18
+            if abs(c[3]) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6737,7 +6737,7 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
             push!(connections_new_2, c)
         else
             # check if the strength is non-zero
-            if parse(Float64,c[3]) > 1e-18
+            if abs(parse(Float64,c[3])) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6787,7 +6787,7 @@ function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
-            if c[3] > 1e-18
+            if abs(c[3]) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6797,7 +6797,7 @@ function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
             push!(connections_new_2, c)
         else
             # check if the strength is non-zero
-            if parse(Float64,c[3]) > 1e-18
+            if abs(parse(Float64,c[3])) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6852,7 +6852,7 @@ function optimizeConnections!(lattice::Lattice)
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
-            if c[3] > 1e-18
+            if abs(c[3]) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6862,7 +6862,7 @@ function optimizeConnections!(lattice::Lattice)
             push!(connections_new_2, c)
         else
             # check if the strength is non-zero
-            if parse(Float64,c[3]) > 1e-18
+            if abs(parse(Float64,c[3])) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6903,7 +6903,7 @@ function optimizeConnections!(unitcell::Unitcell)
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
-            if c[3] > 1e-18
+            if abs(c[3]) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
@@ -6913,7 +6913,7 @@ function optimizeConnections!(unitcell::Unitcell)
             push!(connections_new_2, c)
         else
             # check if the strength is non-zero
-            if parse(Float64,c[3]) > 1e-18
+            if abs(parse(Float64,c[3])) > 1e-18
                 push!(connections_new_2, c)
             else
                 # do not push! c[3] too small!
