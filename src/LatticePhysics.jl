@@ -6910,7 +6910,7 @@ function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=
         # check for string replacement
         if replace_in_strings
         for c in lattice.connections
-            if contains(c[3], old_strength)
+            if typeof(c[3]) == String && contains(c[3], old_strength)
                 c[3] = replace(c[3], old_strength, new_strength)
             end
         end
