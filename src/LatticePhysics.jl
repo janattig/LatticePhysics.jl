@@ -9919,7 +9919,7 @@ function createJobDirectory(
         # OPTION 2, check in dictonary
         if length(values_to_use)==0 && p[1] in keys(parameters)
             # get the string representation
-            dict_value = parameters(p[1])
+            dict_value = parameters[p[1]]
             # push to the list of values to use
             push!(values_to_use, dict_value)
         end
