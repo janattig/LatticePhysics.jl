@@ -9539,6 +9539,29 @@ DEFAULT_PATH_SQUAREOCTAGON_2 = Array[
 export DEFAULT_PATH_SQUAREOCTAGON_2
 
 
+DEFAULT_PATH_SQUARE_LONG = Array[
+    ["M";     [pi,   0.0]],
+    ["Gamma"; [0.0,  0.0]],
+    ["K'";    [pi,   -pi]],
+    ["M";     [pi,   0.0]],
+    ["M'";    [0.0,   pi]],
+    ["K";     [pi,    pi]],
+    ["Gamma"; [0.0,  0.0]]
+]
+export DEFAULT_PATH_SQUARE_LONG
+
+DEFAULT_PATH_SQUARE_SHORT = Array[
+    ["Gamma"; [0.0,  0.0]],
+    ["M";     [pi,   0.0]],
+    ["K";     [pi,    pi]],
+    ["Gamma"; [0.0,  0.0]]
+]
+export DEFAULT_PATH_SQUARE_SHORT
+
+DEFAULT_PATH_SQUARE = DEFAULT_PATH_SQUARE_SHORT
+export DEFAULT_PATH_SQUARE
+
+
 
 
 
