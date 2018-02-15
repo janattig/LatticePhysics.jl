@@ -6890,7 +6890,9 @@ function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_string
     # maybe even evaluate
     if evaluate
         for c in unitcell.connections
-            c[3] = eval(parse(c[3]))
+            if typeof(c[3]) == String
+                c[3] = eval(parse(c[3]))
+            end
         end
     end
 end
@@ -6919,7 +6921,9 @@ function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=
     # maybe even evaluate
     if evaluate
         for c in lattice.connections
-            c[3] = eval(parse(c[3]))
+            if typeof(c[3]) == String
+                c[3] = eval(parse(c[3]))
+            end
         end
     end
 end
