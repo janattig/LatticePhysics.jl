@@ -9251,8 +9251,8 @@ function calculateBandStructureAlongPath(
     savefig(figurename2)
     if showPlot
         show()
-        print("Continue? ")
-        readline()
+        #print("Continue? ")
+        #readline()
     end
     return fig
 end
@@ -9273,7 +9273,7 @@ function calculateBandStructureAlongPath(
     
     # check if to reduce the lattice
     if reduceLattice && lattice.unitcell.filename != UNITCELL_DUMMY_FILENAME
-        lattice = getLatticePeriodic(lattice.unitcell, ones(Int64, size(lattice.unitcell.lattice_vectors,1)))
+        lattice = getLatticePeriodic(lattice.unitcell, ones(Int64, size(lattice.unitcell.lattice_vectors,1)), save=false)
     end
     # normalize percentages
     if percentages == "EQUAL"
@@ -9433,7 +9433,8 @@ function calculateBandStructureAlongPath(
             )
     
     # make a lattice from the unitcell
-    lattice = getLatticePeriodic(unitcell, ones(Int64, size(unitcell.lattice_vectors,1)))
+    lattice = getLatticePeriodic(unitcell, ones(Int64, size(unitcell.lattice_vectors,1)), save=false)
+    lattice.filename = replace(identity(unitcell.filename), FOLDER_UNITCELLS, FOLDER_LATTICES)
     # push to lattice based method and return the result
     return calculateBandStructureAlongPath(
         lattice,
