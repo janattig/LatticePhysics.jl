@@ -6722,6 +6722,28 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
             push!(connections_new, c)
         end
     end
+    # check if the connection strength is 0
+    connections_new_2 = Array
+    for c in connections_new
+        # check if close to 0 connection strength
+        if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
+            if c[3] > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        elseif isnull(tryparse(Float64,c[3]))
+            # not a float and cannot be parsed to float, just push in list as it is
+            push!(connections_new_2, c)
+        else
+            # check if the strength is non-zero
+            if parse(Float64,c[3]) > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        end
+    end
     # return a new lattice
     return Lattice(
         lattice.unitcell,
@@ -6729,7 +6751,7 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
         lattice.lattice_vectors,
         lattice.positions,
         lattice.positions_indices,
-        connections_new,
+        connections_new_2,
         lattice.filename)
 end
 export getLatticeWithOptimizedConnections
@@ -6760,11 +6782,33 @@ function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
             push!(connections_new, c)
         end
     end
+    # check if the connection strength is 0
+    connections_new_2 = Array
+    for c in connections_new
+        # check if close to 0 connection strength
+        if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
+            if c[3] > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        elseif isnull(tryparse(Float64,c[3]))
+            # not a float and cannot be parsed to float, just push in list as it is
+            push!(connections_new_2, c)
+        else
+            # check if the strength is non-zero
+            if parse(Float64,c[3]) > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        end
+    end
     # return a new unitcell
     return Unitcell(
         unitcell.lattice_vectors,
         unitcell.basis,
-        connections_new,
+        connections_new_2,
         unitcell.filename)
 end
 export getUnitcellWithOptimizedConnections
@@ -6803,8 +6847,30 @@ function optimizeConnections!(lattice::Lattice)
             push!(connections_new, c)
         end
     end
+    # check if the connection strength is 0
+    connections_new_2 = Array
+    for c in connections_new
+        # check if close to 0 connection strength
+        if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
+            if c[3] > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        elseif isnull(tryparse(Float64,c[3]))
+            # not a float and cannot be parsed to float, just push in list as it is
+            push!(connections_new_2, c)
+        else
+            # check if the strength is non-zero
+            if parse(Float64,c[3]) > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        end
+    end
     # overwrite the connections in the given lattice
-    lattice.connections = connections_new
+    lattice.connections = connections_new_2
 end
 function optimizeConnections!(unitcell::Unitcell)
     # build up new connections
@@ -6832,8 +6898,30 @@ function optimizeConnections!(unitcell::Unitcell)
             push!(connections_new, c)
         end
     end
+    # check if the connection strength is 0
+    connections_new_2 = Array
+    for c in connections_new
+        # check if close to 0 connection strength
+        if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
+            if c[3] > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        elseif isnull(tryparse(Float64,c[3]))
+            # not a float and cannot be parsed to float, just push in list as it is
+            push!(connections_new_2, c)
+        else
+            # check if the strength is non-zero
+            if parse(Float64,c[3]) > 1e-18
+                push!(connections_new_2, c)
+            else
+                # do not push! c[3] too small!
+            end
+        end
+    end
     # overwrite the connections in the given lattice
-    unitcell.connections = connections_new
+    unitcell.connections = connections_new_2
 end
 export optimizeConnections!
 
