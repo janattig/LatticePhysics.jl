@@ -6723,7 +6723,7 @@ function getLatticeWithOptimizedConnections(lattice::Lattice)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array
+    connections_new_2 = Array[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
@@ -6783,7 +6783,7 @@ function getUnitcellWithOptimizedConnections(unitcell::Unitcell)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array
+    connections_new_2 = Array[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
@@ -6848,7 +6848,7 @@ function optimizeConnections!(lattice::Lattice)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array
+    connections_new_2 = Array[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
@@ -6899,7 +6899,7 @@ function optimizeConnections!(unitcell::Unitcell)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array
+    connections_new_2 = Array[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
