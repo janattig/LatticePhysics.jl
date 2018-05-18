@@ -31,7 +31,7 @@
 #
 #   AUTHOR:             Jan Attig
 #   DATE started:       2017-08-16
-#   DATE last version:  2017-09-12
+#   DATE last version:  2018-04-18
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
@@ -266,7 +266,7 @@ function printInfo(unitcell::Unitcell; detailed=false)
         end
     else
         println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1]))")
-    end    
+    end
     if detailed
         println(" - $(size(unitcell.connections,1)) connections in the unitcell:")
         for c in unitcell.connections
@@ -314,7 +314,7 @@ function printInfo(unitcell::Unitcell; detailed=false)
                 continue
             end
             if c1[1] != c2[2] || c1[2] != c2[1]
-                continue # site indices not correct 
+                continue # site indices not correct
             end
             if c1[3] != c2[3]
                 continue # connection strength not equal
@@ -513,7 +513,7 @@ function printInfo(lattice::Lattice; detailed=false)
         end
     else
         println(" - $(size(lattice.positions,1)) sites in lattice of dimension $(length(lattice.positions[1]))")
-    end    
+    end
     if detailed
         println(" - $(size(lattice.connections,1)) connections in the lattice:")
         for c in lattice.connections
@@ -561,7 +561,7 @@ function printInfo(lattice::Lattice; detailed=false)
                 continue
             end
             if c1[1] != c2[2] || c1[2] != c2[1]
-                continue # site indices not correct 
+                continue # site indices not correct
             end
             if c1[3] != c2[3]
                 continue # connection strength not equal
@@ -1064,7 +1064,7 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[          
+        connections = Array[
             [1; 2; "tx"; (0,0)],
             [2; 4; "ty"; (0,0)],
             [3; 4; "tx"; (0,0)],
@@ -1096,7 +1096,7 @@ function getUnitcellSquareOctagon(version=1; save=true)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[          
+        connections = Array[
             [1; 2; "tx"; (0,0)],
             [2; 4; "ty"; (0,0)],
             [3; 4; "tx"; (0,0)],
@@ -2060,34 +2060,34 @@ function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
             [0.1, (3*sqrt(3))/10., sqrt(2)/5.],
             [0.4, sqrt(3)/5., sqrt(2)/5.],
             [0.0, (2*sqrt(3))/5., 0.0],
-            [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]   
+            [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 4; J1; (0, 0, 0)], 
+            [1; 4; J1; (0, 0, 0)],
             [4; 2; J1; (0, 0, 0)], # zz
-            [4; 3; J1; (0, 0, 0)], 
-            [5; 3; J1; (0, 0, 0)], 
+            [4; 3; J1; (0, 0, 0)],
+            [5; 3; J1; (0, 0, 0)],
             [3; 6; J1; (0, 0, 0)], # zz
 
-            [4; 1; J1; (0, 0, 0)], 
+            [4; 1; J1; (0, 0, 0)],
             [2; 4; J1; (0, 0, 0)], # zz
-            [3; 4; J1; (0, 0, 0)], 
-            [3; 5; J1; (0, 0, 0)], 
+            [3; 4; J1; (0, 0, 0)],
+            [3; 5; J1; (0, 0, 0)],
             [6; 3; J1; (0, 0, 0)], # zz
 
             [5; 1; J1; (0, 1, 0)], # zz
             [1; 5; J1; (0, -1, 0)], # zz
 
-            [2; 6; J1; (1, 0, 0)], 
+            [2; 6; J1; (1, 0, 0)],
             [6; 2; J1; (-1, 0, 0)],
 
-            [1; 2; J1; (0, 0, -1)], 
-            [2; 1; J1; (0, 0, 1)], 
-            
-            [5; 6; J1; (0, 0, -1)], 
-            [6; 5; J1; (0, 0, 1)]           
+            [1; 2; J1; (0, 0, -1)],
+            [2; 1; J1; (0, 0, 1)],
+
+            [5; 6; J1; (0, 0, -1)],
+            [6; 5; J1; (0, 0, 1)]
         ]
         # filename
         if J1==1.0
@@ -2111,34 +2111,34 @@ function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
             [0.1, (3*sqrt(3))/10., sqrt(2)/5.],
             [0.4, sqrt(3)/5., sqrt(2)/5.],
             [0.0, (2*sqrt(3))/5., 0.0],
-            [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]   
+            [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 4; "ty"; (0, 0, 0)], 
+            [1; 4; "ty"; (0, 0, 0)],
             [4; 2; "tz"; (0, 0, 0)], # zz
-            [4; 3; "tx"; (0, 0, 0)], 
-            [5; 3; "ty"; (0, 0, 0)], 
+            [4; 3; "tx"; (0, 0, 0)],
+            [5; 3; "ty"; (0, 0, 0)],
             [3; 6; "tz"; (0, 0, 0)], # zz
 
-            [4; 1; "ty"; (0, 0, 0)], 
+            [4; 1; "ty"; (0, 0, 0)],
             [2; 4; "tz"; (0, 0, 0)], # zz
-            [3; 4; "tx"; (0, 0, 0)], 
-            [3; 5; "ty"; (0, 0, 0)], 
+            [3; 4; "tx"; (0, 0, 0)],
+            [3; 5; "ty"; (0, 0, 0)],
             [6; 3; "tz"; (0, 0, 0)], # zz
 
             [5; 1; "tz"; (0, 1, 0)], # zz
             [1; 5; "tz"; (0, -1, 0)], # zz
 
-            [2; 6; "ty"; (1, 0, 0)], 
+            [2; 6; "ty"; (1, 0, 0)],
             [6; 2; "ty"; (-1, 0, 0)],
 
-            [1; 2; "tx"; (0, 0, -1)], 
-            [2; 1; "tx"; (0, 0, 1)], 
-            
-            [5; 6; "tx"; (0, 0, -1)], 
-            [6; 5; "tx"; (0, 0, 1)]             
+            [1; 2; "tx"; (0, 0, -1)],
+            [2; 1; "tx"; (0, 0, 1)],
+
+            [5; 6; "tx"; (0, 0, -1)],
+            [6; 5; "tx"; (0, 0, 1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_8_3_a_kitaev_unitcell.jld"
@@ -2175,33 +2175,33 @@ function getUnitcell_8_3_b(version=1; save=true, J1=1.0)
             [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
             [1/5., 2/(5*sqrt(3)), (2*sqrt(2))/(5*sqrt(3))],
             [3/10., (3*sqrt(3))/10., sqrt(6)/5],
-            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]   
+            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
             [1; 4; J1; (0, 0, 0)], # zz
-            [4; 2; J1; (0, 0, 0)], 
+            [4; 2; J1; (0, 0, 0)],
             [2; 5; J1; (0, 0, 0)], # zz
-            [5; 3; J1; (0, 0, 0)], 
+            [5; 3; J1; (0, 0, 0)],
             [3; 6; J1; (0, 0, 0)], # zz
 
             [4; 1; J1; (0, 0, 0)], # zz
-            [2; 4; J1; (0, 0, 0)], 
+            [2; 4; J1; (0, 0, 0)],
             [5; 2; J1; (0, 0, 0)], # zz
-            [3; 5; J1; (0, 0, 0)], 
+            [3; 5; J1; (0, 0, 0)],
             [6; 3; J1; (0, 0, 0)], # zz
 
-            [6; 1; J1; (1, 0, 1)], 
-            [1; 6; J1; (-1, 0, -1)], 
+            [6; 1; J1; (1, 0, 1)],
+            [1; 6; J1; (-1, 0, -1)],
 
-            [4; 3; J1; (0, -1, 0)], 
-            [3; 4; J1; (0, 1, 0)], 
+            [4; 3; J1; (0, -1, 0)],
+            [3; 4; J1; (0, 1, 0)],
 
-            [1; 2; J1; (0, 0, -1)], 
-            [2; 1; J1; (0, 0, 1)], 
+            [1; 2; J1; (0, 0, -1)],
+            [2; 1; J1; (0, 0, 1)],
 
-            [5; 6; J1; (0, 0, -1)], 
+            [5; 6; J1; (0, 0, -1)],
             [6; 5; J1; (0, 0, 1)]
         ]
         # filename
@@ -2222,34 +2222,34 @@ function getUnitcell_8_3_b(version=1; save=true, J1=1.0)
             [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
             [1/5., 2/(5*sqrt(3)), (2*sqrt(2))/(5*sqrt(3))],
             [3/10., (3*sqrt(3))/10., sqrt(6)/5],
-            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]   
+            [2/5., 1/sqrt(3), sqrt(2)/sqrt(3)]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
             [1; 4; "tz"; (0, 0, 0)], # zz
-            [4; 2; "ty"; (0, 0, 0)], 
+            [4; 2; "ty"; (0, 0, 0)],
             [2; 5; "tz"; (0, 0, 0)], # zz
-            [5; 3; "ty"; (0, 0, 0)], 
+            [5; 3; "ty"; (0, 0, 0)],
             [3; 6; "tz"; (0, 0, 0)], # zz
 
             [4; 1; "tz"; (0, 0, 0)], # zz
-            [2; 4; "ty"; (0, 0, 0)], 
+            [2; 4; "ty"; (0, 0, 0)],
             [5; 2; "tz"; (0, 0, 0)], # zz
-            [3; 5; "ty"; (0, 0, 0)], 
+            [3; 5; "ty"; (0, 0, 0)],
             [6; 3; "tz"; (0, 0, 0)], # zz
 
-            [6; 1; "ty"; (1, 0, 1)], 
-            [1; 6; "ty"; (-1, 0, -1)], 
+            [6; 1; "ty"; (1, 0, 1)],
+            [1; 6; "ty"; (-1, 0, -1)],
 
-            [4; 3; "tx"; (0, -1, 0)], 
-            [3; 4; "tx"; (0, 1, 0)], 
+            [4; 3; "tx"; (0, -1, 0)],
+            [3; 4; "tx"; (0, 1, 0)],
 
-            [1; 2; "tx"; (0, 0, -1)], 
-            [2; 1; "tx"; (0, 0, 1)], 
+            [1; 2; "tx"; (0, 0, -1)],
+            [2; 1; "tx"; (0, 0, 1)],
 
-            [5; 6; "tx"; (0, 0, -1)], 
-            [6; 5; "tx"; (0, 0, 1)]    
+            [5; 6; "tx"; (0, 0, -1)],
+            [6; 5; "tx"; (0, 0, 1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_8_3_b_kitaev_unitcell.jld"
@@ -2280,13 +2280,13 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
         # Basis Definition
         basis = Array[
             [-1/5., 4/(5*sqrt(3)), 1/10.],  #1
-            [ 0., 7/(5*sqrt(3)), 1/10.],    #2		
+            [ 0., 7/(5*sqrt(3)), 1/10.],    #2
             [ 1/5., 4/(5*sqrt(3)), 1/10.],  #3
             [ 1/2., 1/(2*sqrt(3)), 3/10.],  #4
-            [ 0., 1/sqrt(3), 1/10.],        #5		
+            [ 0., 1/sqrt(3), 1/10.],        #5
             [ 3/10., 7/(10*sqrt(3)), 3/10.],#6
             [ 1/2., 1/(10*sqrt(3)), 3/10.], #7
-            [ 7/10., 7/(10*sqrt(3)), 3/10.],#8    
+            [ 7/10., 7/(10*sqrt(3)), 3/10.],#8
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -2311,7 +2311,7 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
             [1; 8; J1; (-1, 0, 0)],
 
             [8; 1; J1; (1, 0, 1)],   # zz
-            [1; 8; J1; (-1, 0, -1)], # zz 
+            [1; 8; J1; (-1, 0, -1)], # zz
 
             [2; 7; J1; (0, 1, 0)],
             [7; 2; J1; (0, -1, 0)],
@@ -2320,7 +2320,7 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
             [7; 2; J1; (0, -1, 1)],
 
             [3; 6; J1; (0, 0, -1)],
-            [6; 3; J1; (0, 0, 1)]        
+            [6; 3; J1; (0, 0, 1)]
         ]
         # filename
         if J1==1.0
@@ -2340,13 +2340,13 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
         # Basis Definition
         basis = Array[
             [-1/5., 4/(5*sqrt(3)), 1/10.], #1
-            [ 0., 7/(5*sqrt(3)), 1/10.], #2		
+            [ 0., 7/(5*sqrt(3)), 1/10.], #2
             [ 1/5., 4/(5*sqrt(3)), 1/10.], #3
             [ 1/2., 1/(2*sqrt(3)), 3/10.], #4
-            [ 0., 1/sqrt(3), 1/10.], #5		
+            [ 0., 1/sqrt(3), 1/10.], #5
             [ 3/10., 7/(10*sqrt(3)), 3/10.], #6
             [ 1/2., 1/(10*sqrt(3)), 3/10.], #7
-            [ 7/10., 7/(10*sqrt(3)), 3/10.], #8    
+            [ 7/10., 7/(10*sqrt(3)), 3/10.], #8
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -2371,7 +2371,7 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
             [1; 8; "ty"; (-1, 0, 0)],
 
             [8; 1; "tz"; (1, 0, 1)],   # zz
-            [1; 8; "tz"; (-1, 0, -1)], # zz 
+            [1; 8; "tz"; (-1, 0, -1)], # zz
 
             [2; 7; "tx"; (0, 1, 0)],
             [7; 2; "tx"; (0, -1, 0)],
@@ -2380,7 +2380,7 @@ function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
             [7; 2; "ty"; (0, -1, 1)],
 
             [3; 6; "tx"; (0, 0, -1)],
-            [6; 3; "tx"; (0, 0, 1)]        
+            [6; 3; "tx"; (0, 0, 1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_8_3_c_kitaev_unitcell.jld"
@@ -2432,44 +2432,44 @@ function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
             a/2. + (0.5 + x)*b + (0.5 - z)*c,
             (0.5 - x)*a + (1 - x)*b + c/4.,
             x*a + z*c,
-            (1-x)*a + z*c		
+            (1-x)*a + z*c
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 10; J1; (0, 0, 0)], 
-            [10; 2; J1; (0, 0, 0)], 
+            [1; 10; J1; (0, 0, 0)],
+            [10; 2; J1; (0, 0, 0)],
             [2; 11; J1; (0, 0, 0)], # zz
-            [11; 3; J1; (0, 0, 0)], 
-            [3; 12; J1; (0, 0, 0)], 
+            [11; 3; J1; (0, 0, 0)],
+            [3; 12; J1; (0, 0, 0)],
             [12; 4; J1; (0, 0, 0)], # zz
-            [4; 13; J1; (0, 0, 0)], 
-            [13; 5; J1; (0, 0, 0)], 
+            [4; 13; J1; (0, 0, 0)],
+            [13; 5; J1; (0, 0, 0)],
             [5; 14; J1; (0, 0, 0)], # zz
-            [14; 6; J1; (0, 0, 0)], 
-            [6; 9; J1; (0, 0, 0)], 
-            [9; 8; J1; (0, 0, 0)], 
+            [14; 6; J1; (0, 0, 0)],
+            [6; 9; J1; (0, 0, 0)],
+            [9; 8; J1; (0, 0, 0)],
             [9; 1; J1; (0, 0, 0)], # zz
-            [1; 15; J1; (0, 0, 0)], 
-            [2; 16; J1; (0, 0, 0)], 
-            [14; 7; J1; (0, 0, 0)], 
+            [1; 15; J1; (0, 0, 0)],
+            [2; 16; J1; (0, 0, 0)],
+            [14; 7; J1; (0, 0, 0)],
 
-            [10; 1; J1; (0, 0, 0)], 
-            [2; 10; J1; (0, 0, 0)], 
+            [10; 1; J1; (0, 0, 0)],
+            [2; 10; J1; (0, 0, 0)],
             [11; 2; J1; (0, 0, 0)], # zz
-            [3; 11; J1; (0, 0, 0)], 
-            [12; 3; J1; (0, 0, 0)], 
+            [3; 11; J1; (0, 0, 0)],
+            [12; 3; J1; (0, 0, 0)],
             [4; 12; J1; (0, 0, 0)], # zz
-            [13; 4; J1; (0, 0, 0)], 
-            [5; 13; J1; (0, 0, 0)], 
+            [13; 4; J1; (0, 0, 0)],
+            [5; 13; J1; (0, 0, 0)],
             [14; 5; J1; (0, 0, 0)], # zz
-            [6; 14; J1; (0, 0, 0)], 
-            [9; 6; J1; (0, 0, 0)], 
-            [8; 9; J1; (0, 0, 0)], 
+            [6; 14; J1; (0, 0, 0)],
+            [9; 6; J1; (0, 0, 0)],
+            [8; 9; J1; (0, 0, 0)],
             [1; 9; J1; (0, 0, 0)], # zz
-            [15; 1; J1; (0, 0, 0)], 
-            [16; 2; J1; (0, 0, 0)], 
-            [7; 14; J1; (0, 0, 0)], 
+            [15; 1; J1; (0, 0, 0)],
+            [16; 2; J1; (0, 0, 0)],
+            [7; 14; J1; (0, 0, 0)],
 
             [11; 8; J1; (1, 0, 0)],
             [8; 11; J1; (-1, 0, 0)],
@@ -2493,7 +2493,7 @@ function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
             [3; 15; J1; (0, 0, 1)],  # zz
 
             [16; 6; J1; (1, 0, -1)], # zz
-            [6; 16; J1; (-1, 0, 1)]  # zz            
+            [6; 16; J1; (-1, 0, 1)]  # zz
         ]
         # filename
         if J1==1.0
@@ -2533,44 +2533,44 @@ function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
             (0.5 - x)*a + (1 - x)*b + c/4.,
             x*a + z*c,
             (1-x)*a + z*c
-            
+
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 10; "tx"; (0, 0, 0)], 
-            [10; 2; "ty"; (0, 0, 0)], 
+            [1; 10; "tx"; (0, 0, 0)],
+            [10; 2; "ty"; (0, 0, 0)],
             [2; 11; "tz"; (0, 0, 0)], # zz
-            [11; 3; "tx"; (0, 0, 0)], 
-            [3; 12; "ty"; (0, 0, 0)], 
+            [11; 3; "tx"; (0, 0, 0)],
+            [3; 12; "ty"; (0, 0, 0)],
             [12; 4; "tz"; (0, 0, 0)], # zz
-            [4; 13; "tx"; (0, 0, 0)], 
-            [13; 5; "ty"; (0, 0, 0)], 
+            [4; 13; "tx"; (0, 0, 0)],
+            [13; 5; "ty"; (0, 0, 0)],
             [5; 14; "tz"; (0, 0, 0)], # zz
-            [14; 6; "tx"; (0, 0, 0)], 
-            [6; 9; "ty"; (0, 0, 0)], 
-            [9; 8; "tx"; (0, 0, 0)], 
+            [14; 6; "tx"; (0, 0, 0)],
+            [6; 9; "ty"; (0, 0, 0)],
+            [9; 8; "tx"; (0, 0, 0)],
             [9; 1; "tz"; (0, 0, 0)], # zz
-            [1; 15; "ty"; (0, 0, 0)], 
-            [2; 16; "tx"; (0, 0, 0)], 
-            [14; 7; "ty"; (0, 0, 0)], 
+            [1; 15; "ty"; (0, 0, 0)],
+            [2; 16; "tx"; (0, 0, 0)],
+            [14; 7; "ty"; (0, 0, 0)],
 
-            [10; 1; "tx"; (0, 0, 0)], 
-            [2; 10; "ty"; (0, 0, 0)], 
+            [10; 1; "tx"; (0, 0, 0)],
+            [2; 10; "ty"; (0, 0, 0)],
             [11; 2; "tz"; (0, 0, 0)], # zz
-            [3; 11; "tx"; (0, 0, 0)], 
-            [12; 3; "ty"; (0, 0, 0)], 
+            [3; 11; "tx"; (0, 0, 0)],
+            [12; 3; "ty"; (0, 0, 0)],
             [4; 12; "tz"; (0, 0, 0)], # zz
-            [13; 4; "tx"; (0, 0, 0)], 
-            [5; 13; "ty"; (0, 0, 0)], 
+            [13; 4; "tx"; (0, 0, 0)],
+            [5; 13; "ty"; (0, 0, 0)],
             [14; 5; "tz"; (0, 0, 0)], # zz
-            [6; 14; "tx"; (0, 0, 0)], 
-            [9; 6; "ty"; (0, 0, 0)], 
-            [8; 9; "tx"; (0, 0, 0)], 
+            [6; 14; "tx"; (0, 0, 0)],
+            [9; 6; "ty"; (0, 0, 0)],
+            [8; 9; "tx"; (0, 0, 0)],
             [1; 9; "tz"; (0, 0, 0)], # zz
-            [15; 1; "ty"; (0, 0, 0)], 
-            [16; 2; "tx"; (0, 0, 0)], 
-            [7; 14; "ty"; (0, 0, 0)], 
+            [15; 1; "ty"; (0, 0, 0)],
+            [16; 2; "tx"; (0, 0, 0)],
+            [7; 14; "ty"; (0, 0, 0)],
 
             [11; 8; "ty"; (1, 0, 0)],
             [8; 11; "ty"; (-1, 0, 0)],
@@ -2594,7 +2594,7 @@ function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
             [3; 15; "tz"; (0, 0, 1)],  # zz
 
             [16; 6; "tz"; (1, 0, -1)], # zz
-            [6; 16; "tz"; (-1, 0, 1)] # zz            
+            [6; 16; "tz"; (-1, 0, 1)] # zz
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_8_3_n_kitaev_unitcell.jld"
@@ -2646,36 +2646,36 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
             -d_h * a - 2*d_h*b + c/12.,
             -d_f * b,
             d_h * a - d_h * b - c/12.
-            
+
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)], 
-            [2; 3; J1; (0, 0, 0)], 
-            [3; 4; J1; (0, 0, 0)], 
-            [4; 5; J1; (0, 0, 0)], 
-            [5; 6; J1; (0, 0, 0)], 
-            [6; 7; J1; (0, 0, 0)], 
+            [1; 2; J1; (0, 0, 0)],
+            [2; 3; J1; (0, 0, 0)],
+            [3; 4; J1; (0, 0, 0)],
+            [4; 5; J1; (0, 0, 0)],
+            [5; 6; J1; (0, 0, 0)],
+            [6; 7; J1; (0, 0, 0)],
             [7; 8; J1; (0, 0, 0)],
-            [8; 9; J1; (0, 0, 0)], 
-            [9; 10; J1; (0, 0, 0)], 
-            [10; 11; J1; (0, 0, 0)], 
-            [11; 12; J1; (0, 0, 0)], 
-            [12; 1; J1; (0, 0, 0)], 
+            [8; 9; J1; (0, 0, 0)],
+            [9; 10; J1; (0, 0, 0)],
+            [10; 11; J1; (0, 0, 0)],
+            [11; 12; J1; (0, 0, 0)],
+            [12; 1; J1; (0, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)], 
-            [3; 2; J1; (0, 0, 0)], 
-            [4; 3; J1; (0, 0, 0)], 
-            [5; 4; J1; (0, 0, 0)], 
-            [6; 5; J1; (0, 0, 0)], 
-            [7; 6; J1; (0, 0, 0)], 
+            [2; 1; J1; (0, 0, 0)],
+            [3; 2; J1; (0, 0, 0)],
+            [4; 3; J1; (0, 0, 0)],
+            [5; 4; J1; (0, 0, 0)],
+            [6; 5; J1; (0, 0, 0)],
+            [7; 6; J1; (0, 0, 0)],
             [8; 7; J1; (0, 0, 0)],
-            [9; 8; J1; (0, 0, 0)], 
-            [10; 9; J1; (0, 0, 0)], 
-            [11; 10; J1; (0, 0, 0)], 
-            [12; 11; J1; (0, 0, 0)], 
-            [1; 12; J1; (0, 0, 0)], 
+            [9; 8; J1; (0, 0, 0)],
+            [10; 9; J1; (0, 0, 0)],
+            [11; 10; J1; (0, 0, 0)],
+            [12; 11; J1; (0, 0, 0)],
+            [1; 12; J1; (0, 0, 0)],
 
 
             [3; 9; J1; (0, -1, 1)], # zz
@@ -2686,16 +2686,16 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
 
             [5; 11; J1; (1, -1, 0)], # zz
             [11; 5; J1; (-1, 1, 0)], # zz
-            
+
             [12; 6; J1; (-1, 0, 0)], # zz
             [6; 12; J1; (1, 0, 0)], # zz
 
             [8; 2; J1; (0, 0, -1)], # zz
             [2; 8; J1; (0, 0, 1)], # zz
-    
+
             [4; 10; J1; (0, -1, 0)], # zz
-            [10; 4; J1; (0, 1, 0)]   # zz 
-            
+            [10; 4; J1; (0, 1, 0)]   # zz
+
         ]
         # filename
         if J1==1.0
@@ -2725,36 +2725,36 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
             a1/3. + a2/3. - 2/3.*a3,
             a1/6. + a2/3. - a3/2.,
             a2/3. - a3/3.,
-            a2/6. - a3/6.		
+            a2/6. - a3/6.
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)], 
-            [2; 3; J1; (0, 0, 0)], 
-            [3; 4; J1; (0, 0, 0)], 
-            [4; 5; J1; (0, 0, 0)], 
-            [5; 6; J1; (0, 0, 0)], 
-            [6; 7; J1; (0, 0, 0)], 
+            [1; 2; J1; (0, 0, 0)],
+            [2; 3; J1; (0, 0, 0)],
+            [3; 4; J1; (0, 0, 0)],
+            [4; 5; J1; (0, 0, 0)],
+            [5; 6; J1; (0, 0, 0)],
+            [6; 7; J1; (0, 0, 0)],
             [7; 8; J1; (0, 0, 0)],
-            [8; 9; J1; (0, 0, 0)], 
-            [9; 10; J1; (0, 0, 0)], 
-            [10; 11; J1; (0, 0, 0)], 
-            [11; 12; J1; (0, 0, 0)], 
-            [12; 1; J1; (0, 0, 0)], 
+            [8; 9; J1; (0, 0, 0)],
+            [9; 10; J1; (0, 0, 0)],
+            [10; 11; J1; (0, 0, 0)],
+            [11; 12; J1; (0, 0, 0)],
+            [12; 1; J1; (0, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)], 
-            [3; 2; J1; (0, 0, 0)], 
-            [4; 3; J1; (0, 0, 0)], 
-            [5; 4; J1; (0, 0, 0)], 
-            [6; 5; J1; (0, 0, 0)], 
-            [7; 6; J1; (0, 0, 0)], 
+            [2; 1; J1; (0, 0, 0)],
+            [3; 2; J1; (0, 0, 0)],
+            [4; 3; J1; (0, 0, 0)],
+            [5; 4; J1; (0, 0, 0)],
+            [6; 5; J1; (0, 0, 0)],
+            [7; 6; J1; (0, 0, 0)],
             [8; 7; J1; (0, 0, 0)],
-            [9; 8; J1; (0, 0, 0)], 
-            [10; 9; J1; (0, 0, 0)], 
-            [11; 10; J1; (0, 0, 0)], 
-            [12; 11; J1; (0, 0, 0)], 
-            [1; 12; J1; (0, 0, 0)], 
+            [9; 8; J1; (0, 0, 0)],
+            [10; 9; J1; (0, 0, 0)],
+            [11; 10; J1; (0, 0, 0)],
+            [12; 11; J1; (0, 0, 0)],
+            [1; 12; J1; (0, 0, 0)],
 
             [1; 7; J1; (-1, 0, 1)],
             [7; 1; J1; (1, 0, -1)],
@@ -2799,36 +2799,36 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
             -d_h * a - 2*d_h*b + c/12.,
             -d_f * b,
             d_h * a - d_h * b - c/12.
-            
+
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; "tx"; (0, 0, 0)], 
-            [2; 3; "ty"; (0, 0, 0)], 
-            [3; 4; "tx"; (0, 0, 0)], 
-            [4; 5; "ty"; (0, 0, 0)], 
-            [5; 6; "tx"; (0, 0, 0)], 
-            [6; 7; "ty"; (0, 0, 0)], 
+            [1; 2; "tx"; (0, 0, 0)],
+            [2; 3; "ty"; (0, 0, 0)],
+            [3; 4; "tx"; (0, 0, 0)],
+            [4; 5; "ty"; (0, 0, 0)],
+            [5; 6; "tx"; (0, 0, 0)],
+            [6; 7; "ty"; (0, 0, 0)],
             [7; 8; "tx"; (0, 0, 0)],
-            [8; 9; "ty"; (0, 0, 0)], 
-            [9; 10; "tx"; (0, 0, 0)], 
-            [10; 11; "ty"; (0, 0, 0)], 
-            [11; 12; "tx"; (0, 0, 0)], 
-            [12; 1; "ty"; (0, 0, 0)], 
+            [8; 9; "ty"; (0, 0, 0)],
+            [9; 10; "tx"; (0, 0, 0)],
+            [10; 11; "ty"; (0, 0, 0)],
+            [11; 12; "tx"; (0, 0, 0)],
+            [12; 1; "ty"; (0, 0, 0)],
 
-            [2; 1; "tx"; (0, 0, 0)], 
-            [3; 2; "ty"; (0, 0, 0)], 
-            [4; 3; "tx"; (0, 0, 0)], 
-            [5; 4; "ty"; (0, 0, 0)], 
-            [6; 5; "tx"; (0, 0, 0)], 
-            [7; 6; "ty"; (0, 0, 0)], 
+            [2; 1; "tx"; (0, 0, 0)],
+            [3; 2; "ty"; (0, 0, 0)],
+            [4; 3; "tx"; (0, 0, 0)],
+            [5; 4; "ty"; (0, 0, 0)],
+            [6; 5; "tx"; (0, 0, 0)],
+            [7; 6; "ty"; (0, 0, 0)],
             [8; 7; "tx"; (0, 0, 0)],
-            [9; 8; "ty"; (0, 0, 0)], 
-            [10; 9; "tx"; (0, 0, 0)], 
-            [11; 10; "ty"; (0, 0, 0)], 
-            [12; 11; "tx"; (0, 0, 0)], 
-            [1; 12; "ty"; (0, 0, 0)], 
+            [9; 8; "ty"; (0, 0, 0)],
+            [10; 9; "tx"; (0, 0, 0)],
+            [11; 10; "ty"; (0, 0, 0)],
+            [12; 11; "tx"; (0, 0, 0)],
+            [1; 12; "ty"; (0, 0, 0)],
 
 
             [3; 9; "tz"; (0, -1, 1)], # zz
@@ -2839,16 +2839,16 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
 
             [5; 11; "tz"; (1, -1, 0)], # zz
             [11; 5; "tz"; (-1, 1, 0)], # zz
-            
+
             [12; 6; "tz"; (-1, 0, 0)], # zz
             [6; 12; "tz"; (1, 0, 0)], # zz
 
             [8; 2; "tz"; (0, 0, -1)], # zz
             [2; 8; "tz"; (0, 0, 1)], # zz
-    
+
             [4; 10; "tz"; (0, -1, 0)], # zz
-            [10; 4; "tz"; (0, 1, 0)]   # zz 
-            
+            [10; 4; "tz"; (0, 1, 0)]   # zz
+
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_9_3_a_kitaev_unitcell.jld"
@@ -2874,36 +2874,36 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
             a1/3. + a2/3. - 2/3.*a3,
             a1/6. + a2/3. - a3/2.,
             a2/3. - a3/3.,
-            a2/6. - a3/6.		
+            a2/6. - a3/6.
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; "tx"; (0, 0, 0)], 
-            [2; 3; "ty"; (0, 0, 0)], 
-            [3; 4; "tx"; (0, 0, 0)], 
-            [4; 5; "ty"; (0, 0, 0)], 
-            [5; 6; "tx"; (0, 0, 0)], 
-            [6; 7; "ty"; (0, 0, 0)], 
+            [1; 2; "tx"; (0, 0, 0)],
+            [2; 3; "ty"; (0, 0, 0)],
+            [3; 4; "tx"; (0, 0, 0)],
+            [4; 5; "ty"; (0, 0, 0)],
+            [5; 6; "tx"; (0, 0, 0)],
+            [6; 7; "ty"; (0, 0, 0)],
             [7; 8; "tx"; (0, 0, 0)],
-            [8; 9; "ty"; (0, 0, 0)], 
-            [9; 10; "tx"; (0, 0, 0)], 
-            [10; 11; "ty"; (0, 0, 0)], 
-            [11; 12; "tx"; (0, 0, 0)], 
-            [12; 1; "ty"; (0, 0, 0)], 
+            [8; 9; "ty"; (0, 0, 0)],
+            [9; 10; "tx"; (0, 0, 0)],
+            [10; 11; "ty"; (0, 0, 0)],
+            [11; 12; "tx"; (0, 0, 0)],
+            [12; 1; "ty"; (0, 0, 0)],
 
-            [2; 1; "tx"; (0, 0, 0)], 
-            [3; 2; "ty"; (0, 0, 0)], 
-            [4; 3; "tx"; (0, 0, 0)], 
-            [5; 4; "ty"; (0, 0, 0)], 
-            [6; 5; "tx"; (0, 0, 0)], 
-            [7; 6; "ty"; (0, 0, 0)], 
+            [2; 1; "tx"; (0, 0, 0)],
+            [3; 2; "ty"; (0, 0, 0)],
+            [4; 3; "tx"; (0, 0, 0)],
+            [5; 4; "ty"; (0, 0, 0)],
+            [6; 5; "tx"; (0, 0, 0)],
+            [7; 6; "ty"; (0, 0, 0)],
             [8; 7; "tx"; (0, 0, 0)],
-            [9; 8; "ty"; (0, 0, 0)], 
-            [10; 9; "tx"; (0, 0, 0)], 
-            [11; 10; "ty"; (0, 0, 0)], 
-            [12; 11; "tx"; (0, 0, 0)], 
-            [1; 12; "ty"; (0, 0, 0)], 
+            [9; 8; "ty"; (0, 0, 0)],
+            [10; 9; "tx"; (0, 0, 0)],
+            [11; 10; "ty"; (0, 0, 0)],
+            [12; 11; "tx"; (0, 0, 0)],
+            [1; 12; "ty"; (0, 0, 0)],
 
             [1; 7; "tz"; (-1, 0, 1)],
             [7; 1; "tz"; (1, 0, -1)],
@@ -2919,8 +2919,8 @@ function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
             [12; 6; "tz"; (-1, 0, 0)]
         ]
         # filename
-        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_V2_kitaev_unitcell.jld"    
-    end    
+        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_V2_kitaev_unitcell.jld"
+    end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
     if save
@@ -3074,7 +3074,7 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
 
             [4; 1; J1; (0, 0, 0)],
             [4; 1; J1; (-1, 0, 0)],
-            [4; 3; J1; (0, 0, -1)]        
+            [4; 3; J1; (0, 0, -1)]
         ]
         # filename
         if J1==1.0
@@ -3115,7 +3115,7 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
 
             [4; 1; J1; (0, 0, 1)],
             [4; 1; J1; (-1, 0, 1)],
-            [4; 3; J1; (0, 0, 0)]        
+            [4; 3; J1; (0, 0, 0)]
         ]
         # filename
         if J1==1.0
@@ -3156,7 +3156,7 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
 
             [4; 1; "tx"; (0, 0, 0)],
             [4; 1; "ty"; (-1, 0, 0)],
-            [4; 3; "tz"; (0, 0, -1)]        
+            [4; 3; "tz"; (0, 0, -1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_kitaev_unitcell.jld"
@@ -3193,7 +3193,7 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
 
             [4; 1; "tx"; (0, 0, 1)],
             [4; 1; "ty"; (-1, 0, 1)],
-            [4; 3; "tz"; (0, 0, 0)]        
+            [4; 3; "tz"; (0, 0, 0)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_kitaev_unitcell.jld"
@@ -3251,14 +3251,14 @@ function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
             [3; 5; J1; (0, 0, 0)],  # zz
             [6; 3; J1; (0, 0, 0)],
 
-            [4; 1; J1; (1, 0, 0)],  
-            [1; 4; J1; (-1, 0, 0)], 
+            [4; 1; J1; (1, 0, 0)],
+            [1; 4; J1; (-1, 0, 0)],
 
-            [5; 2; J1; (0, 1, 0)], 
+            [5; 2; J1; (0, 1, 0)],
             [2; 5; J1; (0, -1, 0)],
 
-            [3; 6; J1; (1, 1, 0)], 
-            [6; 3; J1; (-1, -1, 0)], 
+            [3; 6; J1; (1, 1, 0)],
+            [6; 3; J1; (-1, -1, 0)],
 
             [1; 6; J1; (0, 0, -1)],  # zz
             [6; 1; J1; (0, 0, 1)], # zz
@@ -3302,14 +3302,14 @@ function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
             [3; 5; "tz"; (0, 0, 0)],  # zz
             [6; 3; "tx"; (0, 0, 0)],
 
-            [4; 1; "ty"; (1, 0, 0)],  
-            [1; 4; "ty"; (-1, 0, 0)], 
+            [4; 1; "ty"; (1, 0, 0)],
+            [1; 4; "ty"; (-1, 0, 0)],
 
-            [5; 2; "ty"; (0, 1, 0)], 
+            [5; 2; "ty"; (0, 1, 0)],
             [2; 5; "ty"; (0, -1, 0)],
 
-            [3; 6; "ty"; (1, 1, 0)], 
-            [6; 3; "ty"; (-1, -1, 0)], 
+            [3; 6; "ty"; (1, 1, 0)],
+            [6; 3; "ty"; (-1, -1, 0)],
 
             [1; 6; "tz"; (0, 0, -1)],  # zz
             [6; 1; "tz"; (0, 0, 1)] # zz
@@ -3359,30 +3359,30 @@ function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
             [1; 2; J1; (0, 0, 0)],
-            [3; 4; J1; (0, 0, 0)],  
-            [5; 6; J1; (0, 0, 0)],  
+            [3; 4; J1; (0, 0, 0)],
+            [5; 6; J1; (0, 0, 0)],
 
             [2; 1; J1; (0, 0, 0)],
-            [4; 3; J1; (0, 0, 0)],  
+            [4; 3; J1; (0, 0, 0)],
             [6; 5; J1; (0, 0, 0)],
 
-            [2; 3; J1; (0, 0, 0)], 
-            [3; 2; J1; (0, 0, 0)], 
+            [2; 3; J1; (0, 0, 0)],
+            [3; 2; J1; (0, 0, 0)],
 
-            [6; 7; J1; (0, 0, 0)], 
+            [6; 7; J1; (0, 0, 0)],
             [7; 6; J1; (0, 0, 0)],
 
-            [1; 6; J1; (0, 0, 0)], #zz 
+            [1; 6; J1; (0, 0, 0)], #zz
             [6; 1; J1; (0, 0, 0)], #zz
 
             [4; 5; J1; (0, 1, 0)], #zz
             [5; 4; J1; (0, -1, 0)], #zz
 
-            [8; 5; J1; (0, 0, 0)], 
-            [5; 8; J1; (0, 0, 0)], 
+            [8; 5; J1; (0, 0, 0)],
+            [5; 8; J1; (0, 0, 0)],
 
-            [8; 7; J1; (0, 0, -1)], 
-            [7; 8; J1; (0, 0, 1)], 
+            [8; 7; J1; (0, 0, -1)],
+            [7; 8; J1; (0, 0, 1)],
 
             [2; 7; J1; (-1, 0, 0)], # zz
             [7; 2; J1; (1, 0, 0)],  # zz
@@ -3390,8 +3390,8 @@ function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
             [3; 8; J1; (-1, 1, 0)], # zz
             [8; 3; J1; (1, -1, 0)],  # zz
 
-            [1; 4; J1; (0, 0, 1)], 
-            [4; 1; J1; (0, 0, -1)], 
+            [1; 4; J1; (0, 0, 1)],
+            [4; 1; J1; (0, 0, -1)],
 
         ]
         # filename
@@ -3426,30 +3426,30 @@ function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
             [1; 2; "tx"; (0, 0, 0)],
-            [3; 4; "tx"; (0, 0, 0)],  
-            [5; 6; "ty"; (0, 0, 0)],  
+            [3; 4; "tx"; (0, 0, 0)],
+            [5; 6; "ty"; (0, 0, 0)],
 
             [2; 1; "tx"; (0, 0, 0)],
-            [4; 3; "tx"; (0, 0, 0)],  
+            [4; 3; "tx"; (0, 0, 0)],
             [6; 5; "ty"; (0, 0, 0)],
 
-            [2; 3; "ty"; (0, 0, 0)], 
-            [3; 2; "ty"; (0, 0, 0)], 
+            [2; 3; "ty"; (0, 0, 0)],
+            [3; 2; "ty"; (0, 0, 0)],
 
-            [6; 7; "tx"; (0, 0, 0)], 
+            [6; 7; "tx"; (0, 0, 0)],
             [7; 6; "tx"; (0, 0, 0)],
 
-            [1; 6; "tz"; (0, 0, 0)], #zz 
+            [1; 6; "tz"; (0, 0, 0)], #zz
             [6; 1; "tz"; (0, 0, 0)], #zz
 
             [4; 5; "tz"; (0, 1, 0)], #zz
             [5; 4; "tz"; (0, -1, 0)], #zz
 
-            [8; 5; "tx"; (0, 0, 0)], 
-            [5; 8; "tx"; (0, 0, 0)], 
+            [8; 5; "tx"; (0, 0, 0)],
+            [5; 8; "tx"; (0, 0, 0)],
 
-            [8; 7; "ty"; (0, 0, -1)], 
-            [7; 8; "ty"; (0, 0, 1)], 
+            [8; 7; "ty"; (0, 0, -1)],
+            [7; 8; "ty"; (0, 0, 1)],
 
             [2; 7; "tz"; (-1, 0, 0)], # zz
             [7; 2; "tz"; (1, 0, 0)],  # zz
@@ -3457,7 +3457,7 @@ function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
             [3; 8; "tz"; (-1, 1, 0)], # zz
             [8; 3; "tz"; (1, -1, 0)],  # zz
 
-            [1; 4; "ty"; (0, 0, 1)], 
+            [1; 4; "ty"; (0, 0, 1)],
             [4; 1; "ty"; (0, 0, -1)]
         ]
         # filename
@@ -3564,7 +3564,7 @@ function getUnitcellFromSites2D(
                     break
                 end
             end
-        else   
+        else
             if min_NN <= 0
                 min_NN = 1
             end
@@ -3708,7 +3708,7 @@ function getUnitcellFromSites3D(
                     break
                 end
             end
-        else   
+        else
             if min_NN <= 0
                 min_NN = 1
             end
@@ -4028,7 +4028,7 @@ function getLatticePeriodic2D(unitcell::Unitcell, repetition_array::Array{Int64}
     N_a2 = repetition_array[2]
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4152,7 +4152,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
     N_a3 = repetition_array[3]
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4168,7 +4168,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
     end
 
     # build the lattice
-    
+
     # load the data from the unit cell
     uc_basis            = unitcell.basis
     uc_connections      = unitcell.connections
@@ -4331,7 +4331,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     N_a2 = repetition_array[2]
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4457,7 +4457,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     N_a3 = repetition_array[3]
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4473,7 +4473,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     end
 
     # build the lattice
-    
+
     # load the data from the unit cell
     uc_basis            = unitcell.basis
     uc_connections      = unitcell.connections
@@ -4645,7 +4645,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
     end
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4762,7 +4762,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
     else
         a2 = uc_lattice_vectors[2] .* N_a2
         push!(lattice_vectors, a2)
-    end    
+    end
 
     # save everything to a Lattice object
     lattice = Lattice(
@@ -4800,7 +4800,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
     if N_a3 < 0
         push!(periodic_directions, 3)
     end
-    
+
     # check if correct method called
     if length(periodic_directions) in [0,3]
         # something is wrong, either flake or totally periodic
@@ -4809,7 +4809,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
     end
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -4825,7 +4825,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
     end
 
     # build the lattice
-    
+
     # load the data from the unit cell
     uc_basis            = unitcell.basis
     uc_connections      = unitcell.connections
@@ -5086,7 +5086,7 @@ export getLattice
 function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -5138,7 +5138,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
         if found
             continue
         end
-        
+
         # if not, push it into
         push!(positions, item_to_handle)
         # for all connections
@@ -5187,7 +5187,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
             end
         end
 
-    
+
     end
 
     # change the format of positions
@@ -5236,7 +5236,7 @@ end
 function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -5288,7 +5288,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
         if found
             continue
         end
-        
+
         # if not, push it into
         push!(positions, item_to_handle)
         # for all connections
@@ -5383,7 +5383,7 @@ end
 
 # generate a flake of any dimension by bond distance
 function getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
-    
+
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
 
@@ -5442,9 +5442,9 @@ export getLatticeByBondDistance
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
-    
+
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -5495,7 +5495,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
         if found
             continue
         end
-        
+
         # if not, push it into
         push!(positions, item_to_handle)
         # for all connections
@@ -5544,7 +5544,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
             end
         end
 
-    
+
     end
 
     # change the format of positions
@@ -5592,7 +5592,7 @@ end
 function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
 
     # generate the filename of the output
-    if contains(unitcell.filename, FOLDER_UNITCELLS) 
+    if contains(unitcell.filename, FOLDER_UNITCELLS)
         filename = replace(unitcell.filename, FOLDER_UNITCELLS, FOLDER_LATTICES)
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
@@ -5643,7 +5643,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
         if found
             continue
         end
-        
+
         # if not, push it into
         push!(positions, item_to_handle)
         # for all connections
@@ -6462,7 +6462,7 @@ function getIndependentSublattices(lattice::Lattice)
             elseif labels[j] == labels[i]
                 # just ignore
             else
-                # merging of two clusters here! 
+                # merging of two clusters here!
                 newlabel = min(labels[i], labels[j])
                 # scan through the whole lattice
                 for n in 1:length(labels)
@@ -6497,7 +6497,7 @@ function getIndependentSublattices(lattice::Lattice)
             lattice.filename_output
         )
         push!(sublattices, sublattice)
-        # return 
+        # return
         return sublattices
     end
     # iterate over labels
@@ -6593,7 +6593,7 @@ function getIndependentSubunitcells(unitcell::Unitcell)
             elseif labels[j] == labels[i]
                 # just ignore
             else
-                # merging of two clusters here! 
+                # merging of two clusters here!
                 newlabel = min(labels[i], labels[j])
                 # scan through the whole lattice
                 for n in 1:length(labels)
@@ -6625,7 +6625,7 @@ function getIndependentSubunitcells(unitcell::Unitcell)
             unitcell.filename
         )
         push!(subunitcells, subunitcell)
-        # return 
+        # return
         return subunitcells
     end
     # iterate over labels
@@ -7232,7 +7232,7 @@ function getPlaquettesOfSite(lattice::Lattice, site, len)
     for p in paths
         if p[1] == p[end]
             # check if the inverse path is already in the plaquettes list
-            if !(p[end:-1:1] in plaquettes) 
+            if !(p[end:-1:1] in plaquettes)
                 push!(plaquettes, p)
             end
         end
@@ -7416,7 +7416,7 @@ function getSVGStringEllipse(id, centerX, centerY, radiusX, radiusY, color; labe
     <text
     x=\"$(centerX)\"
     y=\"$(centerY+radiusY/2)\"
-    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
+    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
     >
     $(label)
     </text>
@@ -7449,11 +7449,11 @@ function getSVGStringEllipseStroked(id, centerX, centerY, radiusX, radiusY, colo
     if label != 987654321
         es = """
     $(es)
-    
+
     <text
     x=\"$(centerX)\"
     y=\"$(centerY+radiusY/2)\"
-    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"   
+    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
     >
     $(label)
     </text>
@@ -7615,8 +7615,8 @@ end
 #   -   export_pdf: Decide if svg should be converted to pdf (Default: true)
 #
 #   Parameters (optional but only for 3D):
-#   -   bond_color_BG: The color of bonds that are in the farthest back of the plot (i.e. to which color to converge towards the back) 
-#   -   site_color_BG: The color of sites that are in the farthest back of the plot (i.e. to which color to converge towards the back) 
+#   -   bond_color_BG: The color of bonds that are in the farthest back of the plot (i.e. to which color to converge towards the back)
+#   -   site_color_BG: The color of sites that are in the farthest back of the plot (i.e. to which color to converge towards the back)
 #   -   lattice_rotation: Array of Floats indicating the rotation around the XYZ axis
 #   -   camera_position_relative: Array of Floats indicating the position of the camera
 #   -   DOF: Float indicating the strength of the Depth of Field in color gradient
@@ -7704,7 +7704,7 @@ function plotLattice2D(
 	if size(lattice.lattice_vectors,1) == 1
 		neutral_connection_wrap = (0)
 	end
-	
+
 
 	# define the width and height of the canvas
 	width_UC 	= (maximum(xvals) + site_radius/conversion + border) - (minimum(xvals) - site_radius/conversion - border)
@@ -7772,7 +7772,7 @@ function plotLattice2D(
                     run(`explorer $(filename_output[1:end-4]).pdf`)
                 else
                     run(`explorer $(filename_output)`)
-                end                
+                end
             end
         elseif is_apple()
             run(`open $(filename_output)`)
@@ -7808,7 +7808,7 @@ function plotLattice3D(
 		openfile=false,
         export_pdf=true
 		)
-	
+
     # define the filename_output if it is set to AUTO
     if filename_output=="AUTO"
         filename_output = "$(lattice.filename[1:end-4])_plot.svg"
@@ -8049,7 +8049,7 @@ function plotLattice3D(
 	for index in 1:length(b_x)
         if site_labels == "LATTICE INDEX"
 		    push!(sites_to_plot, [b_x[index], b_y[index], distances_to_camera[index], sum(positions[index].*c_vec), lattice.positions_indices[index], index])
-        else 
+        else
             push!(sites_to_plot, [b_x[index], b_y[index], distances_to_camera[index], sum(positions[index].*c_vec), lattice.positions_indices[index]])
         end
 	end
@@ -8061,7 +8061,7 @@ function plotLattice3D(
 	sort!(sites_to_plot, by=sortfunctionSites)
 
 
-	# DEFINE CONNECTIONS THAT ARE PLOTTED 
+	# DEFINE CONNECTIONS THAT ARE PLOTTED
 
 	# connections to plot (sort out periodic ones)
 	connections_to_plot = Array[]
@@ -8147,16 +8147,16 @@ function plotLattice3D(
             site_color_basic = getProperSiteColor(site_to_plot[3],site_to_plot[5])
             site_color = color_hex(site_color_basic)
             label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
-            # write 
+            # write
             if site_labels == "POSITION INDEX" || site_labels == "LATTICE INDEX"
-                write(file, getSVGStringEllipseStroked("el$(i)", 
+                write(file, getSVGStringEllipseStroked("el$(i)",
                     X(site_to_plot[1]), Y(site_to_plot[2]),
                     getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
                     site_color,
                     getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3]),
                     label=Int(site_to_plot[end]), labelcolor=label_color))
             else
-                write(file, getSVGStringEllipseStroked("el$(i)", 
+                write(file, getSVGStringEllipseStroked("el$(i)",
                     X(site_to_plot[1]), Y(site_to_plot[2]),
                     getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
                     site_color,
@@ -8171,11 +8171,11 @@ function plotLattice3D(
 			# write
 			if visualize_periodic || c[4] == neutral_connection_wrap
                 write(file,
-                    getSVGStringLine("path$(i)", 
+                    getSVGStringLine("path$(i)",
                     [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])],
                     [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])],
                     getProperConnectionColor(c[5], c[3]),
-                    getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))	
+                    getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))
             end
 			# increase index
 			i = i+1
@@ -8187,16 +8187,16 @@ function plotLattice3D(
                 site_color_basic = getProperSiteColor(site_to_plot[3],site_to_plot[5])
                 site_color = color_hex(site_color_basic)
                 label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
-                # write 
+                # write
                 if site_labels == "POSITION INDEX" || site_labels == "LATTICE INDEX"
-                    write(file, getSVGStringEllipseStroked("el$(i)", 
+                    write(file, getSVGStringEllipseStroked("el$(i)",
                         X(site_to_plot[1]), Y(site_to_plot[2]),
                         getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
                         site_color,
                         getProperSiteBorderColor(site_to_plot[3]), getProperSiteBorderRadius(site_to_plot[3]),
                         label=Int(site_to_plot[end]), labelcolor=label_color))
                 else
-                    write(file, getSVGStringEllipseStroked("el$(i)", 
+                    write(file, getSVGStringEllipseStroked("el$(i)",
                         X(site_to_plot[1]), Y(site_to_plot[2]),
                         getProperSiteRadius(site_to_plot[3]), getProperSiteRadius(site_to_plot[3]),
                         site_color,
@@ -8211,12 +8211,12 @@ function plotLattice3D(
 				# write
 				if visualize_periodic || c[4] == neutral_connection_wrap
 					write(file,
-						getSVGStringLine("path$(i)", 
+						getSVGStringLine("path$(i)",
 						[X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])],
 						[X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])],
 						getProperConnectionColor(c[5], c[3]),
-						getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))	
-				end	
+						getProperConnectionWidth(c[5]), dashed=(c[4] != neutral_connection_wrap)))
+				end
 			end
 			# increase index
 			i = i+1
@@ -8226,7 +8226,7 @@ function plotLattice3D(
 
 
 
-	
+
 
 	# write the footerstring to close the svg file
 	write(file, getSVGFooterString())
@@ -8237,8 +8237,8 @@ function plotLattice3D(
     if export_pdf
 	    run(`inkscape $(filename_output) --export-pdf $(filename_output[1:end-4]).pdf`)
     end
-	
-	# if file shall be opened	
+
+	# if file shall be opened
 	if openfile
         if is_linux()
 		    run(`ristretto $(filename_output)`)
@@ -8248,8 +8248,8 @@ function plotLattice3D(
                     run(`explorer $(filename_output[1:end-4]).pdf`)
                 else
                     run(`explorer $(filename_output)`)
-                end                
-            end 
+                end
+            end
         elseif is_apple()
             run(`open $(filename_output)`)
         else
@@ -8423,7 +8423,7 @@ function plotPlaquettes2D(
 	if size(lattice.lattice_vectors,1) == 1
 		neutral_connection_wrap = (0)
 	end
-	
+
 
 	# define the width and height of the canvas
 	width_UC 	= (maximum(xvals) + site_radius/conversion + border) - (minimum(xvals) - site_radius/conversion - border)
@@ -8503,7 +8503,7 @@ function plotPlaquettes2D(
                     run(`explorer $(filename_output[1:end-4]).pdf`)
                 else
                     run(`explorer $(filename_output)`)
-                end                
+                end
             end
         elseif is_apple()
             run(`open $(filename_output)`)
@@ -8679,10 +8679,10 @@ function showLatticePyPlot(
         # check to be 3d
         if length(from) == 2
             from = [from[1], from[2], 0.0]
-        end        
+        end
         if length(to) == 2
             to = [to[1], to[2], 0.0]
-        end        
+        end
         # https://de.mathworks.com/matlabcentral/answers/151235-tube-plot-with-x-y-coordinates-and-radius?requestedDomain=www.mathworks.com
         # plot bond
         vec_u = to .- from;
@@ -8700,7 +8700,7 @@ function showLatticePyPlot(
         py = zeros(detail_length, detail_ring)
         pz = zeros(detail_length, detail_ring)
         for i in 1:detail_length
-        for j in 1:detail_ring        
+        for j in 1:detail_ring
             #P = repmat(from',m*n,1) .+ S.*vec_u .+ cos(T).*vec_v .+ sin(T).*vec_w;
             px[i,j] = from[1] + S[i]*vec_u[1] + cos(T[j])*vec_v[1] + sin(T[j])*vec_w[1];
             py[i,j] = from[2] + S[i]*vec_u[2] + cos(T[j])*vec_v[2] + sin(T[j])*vec_w[2];
@@ -8709,7 +8709,7 @@ function showLatticePyPlot(
         end
         surf(px,py,pz, rstride=1, cstride=1, linewidth=0, antialiased=true, color=color)
     end
-   
+
     # plot all bonds
     for c in lattice.connections
         # skip if wrong directioin
@@ -8741,16 +8741,16 @@ function showLatticePyPlot(
         p = p.*conversion
         # add label
         if site_labels == "LATTICE INDEX"
-            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(index)", zorder=1, size=site_radius, color="k") 
+            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(index)", zorder=1, size=site_radius, color="k")
         elseif site_labels == "POSITION INDEX"
-            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(lattice.positions_indices[index])", zorder=1, size=site_radius, color="k") 
+            ax[:text](p[1]+site_radius, p[2]+site_radius, p[3]+site_radius,  "$(lattice.positions_indices[index])", zorder=1, size=site_radius, color="k")
         end
     end
 
 
     # turn off everthing but the plot
     ax[:set_axis_off]()
-    # get the current limits    
+    # get the current limits
     x_limits = ax[:get_xlim3d]()
     y_limits = ax[:get_ylim3d]()
     z_limits = ax[:get_zlim3d]()
@@ -8818,7 +8818,7 @@ function showLatticeMayavi(
 	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
 	colorcode_sites[0] = get(colorcode_sites, 0, [255,255,255])
 
-    
+
     # PLOTTING WITH MAYAVI
     # create a figure
     mlab.figure(bgcolor=(background_color[1], background_color[2], background_color[3]))
@@ -8838,13 +8838,13 @@ function showLatticeMayavi(
         # check to be 3d
         if length(from) == 2
             from = [from[1], from[2], 0.0]
-        end        
+        end
         if length(to) == 2
             to = [to[1], to[2], 0.0]
-        end        
+        end
         mlab.plot3d([from[1], to[1]], [from[2], to[2]], [from[3], to[3]], color=(color[1], color[2], color[3]), tube_radius=radius)
     end
-   
+
     # plot all bonds
     for c in lattice.connections
         # skip if wrong directioin
@@ -8876,9 +8876,9 @@ function showLatticeMayavi(
         p = p.*conversion
         # add label
         if site_labels == "LATTICE INDEX"
-            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(index)", scale=site_radius, color=(0,0,0)) 
+            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(index)", scale=site_radius, color=(0,0,0))
         elseif site_labels == "POSITION INDEX"
-            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(lattice.positions_indices[index])", scale=site_radius, color=(0,0,0)) 
+            mlab.text3d(p[1]+site_radius, p[2]+site_radius, p[3]+site_radius, "$(lattice.positions_indices[index])", scale=site_radius, color=(0,0,0))
         end
     end
 
@@ -8997,7 +8997,7 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
         if size(lattice.lattice_vectors,1) > 0
             for pair in zip(wrap, lattice.lattice_vectors)
                 pos_delta .+= pair[1].*pair[2]
-            end 
+            end
         end
         # take majorana fermionic statistics into account
         majorana_factor = 1
@@ -9031,7 +9031,7 @@ function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,
         if size(unitcell.lattice_vectors,1) > 0
             for pair in zip(wrap, unitcell.lattice_vectors)
                 pos_delta .+= pair[1].*pair[2]
-            end 
+            end
         end
         # take majorana fermionic statistics into account
         majorana_factor = 1
@@ -9213,7 +9213,7 @@ function calculateBandStructureAlongPath(
         figsize=(6,4),
         showPlot=true
             )
-    
+
     # normalize percentages
     if percentages == "EQUAL"
         percentages = ones(size(path,1)-1)
@@ -9271,7 +9271,7 @@ function calculateBandStructureAlongPath(
                         bands[b][i] = eigenvalues[b]
                     else
                         bands[b][i] = real(eigenvalues[b])
-                    end                    
+                    end
                 else
                     bands[b][i] = eigenvalues[b]
                 end
@@ -9362,7 +9362,7 @@ function calculateBandStructureAlongPath(
         showPlot=true,
         majorana=false
             )
-    
+
     # check if to reduce the lattice
     if reduceLattice && lattice.unitcell.filename != UNITCELL_DUMMY_FILENAME
         lattice = getLatticePeriodic(lattice.unitcell, ones(Int64, size(lattice.unitcell.lattice_vectors,1)), save=false)
@@ -9424,7 +9424,7 @@ function calculateBandStructureAlongPath(
                         bands[b][i] = eigenvalues[b]
                     else
                         bands[b][i] = real(eigenvalues[b])
-                    end                    
+                    end
                 else
                     bands[b][i] = eigenvalues[b]
                 end
@@ -9523,7 +9523,7 @@ function calculateBandStructureAlongPath(
         showPlot=true,
         majorana=false
             )
-    
+
     # make a lattice from the unitcell
     lattice = getLatticePeriodic(unitcell, ones(Int64, size(unitcell.lattice_vectors,1)), save=false)
     lattice.filename = replace(identity(unitcell.filename), FOLDER_UNITCELLS, FOLDER_LATTICES)
@@ -9615,8 +9615,8 @@ function calculateBandStructure2D(
         showPlot=true,
         majorana=false
             )
-    
-    
+
+
     # insert bands
     bands = Array[]
     kx_vals = zeros(length(kx), length(ky))
@@ -9644,7 +9644,7 @@ function calculateBandStructure2D(
                     bands[b][i,j] = eigenvalues[b]
                 else
                     bands[b][i,j] = real(eigenvalues[b])
-                end                    
+                end
             else
                 bands[b][i,j] = eigenvalues[b]
             end
@@ -9703,7 +9703,7 @@ function calculateBandStructure2D(
         #print("Continue? ")
         #readline()
     end
-    return fig   
+    return fig
 end
 export calculateBandStructure2D
 
@@ -9836,7 +9836,7 @@ function createJobDirectory(
     main_program_execution_command::String="julia PROGRAM INPUTFILE",
     files_to_copy::Array{String,1}=String[]
         )
-    
+
 
     # -----------------
     # START INFORMATION
@@ -9851,7 +9851,7 @@ function createJobDirectory(
     # Print the input template filename
     println("Input template is located at \"$(input_file_template_name)\"\n")
 
-    
+
 
 
     # ---------------------------------------------------
@@ -9915,7 +9915,7 @@ function createJobDirectory(
                 end
             end
         end
-        
+
         # OPTION 2, check in dictonary
         if length(values_to_use)==0 && p[1] in keys(parameters)
             # get the string representation
@@ -9937,7 +9937,7 @@ function createJobDirectory(
 
         # create a list with parsed entries
         values_to_use_parsed = []
-        
+
         # iterate over all values to be used
         for v in values_to_use
             # determine which type of value
@@ -10024,7 +10024,7 @@ function createJobDirectory(
             # PROBLEM: NO VALUE FOR PARAMETER, exlude from job
             println("DANGER: Excluding parameter $(parameters_RAW[p][1]) from jobs because it has no value")
         end
-        
+
     end
 
     # print the success
@@ -10116,7 +10116,7 @@ function createJobDirectory(
 
     # ------------------------------
     # COPY / CREATE THE SCRIPT FILES
-    # ------------------------------    
+    # ------------------------------
 
     # Copy main program file
     cp(main_program_file, "$(directory_path)$(main_program_file)")
@@ -10134,7 +10134,7 @@ function createJobDirectory(
         line = replace(line, "INPUTFILE", joblist[i]["input_filename"])
         # set the correct input filename in the job
         write(script_single_exe, line)
-    end   
+    end
     # close the script
     close(script_single_exe)
     println("Created single execution script \"script_single_execution.jl\"")
@@ -10156,7 +10156,7 @@ function createJobDirectory(
     write(script_MPI_exe, "max_i     = $(length(joblist))\n")
     write(script_MPI_exe, "init_i    = commrank+1\n")
     write(script_MPI_exe, "for i in init_i:commsize:max_i\n")
-    # compose main line    
+    # compose main line
     line = "\trun(pipeline(`$(main_program_execution_command)`, stdout=\"bash_stdout_INPUTFILE\", stderr=\"bash_stderr_INPUTFILE\"))\n\tprintln(\"Done input file \\\"INPUTFILE\\\"\")\n"
     # change the program part
     line = replace(line, "PROGRAM", main_program_file)
