@@ -27,10 +27,10 @@
 
 The type that contains information on a unitcell. Fields are
 
-    lattice_vectors::Array{Array{Float64, 1}, 1}
-    basis::Array{Array{Float64, 1}, 1}
-    connections::Array{Array{Any, 1}, 1}
-    filename::String
+    lattice_vectors :: Array{Array{Float64, 1}, 1}
+    basis           :: Array{Array{Float64, 1}, 1}
+    connections     :: Array{Array{Any, 1}, 1}
+    filename        :: String
 
 Note that connections have the format
 
@@ -112,6 +112,10 @@ end
 Save the `Unitcell` object `unitcell` to a file by using the module `JLD`.
 A new filename can be given by passing an additional argument.
 
+Note that the filename has to end with `.jld` or the ending will be added automatically.
+
+Folders that lead to the specified file will be created on the way.
+
 
 
 # Examples
@@ -134,7 +138,12 @@ function saveUnitcell(uc::Unitcell, filename::String="NONE")
         uc.filename = "$(filename).jld"
     end
     # ensure default path is build
-    mkpath(dirname(uc.filename))
+    if contains(uc.filename, "/")
+		# get the containing folder
+		folder = uc.filename[1:findlast(uc.filename, '/')]
+		# build the path to that folder
+		mkpath(folder)
+	end
     # open the file and write the fields into it
     save(uc.filename,
         "basis",            uc.basis,
@@ -325,7 +334,7 @@ end
 # make the type public accessible
 export Unitcell
 export loadUnitcell, saveUnitcell
-
+export printInfo
 
 
 
@@ -358,33 +367,97 @@ export loadUnitcell, saveUnitcell
 #   - filename              The filename that the lattice should be stored into
 #
 #-----------------------------------------------------------------------------------------------------------------------------
+"""
+    mutable struct Lattice
+
+The type that contains information on a lattice. Fields are
+
+	unitcell            :: Unitcell
+	unitcellRepetitions :: Array{Int64, 1}
+    lattice_vectors     :: Array{Array{Float64, 1}, 1}
+    positions           :: Array{Array{Float64, 1}, 1}
+	positions_indices   :: Array{Int64, 1}
+    connections         :: Array{Array{Any, 1}, 1}
+    filename            :: String
+
+Note that connections have the format
+
+    [index_from::Int, index_to::Int, strength::Any, lattice_offset::Tuple]
+
+where `lattice_offset` only describes the offset along the periodic directions
+
+New objects can be created with
+
+    Lattice(filename::String)
+
+to load from a given file with name `filename` or with
+
+    Lattice()
+
+if the constructed object serves as a placeholder. In this case, the filename
+is set to `LATTICE_DUMMY_FILENAME`.
+
+For a complete list of all constructors please consult the documentation.
+
+
+
+# Examples
+
+```julia-repl
+julia> Lattice("mylatticefile.jld")
+```
+"""
 type Lattice
 
     # FIELDS
-    unitcell::Unitcell
-    unitcellRepetitions::Array{Int64, 1}
-    lattice_vectors     # that span the lattice in periodic dimensions
-    positions           # positions of all sites
-    positions_indices   # array of ints that give the index of the site in the original unit cell
-    connections         # connections between all sites
-    filename
 
-    # the overall usual constructor
-    function Lattice(unitcell::Unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
-        # just initialize everything
-        return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
-    end
-    function Lattice(unitcell::Unitcell, unitcellRepetitions, lattice_vectors, positions, connections, filename)
-        # just initialize everything
+	# The unitcell of the lattice if applicable
+    unitcell::Unitcell
+	# how often the unitcell is repeated in the elementary directions
+    unitcellRepetitions::Array{Int64, 1}
+
+	# The lattice vectors that span the LATTICE in periodic dimensions
+    lattice_vectors::Array{Array{Float64, 1}, 1}
+
+	# Array with the positions of all sites within the lattice
+    positions::Array{Array{Float64, 1}, 1}
+	# array of ints that give the index of the site in the original unit cell
+    positions_indices::Array{Int64, 1}
+
+	# Array with connections between sites (same format as in Unitcell)
+    connections::Array{Array{Any, 1}, 1}
+
+	# Filename of the jld file
+    filename::String
+
+
+
+	# Constructor if no position indices should be given
+    function Lattice(
+				unitcell::Unitcell,
+				unitcellRepetitions::Array{Int64, 1},
+				lattice_vectors::Array{Array{Float64, 1}, 1},
+				positions::Array{Array{Float64, 1}, 1},
+				connections::Array{Array{Any, 1}, 1},
+				filename::String
+			)
+        # just initialize everything and set the position indices to 1
         return new(unitcell, unitcellRepetitions, lattice_vectors, positions,ones(size(positions,1)), connections, filename)
     end
-    # the custom constructor
-    function Lattice(lattice_vectors, positions, connections, filename)
+
+    # Constructor if the lattice is not constructed from a unitcell
+    function Lattice(
+				lattice_vectors::Array{Array{Float64, 1}, 1},
+				positions::Array{Array{Float64, 1}, 1},
+				connections::Array{Array{Any, 1}, 1},
+				filename::String
+			)
         # just initialize everything
         return new(Unitcell(), [], lattice_vectors, positions,ones(size(positions,1)), connections, filename)
     end
-    # the constructor when loading from a file
-    function Lattice(filename)
+
+    # Constructor when loading from a file
+    function Lattice(filename::String)
         # define an empty unitcell
         lattice = new(Unitcell(),[], nothing,nothing,[],nothing,filename)
         # load the uc
@@ -392,7 +465,8 @@ type Lattice
         # return the uc
         return lattice
     end
-    # dummy constructor
+
+    # Dummy constructor
     function Lattice()
         # define an empty unitcell
         lattice = new(Unitcell(),[], nothing,nothing,[],nothing,LATTICE_DUMMY_FILENAME)
@@ -404,12 +478,50 @@ end
 
 
 
-# METHODS FOR SAVING
+#-----------------------------------------
+#
+#   METHODS FOR SAVING LATTICES
+#
+#-----------------------------------------
 
-# save a lattice to the lattice file specified
-function saveLattice(lattice::Lattice)
+"""
+    saveLattice(lattice::Lattice [, filename::String])
+
+Save the `Lattice` object `lattice` to a file by using the module `JLD`.
+A new filename can be given by passing an additional argument.
+
+Note that the filename has to end with `.jld` or the ending will be added automatically.
+
+Folders that lead to the specified file will be created on the way.
+
+
+
+# Examples
+
+```julia-repl
+julia> saveLattice(lattice)
+"filename.jld"
+
+julia> saveLattice(lattice, "testfile.jld")
+"testfile.jld"
+```
+"""
+function saveLattice(lattice::Lattice, filename::String="NONE")
+    # maybe set the new filename
+    if filename != "NONE"
+        lattice.filename = filename
+    end
+    # make sure that the file ends with .jld
+    if lattice.filename[end-4:end] != ".jld"
+        lattice.filename = "$(filename).jld"
+    end
     # ensure default path is build
-    buildFolderLattices()
+    if contains(lattice.filename, "/")
+		# get the containing folder
+		folder = lattice.filename[1:findlast(lattice.filename, '/')]
+		# build the path to that folder
+		mkpath(folder)
+	end
     # open the file and write the fields into it
     save(lattice.filename,
         "unitcell",             lattice.unitcell,
@@ -423,34 +535,49 @@ function saveLattice(lattice::Lattice)
     # return the filename
     return lattice.filename
 end
-# save a lattice to a new lattice file specified
-function saveLattice(lattice::Lattice, filename)
-    # set the new filename
-    lattice.filename = filename
-    # ensure default path is build
-    buildFolderLattices()
-    # open the file and write the fields into it
-    save(lattice.filename,
-        "unitcell",             lattice.unitcell,
-        "unitcell repetitions", lattice.unitcellRepetitions,
-        "positions",            lattice.positions,
-        "positions indices",    lattice.positions_indices,
-        "connections",          lattice.connections,
-        "lattice vectors",      lattice.lattice_vectors,
-        "filename",             lattice.filename
-    )
-    # return the filename
-    return lattice.filename
-end
 
 
 
-# METHODS FOR LOADING
 
-# method for loading the lattice
-function loadLattice(lattice::Lattice)
-    # ensure default path is build
-    buildFolderLattices()
+
+
+#-----------------------------------------
+#
+#   METHODS FOR LOADING LATTICES
+#
+#-----------------------------------------
+
+
+"""
+    loadLattice(lattice::Lattice [, filename::String])
+    loadLattice(filename::String)
+
+Loads a `Lattice` object `lattice` from its file by using the module `JLD`.
+A new filename can be given by passing an additional argument.
+Moreover, if there is no `Lattice` object which should be loaded but one wants to obtain a new
+object, one can only pass the filename of the unitcell file. (Note, that this can also be done
+by using the constructor `Lattice(filename)`)
+
+
+
+# Examples
+
+```julia-repl
+julia> loadLattice(lattice)
+"filename.jld"
+
+julia> loadLattice(lattice, "testfile.jld")
+"testfile.jld"
+
+julia> loadLattice("testfile.jld")
+Lattice.Lattice[...]
+```
+"""
+function loadLattice(lattice::Lattice, filename::String="NONE")
+    # maybe set the new filename
+    if filename != "NONE"
+        lattice.filename = filename
+    end
     # open the file and load all fields from it
     lattice.unitcell            = load(lattice.filename, "unitcell")
     lattice.unitcellRepetitions = load(lattice.filename, "unitcell repetitions")
@@ -461,33 +588,52 @@ function loadLattice(lattice::Lattice)
     # return the filename
     return lattice.filename
 end
-# method for loading the unit cell from a different filename
-function loadLattice(lattice::Lattice, filename_new)
-    # overwrite the existing filename
-    lattice.filename            = filename_new
-    # ensure default path is build
-    buildFolderLattices()
-    # open the file and load all fields from it
-    lattice.unitcell            = load(lattice.filename, "unitcell")
-    lattice.unitcellRepetitions = load(lattice.filename, "unitcell repetitions")
-    lattice.positions           = load(lattice.filename, "positions")
-    lattice.positions_indices   = load(lattice.filename, "positions indices")
-    lattice.connections         = load(lattice.filename, "connections")
-    lattice.lattice_vectors     = load(lattice.filename, "lattice vectors")
-    # return the filename
-    return lattice.filename
+function loadLattice(filename::String)
+    # just return the object that the constructor would return
+	return Lattice(filename)
 end
 
 
 
 
-# METHOD FOR PRINTING INFORMATION ABOUT THE LATTICE
+#-----------------------------------------
+#
+#   METHODS FOR PRINTING INFORMATION
+#
+#-----------------------------------------
+
+
+"""
+    printInfo(lattice::Lattice [; detailed::Bool=false])
+
+Prints (detailed) information about a `Lattice` object. Information includes
+Bravais lattice vectors, number of sites and number of bonds. When detailed output is
+enabled, furthermore all sites and bonds are printed. Last but now least, statistics
+is printed about how many bonds per site are found.
+
+
+# Examples
+
+```julia-repl
+julia> printInfo(lattice)
+...
+
+julia> printInfo(lattice, detailed=true)
+...
+
+```
+"""
 function printInfo(lattice::Lattice; detailed=false)
+	# Print the header informations
     println("Information on the lattice stored in file \"$(lattice.filename)\":")
+
+	# Information on lattice vectors, print all of them
     println(" - periodicity given by $(size(lattice.lattice_vectors,1)) lattice vectors:")
     for l in lattice.lattice_vectors
         println("     - $(l)")
     end
+
+	# Information on sites, depending on detailed print information
     if detailed
         println(" - $(size(lattice.positions,1)) sites in lattice of dimension $(length(lattice.positions[1])):")
         for site in lattice.positions
@@ -496,6 +642,8 @@ function printInfo(lattice::Lattice; detailed=false)
     else
         println(" - $(size(lattice.positions,1)) sites in lattice of dimension $(length(lattice.positions[1]))")
     end
+
+	# Information on connectioins, depending on detailed print information
     if detailed
         println(" - $(size(lattice.connections,1)) connections in the lattice:")
         for c in lattice.connections
@@ -508,6 +656,7 @@ function printInfo(lattice::Lattice; detailed=false)
     else
         println(" - $(size(lattice.connections,1)) connections in the lattice")
     end
+	# Number of connections per site
     println(" - $(size(lattice.connections,1)/size(lattice.positions,1)) connections per site")
     # check statistics of connections
     nc = zeros(Int64, size(lattice.positions,1))
@@ -520,6 +669,7 @@ function printInfo(lattice::Lattice; detailed=false)
     end
     tc = 0
     c = 0
+	# print the statistics of the connections
     print(" - statistics of connections per site:")
     while tc < size(lattice.positions, 1)
         cc = 0
@@ -535,6 +685,7 @@ function printInfo(lattice::Lattice; detailed=false)
         tc += cc
     end
     println("")
+	# Test the connectivity of the lattice
     broken = false
     for c1 in lattice.connections
         counterpart = false
@@ -558,13 +709,27 @@ function printInfo(lattice::Lattice; detailed=false)
             broken = true
         end
     end
+	# Print the connectivity of the lattice
     if broken
-        print(" - connectivity of lattice is broken (connections not vice versa)")
+        println(" - connectivity of lattice is broken (connections not vice versa)")
     else
-        print(" - connectivity of lattice is okay (including periodic BC)")
+        println(" - connectivity of lattice is okay (including periodic BC)")
     end
-    println("")
 end
+
+
+
+# EXPORT the relevant types and methods
+export Lattice
+export saveLattice, loadLattice
+export printInfo
+
+
+
+
+
+
+# ------------ UP TO HERE -----------------
 
 
 
@@ -662,8 +827,5 @@ end
 
 
 # EXPORT the relevant types and methods
-export Lattice
-export saveLattice, loadLattice
-export printInfo
 export getConnectivityList, getConnectionList, getConnectionStrengthList
 export toUnitcell
