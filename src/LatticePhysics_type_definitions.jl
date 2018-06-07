@@ -184,7 +184,7 @@ julia> loadUnitcell(unitcell, "testfile.jld")
 "testfile.jld"
 
 julia> loadUnitcell("testfile.jld")
-Lattice.Unitcell[...]
+LatticePhysics.Unitcell[...]
 ```
 """
 function loadUnitcell(uc::Unitcell, filename::String="NONE")
@@ -570,7 +570,7 @@ julia> loadLattice(lattice, "testfile.jld")
 "testfile.jld"
 
 julia> loadLattice("testfile.jld")
-Lattice.Lattice[...]
+LatticePhysics.Lattice[...]
 ```
 """
 function loadLattice(lattice::Lattice, filename::String="NONE")
@@ -728,6 +728,49 @@ export printInfo
 
 
 
+#-----------------------------------------
+#
+#   METHODS FOR CONVERTING LATTICE --> UNITCELL
+#
+#-----------------------------------------
+
+"""
+	toUnitcell(lattice::Lattice [, filename::String])
+
+Converts a `Lattice` object `lattice` to a `Unitcell` object by keeping
+connections and lattice vectors and setting all sites as basis sites.
+Optionally, a further argument can specify a new filename for the newly
+created unitcell.
+
+
+# Examples
+
+```julia-repl
+julia> toUnitcell(lattice)
+LatticePhysics.Unitcell[...]
+
+julia> toUnitcell(lattice, "unitcell_test.jld")
+LatticePhysics.Unitcell[...]
+```
+"""
+function toUnitcell(lattice::Lattice, filename::String="AUTOMATIC")
+    # maybe set the new filename
+    if filename == "AUTOMATIC"
+        filename = replace(lattice.filename, ".jld", "_to_unitcell.jld")
+    end
+	# return a newly built unitcell object
+    return Unitcell(
+        lattice.lattice_vectors,
+        lattice.positions,
+        lattice.connections,
+		filename
+            )
+end
+
+# Export the conversion method
+export toUnitcell
+
+
 
 # ------------ UP TO HERE -----------------
 
@@ -814,18 +857,6 @@ function getConnectionStrengthList(unitcell::Unitcell)
 end
 
 
-# METHOD FOR DEFINING A LATTICE AS A UNITCELL
-function toUnitcell(lattice::Lattice)
-    return Unitcell(
-        lattice.lattice_vectors,
-        lattice.positions,
-        lattice.connections,
-        replace(lattice.filename, ".jld", "_to_unitcell.jld")
-            )
-end
-
-
 
 # EXPORT the relevant types and methods
 export getConnectivityList, getConnectionList, getConnectionStrengthList
-export toUnitcell
