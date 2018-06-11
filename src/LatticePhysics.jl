@@ -51,8 +51,8 @@ module LatticePhysics
 using JLD
 
 # PyPlot is used for all plotting of band structures (plotting of lattices is done via SVG file creation)
-using PyPlot
 using PyCall
+using PyPlot
 
 # Optim is used for minimizing the band structure to find the ground state energy of the system
 using Optim
