@@ -1,10 +1,28 @@
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
 #   TYPE DEFINITIONS OF OBJECT CLASSES IN JULIA
 #
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+#   STRUCTURE OF THE FILE:
+#
+#   1) Definition of UNITCELL OBJECT
+#       - Saving
+#       - Loading
+#
+#   2) Definition of LATTICE OBJECT
+#       - Saving
+#       - Loading
+#
+#   3) CONVERSION LATTICE --> UNITCELL
+#
+#   4) OBTAINING GENERAL INFORMATION
+#       - Print Information (printInfo(..))
+#       - obtain the connection strengths of an object
+#
+#   5) OBTAINING CONNECTIVITY INFORMATION
+#       - getConnectivityList(..)
+#       - getConnectionList(..)
+#
+################################################################################
 
 
 
@@ -207,134 +225,10 @@ end
 
 
 
-#-----------------------------------------
-#
-#   METHODS FOR PRINTING INFORMATION
-#
-#-----------------------------------------
-
-
-"""
-    printInfo(uc::Unitcell [; detailed::Bool=false])
-
-Prints (detailed) information about a `Unitcell` object. Information Includes
-Bravais lattice vectors, number of sites and number of bonds. When detailed output is
-enabled, furthermore all sites and bonds are printed. Last but now least, statistics
-is printed about how many bonds per site are found.
-
-
-# Examples
-
-```julia-repl
-julia> printInfo(unitcell)
-...
-
-julia> printInfo(unitcell, detailed=true)
-...
-
-```
-"""
-function printInfo(unitcell::Unitcell; detailed::Bool=false)
-
-    # Header of the information
-    println("Information on the unitcell stored in file \"$(unitcell.filename)\":")
-
-    # General information on Bravais lattice vectors
-    println(" - periodicity given by $(size(unitcell.lattice_vectors,1)) lattice vectors:")
-    for l in unitcell.lattice_vectors
-        println("     - $(l)")
-    end
-
-    # Information on basis sites
-    if detailed
-        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1])):")
-        for site in unitcell.basis
-            println("     - $(site)")
-        end
-    else
-        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1]))")
-    end
-
-    # Information on bonds / connections
-    if detailed
-        println(" - $(size(unitcell.connections,1)) connections in the unitcell:")
-        for c in unitcell.connections
-            if typeof(c[3]) == String
-                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): \"$(c[3])\"")
-            else
-                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): $(c[3])")
-            end
-        end
-    else
-        println(" - $(size(unitcell.connections,1)) connections in the unitcell")
-    end
-
-    # Information on bond / connection statistics
-    println(" - $(size(unitcell.connections,1)/size(unitcell.basis,1)) connections per site")
-    # check statistics of connections
-    nc = zeros(Int64, size(unitcell.basis,1))
-    for i in 1:length(nc)
-        for c in unitcell.connections
-            if Int(c[1]) == i
-                nc[i] += 1
-            end
-        end
-    end
-    tc = 0
-    c = 0
-    print(" - statistics of connections per site:")
-    while tc < size(unitcell.basis, 1)
-        cc = 0
-        for ncc in nc
-            if ncc == c
-                cc += 1
-            end
-        end
-        if cc != 0
-            print(" $(c)($(cc))")
-        end
-        c = c+1
-        tc += cc
-    end
-    println("")
-    broken = false
-    for c1 in unitcell.connections
-        counterpart = false
-        for c2 in unitcell.connections
-            if c1==c2
-                continue
-            end
-            if c1[1] != c2[2] || c1[2] != c2[1]
-                continue # site indices not correct
-            end
-            if c1[3] != c2[3]
-                continue # connection strength not equal
-            end
-            if sum([abs(element) for element in collect(c1[4]) .+ collect(c2[4])]) > 1e-9
-                continue # wrap not equal
-            end
-            counterpart = true
-            break
-        end
-        if counterpart == false
-            broken = true
-        end
-    end
-    if broken
-        print(" - connectivity of unitcell is broken (connections not vice versa)")
-    else
-        print(" - connectivity of unitcell is okay (including periodic BC)")
-    end
-    println("")
-end
-
-
-
 
 # make the type public accessible
 export Unitcell
 export loadUnitcell, saveUnitcell
-export printInfo
 
 
 
@@ -596,33 +490,215 @@ end
 
 
 
-#-----------------------------------------
-#
-#   METHODS FOR PRINTING INFORMATION
-#
-#-----------------------------------------
+# EXPORT the relevant types and methods
+export Lattice
+export saveLattice, loadLattice
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------
+#
+#   METHODS FOR CONVERTING LATTICE --> UNITCELL
+#
+#-----------------------------------------------------------------------------
 
 """
-    printInfo(lattice::Lattice [; detailed::Bool=false])
+	toUnitcell(lattice::Lattice [, filename::String])
 
-Prints (detailed) information about a `Lattice` object. Information includes
-Bravais lattice vectors, number of sites and number of bonds. When detailed output is
-enabled, furthermore all sites and bonds are printed. Last but now least, statistics
-is printed about how many bonds per site are found.
+Converts a `Lattice` object `lattice` to a `Unitcell` object by keeping
+connections and lattice vectors and setting all sites as basis sites.
+Optionally, a further argument can specify a new filename for the newly
+created unitcell.
 
 
 # Examples
 
 ```julia-repl
-julia> printInfo(lattice)
+julia> toUnitcell(lattice)
+LatticePhysics.Unitcell[...]
+
+julia> toUnitcell(lattice, "unitcell_test.jld")
+LatticePhysics.Unitcell[...]
+```
+"""
+function toUnitcell(lattice::Lattice, filename::String="AUTOMATIC")
+    # maybe set the new filename
+    if filename == "AUTOMATIC"
+        filename = replace(lattice.filename, ".jld", "_to_unitcell.jld")
+    end
+	# return a newly built unitcell object
+    return Unitcell(
+        lattice.lattice_vectors,
+        lattice.positions,
+        lattice.connections,
+		filename
+            )
+end
+
+# Export the conversion method
+export toUnitcell
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------
+#
+#   METHODS FOR PRINTING OR OBTAINING GENERAL INFORMATION
+#
+#-----------------------------------------------------------------------------
+
+
+"""
+    printInfo(unitcell::Unitcell [; detailed::Bool=false])
+    printInfo(lattice::Lattice [; detailed::Bool=false])
+
+Prints (detailed) information about a `Unitcell` object or a `Lattice` object.
+Information Includes Bravais lattice vectors, number of sites and number of bonds.
+When detailed output is enabled, furthermore all sites and bonds are printed.
+Last but now least, statistics is printed about how many bonds per site are found.
+
+
+# Examples
+
+```julia-repl
+julia> printInfo(unitcell)
 ...
 
-julia> printInfo(lattice, detailed=true)
+julia> printInfo(unitcell, detailed=true)
 ...
 
 ```
 """
+function printInfo(unitcell::Unitcell; detailed::Bool=false)
+
+    # Header of the information
+    println("Information on the unitcell stored in file \"$(unitcell.filename)\":")
+
+    # General information on Bravais lattice vectors
+    println(" - periodicity given by $(size(unitcell.lattice_vectors,1)) lattice vectors:")
+    for l in unitcell.lattice_vectors
+        println("     - $(l)")
+    end
+
+    # Information on basis sites
+    if detailed
+        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1])):")
+        for site in unitcell.basis
+            println("     - $(site)")
+        end
+    else
+        println(" - $(size(unitcell.basis,1)) sites in unitcell of dimension $(length(unitcell.basis[1]))")
+    end
+
+    # Information on bonds / connections
+    if detailed
+        println(" - $(size(unitcell.connections,1)) connections in the unitcell:")
+        for c in unitcell.connections
+            if typeof(c[3]) == String
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): \"$(c[3])\"")
+            else
+                println("     - from $(c[1]) to $(c[2]) (with warp $(c[4])): $(c[3])")
+            end
+        end
+    else
+        println(" - $(size(unitcell.connections,1)) connections in the unitcell")
+    end
+
+    # Information on bond / connection statistics
+    println(" - $(size(unitcell.connections,1)/size(unitcell.basis,1)) connections per site")
+    # check statistics of connections
+    nc = zeros(Int64, size(unitcell.basis,1))
+    for i in 1:length(nc)
+        for c in unitcell.connections
+            if Int(c[1]) == i
+                nc[i] += 1
+            end
+        end
+    end
+    tc = 0
+    c = 0
+    print(" - statistics of connections per site:")
+    while tc < size(unitcell.basis, 1)
+        cc = 0
+        for ncc in nc
+            if ncc == c
+                cc += 1
+            end
+        end
+        if cc != 0
+            print(" $(c)($(cc))")
+        end
+        c = c+1
+        tc += cc
+    end
+    println("")
+    broken = false
+    for c1 in unitcell.connections
+        counterpart = false
+        for c2 in unitcell.connections
+            if c1==c2
+                continue
+            end
+            if c1[1] != c2[2] || c1[2] != c2[1]
+                continue # site indices not correct
+            end
+            if c1[3] != c2[3]
+                continue # connection strength not equal
+            end
+            if sum([abs(element) for element in collect(c1[4]) .+ collect(c2[4])]) > 1e-9
+                continue # wrap not equal
+            end
+            counterpart = true
+            break
+        end
+        if counterpart == false
+            broken = true
+        end
+    end
+    if broken
+        print(" - connectivity of unitcell is broken (connections not vice versa)")
+    else
+        print(" - connectivity of unitcell is okay (including periodic BC)")
+    end
+    println("")
+end
 function printInfo(lattice::Lattice; detailed=false)
 	# Print the header informations
     println("Information on the lattice stored in file \"$(lattice.filename)\":")
@@ -719,67 +795,104 @@ end
 
 
 
-# EXPORT the relevant types and methods
-export Lattice
-export saveLattice, loadLattice
-export printInfo
 
 
-
-
-
-#-----------------------------------------
-#
-#   METHODS FOR CONVERTING LATTICE --> UNITCELL
-#
-#-----------------------------------------
 
 """
-	toUnitcell(lattice::Lattice [, filename::String])
+    getConnectionStrengthList(unitcell::Unitcell)
+	getConnectionStrengthList(lattice::Lattice)
 
-Converts a `Lattice` object `lattice` to a `Unitcell` object by keeping
-connections and lattice vectors and setting all sites as basis sites.
-Optionally, a further argument can specify a new filename for the newly
-created unitcell.
+Obtains which connection strength values are taken in the definition of a given
+`Lattice` object `lattice` or a `Unitcell` object `unitcell`.
+The functions return a list which contains all connection strengths in the order
+of appearence.
 
 
 # Examples
 
 ```julia-repl
-julia> toUnitcell(lattice)
-LatticePhysics.Unitcell[...]
-
-julia> toUnitcell(lattice, "unitcell_test.jld")
-LatticePhysics.Unitcell[...]
+julia> connection_strength_list = getConnectionStrengthList(lattice)
+["tx", "ty", "tz"]
 ```
 """
-function toUnitcell(lattice::Lattice, filename::String="AUTOMATIC")
-    # maybe set the new filename
-    if filename == "AUTOMATIC"
-        filename = replace(lattice.filename, ".jld", "_to_unitcell.jld")
+function getConnectionStrengthList(unitcell::Unitcell)
+    # list of connetion strengths
+    cs_list = []
+    # iterate over all connections
+    for c in unitcell.connections
+        if !(c[3] in cs_list)
+            push!(cs_list, c[3])
+        end
     end
-	# return a newly built unitcell object
-    return Unitcell(
-        lattice.lattice_vectors,
-        lattice.positions,
-        lattice.connections,
-		filename
-            )
+    # return the list
+    return cs_list
+end
+function getConnectionStrengthList(lattice::Lattice)
+    # list of connetion strengths
+    cs_list = []
+    # iterate over all connections
+    for c in lattice.connections
+        if !(c[3] in cs_list)
+            push!(cs_list, c[3])
+        end
+    end
+    # return the list
+    return cs_list
 end
 
-# Export the conversion method
-export toUnitcell
-
-
-
-# ------------ UP TO HERE -----------------
+# export the FUNCTIONS
+export getConnectionStrengthList
 
 
 
 
-# METHODS FOR OBTAINING STRUCTURED CONNECTION INFORMATION
 
-# get for every site a list with connected sites and connection strengths
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------
+#
+#   METHODS FOR CONNECTIVITY INFORMATION
+#
+#-----------------------------------------------------------------------------
+
+
+"""
+	getConnectivityList(lattice::Lattice)
+    getConnectivityList(unitcell::Unitcell)
+
+Obtains connectivity information of a `Lattice` object `lattice` or a `Unitcell` object `unitcell`.
+The functions return a list which contains a list of Tuples for every site in the
+passed objects. Therefore, `connectivity_list[i][j]` can be used to access the connection `j`
+from site `i` which will give a Tuple `(to_index, strength)`.
+
+
+# Examples
+
+```julia-repl
+julia> connectivity_list = getConnectivityList(lattice)
+Array{...}[...]
+
+julia> connectivity_list[2][1]   # connection 1 outgoing from site 2
+(12, "tx")
+```
+"""
 function getConnectivityList(lattice::Lattice)
     # list of lists
     lists = Array[]
@@ -804,7 +917,35 @@ function getConnectivityList(unitcell::Unitcell)
     # return the lists
     return lists
 end
-# get for every site a list with all connections
+
+# export the FUNCTIONS
+export getConnectivityList
+
+
+
+
+
+"""
+	getConnectionList(lattice::Lattice)
+    getConnectionList(unitcell::Unitcell)
+
+Obtains connectivity information of a `Lattice` object `lattice` or a `Unitcell` object `unitcell`.
+The functions return a list which contains a list of connection Arrays for every site in the
+passed objects. Therefore, `connectivity_list[i][j]` can be used to access the connection `j`
+from site `i` which will give an Array `[from_index, to_index, strength, wrap_tuple]`
+like it is saved in the list of all connections of the respective object.
+
+
+# Examples
+
+```julia-repl
+julia> connection_list = getConnectionList(lattice)
+Array{...}[...]
+
+julia> connection_list[2][1]   # connection 1 outgoing from site 2
+[1, 12, "tx", (0,0)]
+```
+"""
 function getConnectionList(lattice::Lattice)
     # list of lists
     lists = Array[]
@@ -830,33 +971,5 @@ function getConnectionList(unitcell::Unitcell)
     return lists
 end
 
-# get a list of all connection strengths
-function getConnectionStrengthList(lattice::Lattice)
-    # list of connetion strengths
-    cs_list = []
-    # iterate over all connections
-    for c in lattice.connections
-        if !(c[3] in cs_list)
-            push!(cs_list, c[3])
-        end
-    end
-    # return the list
-    return cs_list
-end
-function getConnectionStrengthList(unitcell::Unitcell)
-    # list of connetion strengths
-    cs_list = []
-    # iterate over all connections
-    for c in unitcell.connections
-        if !(c[3] in cs_list)
-            push!(cs_list, c[3])
-        end
-    end
-    # return the list
-    return cs_list
-end
-
-
-
-# EXPORT the relevant types and methods
-export getConnectivityList, getConnectionList, getConnectionStrengthList
+# export the FUNCTIONS
+export getConnectionList
