@@ -1,12 +1,11 @@
-
-
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
-#   UNITCELL DEFINITIONS
+#   IMPLEMENTATIONS OF DIFFERENT UNITCELLS in 2D and 3D
 #
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+#   STRUCTURE OF THE FILE
+#
+################################################################################
+
 
 
 
@@ -23,11 +22,61 @@
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# SQUARE LATTICE
-# 1 - simple, 1 site per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellSquare(version=1; save=true)
+"""
+    getUnitcellSquare([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D square lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+1 site per unitcell, located at
+
+    r1 = [0.0, 0.0]
+
+All couplings have strength `1.0`
+
+
+
+#### 2 - advanced
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.0]
+    r3 = [0.5, 0.5]
+    r4 = [0.0, 0.5]
+
+couplings are `"t1"` and `"t2"` which are in a staggered square pattern.
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellSquare()
+LatticePhysics.Unitcell(...)
+
+julia> unitcell = getUnitcellSquare(2)
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellSquare(version::Int64=1; save::Bool=false)
     # SIMPLE SQUARE LATTICE
     if version == 1
         # the lattice vectors
@@ -50,6 +99,46 @@ function getUnitcellSquare(version=1; save=true)
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_square_unitcell.jld"
+    # ADVANCED SQUARE LATTICE
+    elseif version == 2
+        # the lattice vectors
+        a1 = [1.0, 0.0]
+        a2 = [0.0, 1.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [0.5, 0.5],
+            [0.0, 0.5]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; "t2"; (-1,0)],
+            [1; 4; "t2"; (0,-1)],
+            [1; 2; "t1"; (0, 0)],
+            [1; 4; "t1"; (0, 0)],
+
+            [2; 1; "t2"; (1, 0)],
+            [2; 3; "t1"; (0, 0)],
+            [2; 1; "t1"; (0, 0)],
+            [2; 3; "t2"; (0,-1)],
+
+            [3; 4; "t1"; (0, 0)],
+            [3; 2; "t1"; (0, 0)],
+            [3; 4; "t2"; (1, 0)],
+            [3; 2; "t2"; (0, 1)],
+
+            [4; 3; "t1"; (0, 0)],
+            [4; 1; "t2"; (0, 1)],
+            [4; 3; "t2"; (-1,0)],
+            [4; 1; "t1"; (0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_advanced_square_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -61,11 +150,45 @@ function getUnitcellSquare(version=1; save=true)
 end
 export getUnitcellSquare
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# EXTENDED SQUARE LATTICE
-# 1 - simple, 3 sites per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellExtendedSquare(version=1; save=true)
+
+
+
+"""
+    getUnitcellExtendedSquare([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D extended square lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+3 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.0]
+    r3 = [0.0, 0.5]
+
+All couplings have strength `1.0`
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellExtendedSquare()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellExtendedSquare(version::Int64=1; save::Bool=false)
     # SIMPLE EXTENDED SQUARE LATTICE
     if version == 1
         # the lattice vectors
@@ -107,11 +230,43 @@ function getUnitcellExtendedSquare(version=1; save=true)
 end
 export getUnitcellExtendedSquare
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# CHECKERBOARD LATTICE
-# 1 - simple, 2 sites per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellCheckerboard(version=1; save=true)
+
+
+"""
+    getUnitcellCheckerboard([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D checkerboard lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.5]
+
+All couplings have strength `1.0`
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellCheckerboard()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellCheckerboard(version::Int64=1; save::Bool=false)
     # SIMPLE CHECKERBOARD LATTICE
     if version == 1
         # the lattice vectors
@@ -156,11 +311,43 @@ end
 export getUnitcellCheckerboard
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# SHASTRY SUTHERLAND LATTICE
-# 1 - simple, 4 sites per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellShastrySutherland(version=1; save=true)
+"""
+    getUnitcellShastrySutherland([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D Shastry-Sutherland lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.0]
+    r3 = [0.5, 0.5]
+    r4 = [0.0, 0.5]
+
+The coupling values are `["t1", ..., "t5"]` for the distinct bonds.
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellShastrySutherland()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
     # SIMPLE SHASTRY SUTHERLAND LATTICE
     if version == 1
         # the lattice vectors
@@ -217,66 +404,118 @@ end
 export getUnitcellShastrySutherland
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# ADVANCED SQUARE LATTICE
-# 1 - simple, 4 sites per UC, 2 different couplings
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellAdvancedSquare(version=1; save=true)
-    # SIMPLE ADVANCED SQUARE LATTICE
+
+
+"""
+    getUnitcellAdvancedSquare([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D advanced square lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+NOTE: This function redirects to `getUnitcellSquare(2)` and is only kept for
+historical reasons.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.0]
+    r3 = [0.5, 0.5]
+    r4 = [0.0, 0.5]
+
+couplings are `"t1"` and `"t2"` which are in a staggered square pattern.
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellAdvancedSquare()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellAdvancedSquare(version::Int64=1; save::Bool=false)
+    # redirect to the square implmentation with version 2
     if version == 1
-        # the lattice vectors
-        a1 = [1.0, 0.0]
-        a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
-        push!(lattice_vectors, a1)
-        push!(lattice_vectors, a2)
-        # Basis Definition
-        basis = Array[
-            [0.0, 0.0],
-            [0.5, 0.0],
-            [0.5, 0.5],
-            [0.0, 0.5]
-        ]
-        # Connection Definition
-        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
-            [1; 2; "t2"; (-1,0)],
-            [1; 4; "t2"; (0,-1)],
-            [1; 2; "t1"; (0, 0)],
-            [1; 4; "t1"; (0, 0)],
-
-            [2; 1; "t2"; (1, 0)],
-            [2; 3; "t1"; (0, 0)],
-            [2; 1; "t1"; (0, 0)],
-            [2; 3; "t2"; (0,-1)],
-
-            [3; 4; "t1"; (0, 0)],
-            [3; 2; "t1"; (0, 0)],
-            [3; 4; "t2"; (1, 0)],
-            [3; 2; "t2"; (0, 1)],
-
-            [4; 3; "t1"; (0, 0)],
-            [4; 1; "t2"; (0, 1)],
-            [4; 3; "t2"; (-1,0)],
-            [4; 1; "t1"; (0, 0)]
-        ]
-        # filename
-        filename = "$(FOLDER_UNITCELLS)2d_advanced_square_unitcell.jld"
+        return getUnitcellSquare(2, save=save)
     end
-    # generate unitcell
-    uc = Unitcell(lattice_vectors, basis, connections, filename)
-    if save
-        saveUnitcell(uc)
-    end
-    # return the unitcell
-    return uc
 end
 export getUnitcellAdvancedSquare
-#-----------------------------------------------------------------------------------------------------------------------------
-# SQUARE OCTAGON LATTICE
-# 1 - simple, 4 sites per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellSquareOctagon(version=1; save=true)
+
+
+
+
+"""
+    getUnitcellSquareOctagon([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D square-octagon lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [3*sqrt(3.0)/4., -3*sqrt(3.0)/4.]
+    a2 = [3*sqrt(3.0)/4.,  3*sqrt(3.0)/4.]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.0, 1/sqrt(3.0)]
+    r3 = [-1/sqrt(3.0), 0.0]
+    r4 = [-1/sqrt(3.0), 1/sqrt(3.0)]
+
+For version `1`, the coupling values are `1.0` for all bonds.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`
+
+
+
+#### 2 & 5 - scaled shifted simple & scaled shifted simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [1.0 + 1./sqrt(2.0), -(1.0 + 1./sqrt(2.0))]
+    a2 = [1.0 + 1./sqrt(2.0),  (1.0 + 1./sqrt(2.0))]
+
+4 sites per unitcell, located at
+
+    r1 = [ 0.5, -0.5]
+    r2 = [ 0.5,  0.5]
+    r3 = [-0.5, -0.5]
+    r4 = [-0.5,  0.5]
+
+For version `2`, the coupling values are `1.0` for all bonds.
+
+For version `5`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellSquareOctagon()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
     # SQUARE OCTAGON LATTICE
     if version == 1
         # the lattice vectors
@@ -418,12 +657,14 @@ function getUnitcellSquareOctagon(version=1; save=true)
 end
 export getUnitcellSquareOctagon
 
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # BCC LATTICE in 2D
 # just another representation of the square lattice
 # 1 - simple, 2 sites per UC
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellBCC2D(version=1; save=true)
+function getUnitcellBCC2D(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1, 0]
