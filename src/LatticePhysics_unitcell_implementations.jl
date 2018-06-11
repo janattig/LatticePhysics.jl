@@ -22,6 +22,12 @@
 
 
 
+#----------------------------
+#
+#   2D SQUARE BASIS
+#
+#----------------------------
+
 """
     getUnitcellSquare([version::Int64=1; save::Bool=false])
 
@@ -48,7 +54,23 @@ All couplings have strength `1.0`
 
 
 
-#### 2 - advanced
+#### 2 - BCC in 2D
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.5]
+
+All couplings have strength `1.0`
+
+
+
+#### 3 - advanced
 
 Bravais lattice vectors are
 
@@ -99,8 +121,36 @@ function getUnitcellSquare(version::Int64=1; save::Bool=false)
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)2d_square_unitcell.jld"
-    # ADVANCED SQUARE LATTICE
+    # SQUARE LATTICE THAT LOOKS LIKE BCC in 2D
     elseif version == 2
+        # the lattice vectors
+        a1 = [1.0, 0.0]
+        a2 = [0.0, 1.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.5, 0.5]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 2; 1.0; (0, 0)],
+            [1; 2; 1.0; (-1, 0)],
+            [1; 2; 1.0; (0, -1)],
+            [1; 2; 1.0; (-1, -1)],
+
+            [2; 1; 1.0; (0, 0)],
+            [2; 1; 1.0; (1, 0)],
+            [2; 1; 1.0; (0, 1)],
+            [2; 1; 1.0; (1, 1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_unitcell_bcc_2d.jld"
+    # ADVANCED SQUARE LATTICE
+    elseif version == 3
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
@@ -413,7 +463,7 @@ get the implementation of the *2D advanced square lattice* unitcell. The `versio
 specifies the exact implementation convention that is used and the boolean `save`
 can be passed if one wants to save the unitcell after creation.
 
-NOTE: This function redirects to `getUnitcellSquare(2)` and is only kept for
+NOTE: This function redirects to `getUnitcellSquare(3)` and is only kept for
 historical reasons.
 
 
@@ -448,7 +498,7 @@ LatticePhysics.Unitcell(...)
 function getUnitcellAdvancedSquare(version::Int64=1; save::Bool=false)
     # redirect to the square implmentation with version 2
     if version == 1
-        return getUnitcellSquare(2, save=save)
+        return getUnitcellSquare(3, save=save)
     end
 end
 export getUnitcellAdvancedSquare
@@ -659,40 +709,44 @@ export getUnitcellSquareOctagon
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# BCC LATTICE in 2D
-# just another representation of the square lattice
-# 1 - simple, 2 sites per UC
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellBCC2D(version::Int64=1; save::Bool=false)
-    if version == 1
-        # the lattice vectors
-        a1 = [1, 0]
-        a2 = [0, 1]
-        lattice_vectors = Array[]
-        push!(lattice_vectors, a1)
-        push!(lattice_vectors, a2)
-        # Basis Definition
-        basis = Array[
-            [0.0, 0.0],
-            [0.5, 0.5]
-        ]
-        # Connection Definition
-        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
-            [1; 2; 1.0; (0, 0)],
-            [1; 2; 1.0; (-1, 0)],
-            [1; 2; 1.0; (0, -1)],
-            [1; 2; 1.0; (-1, -1)],
+"""
+    getUnitcellBCC2D([version::Int64=1; save::Bool=false])
 
-            [2; 1; 1.0; (0, 0)],
-            [2; 1; 1.0; (1, 0)],
-            [2; 1; 1.0; (0, 1)],
-            [2; 1; 1.0; (1, 1)]
-        ]
-        # filename
-        filename = "$(FOLDER_UNITCELLS)2d_unitcell_bcc_2d.jld"
-    end
+get the implementation of the *2D bcc-like square lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+NOTE: This function redirects to `getUnitcellSquare(2)` and is only kept for
+historical reasons.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [0.5, 0.5]
+
+All couplings have strength 1.0.
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellAdvancedSquare()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellBCC2D(version::Int64=1; save::Bool=false)
+
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
     if save
@@ -703,12 +757,48 @@ function getUnitcellBCC2D(version::Int64=1; save::Bool=false)
 end
 export getUnitcellBCC2D
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# FULLY CONNECTED SQUARE LATTICE
-# same as square lattice, but with additional X like couplings on the square plaquettes
-# 1 - simple, 1 site per UC (same as square), coupling ratio fixed 2:1 or adjustable
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellFullyConnectedSquare(version=1; save=true, J1=1.0, J1X=0.5)
+
+
+"""
+    getUnitcellFullyConnectedSquare([version::Int64=1; save::Bool=false, J1=1.0, J1X=0.5])
+
+get the implementation of the *2D (fully connected) square lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0]
+    a2 = [0.0, 1.0]
+
+1 site per unitcell, located at
+
+    r1 = [0.0, 0.0]
+
+All couplings have strength `J1` and `J1X` with default values
+
+    J1  = 1.0
+    J1X = 0.5
+
+but can be passed exactly as well.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellFullyConnectedSquare()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellFullyConnectedSquare(version::Int64=1; save::Bool=true, J1=1.0, J1X=0.5)
     if version == 1
         if J1==1.0 && J1X==0.5
             # the lattice vectors
@@ -775,12 +865,78 @@ export getUnitcellFullyConnectedSquare
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# TRIANGULAR LATTICE
-# 1 - simple, 1 site per UC (symmetric around x axis)
-# 3 - anisotropic coupling, 1 site per UC (symmetric around x axis)
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellTriangular(version=1; save=true)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#----------------------------
+#
+#   2D TRIANGULAR BASIS
+#
+#----------------------------
+
+
+
+
+"""
+    getUnitcellTriangular([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D triangular lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+1 site per unitcell, located at
+
+    r1 = [0.0, 0.0]
+
+All couplings have strength `1.0`.
+
+
+
+
+#### 3 - anisotropic couplings
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+1 site per unitcell, located at
+
+    r1 = [0.0, 0.0]
+
+Couplings have strengths `"1"` and `"2"`.
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellTriangular()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellTriangular(version::Int64=1; save::Bool=false)
     # SIMPLE TRIANGULAR LATTICE
     if version == 1
         # the lattice vectors
@@ -839,14 +995,94 @@ function getUnitcellTriangular(version=1; save=true)
 end
 export getUnitcellTriangular
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# HONEYCOMB LATTICE
-# 1 - simple, 2 sites per UC (symmetric around x axis, gives ZZ edge in strip)
-# 2 - simple, 2 sites per UC (symmetric around y axis, gives AC edge in strip)
-# 3 - anisotropic hopping, 2 sites per UC (symmetric around x axis, gives ZZ edge in strip)
-# 4 - Kitaev couplings
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHoneycomb(version=1; save=true)
+
+
+
+"""
+    getUnitcellHoneycomb([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D honeycomb lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple ZZ (DEFAULT) & simple ZZ Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [1/sqrt(3.0), 0.0]
+
+In a stripe, these definitions lead to a zigzag boundary.
+
+For version `1`, the coupling values are `1.0` for all bonds.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+#### 2 & 5 - simple AC & simple AC Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0),    0.0]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [1/sqrt(3.0), 0.0]
+
+In a stripe, these definitions lead to an armchair boundary.
+
+For version `2`, the coupling values are `1.0` for all bonds.
+
+For version `5`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+#### 3 - anisotropic interaction ZZ
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [1/sqrt(3.0), 0.0]
+
+In a stripe, these definitions lead to a zigzag boundary.
+
+Couplings have strengths `"1"` and `"2"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellHoneycomb()
+LatticePhysics.Unitcell(...)
+
+julia> unitcell = getUnitcellHoneycomb(2)
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
     # SIMPLE HONEYCOMB LATTICE
     if version == 1
         # the lattice vectors
@@ -980,11 +1216,44 @@ end
 export getUnitcellHoneycomb
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# KAGOME LATTICE
-# 1 - simple, 3 sites per UC (symmetric around x axis)
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellKagome(version=1; save=true)
+"""
+    getUnitcellKagome([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D Kagome lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+3 sites per unitcell, located at
+
+    r1 = [0.0, 0.0]
+    r2 = [sqrt(3.0)/4, -0.25]
+    r3 = [sqrt(3.0)/4, +0.25]
+
+All couplings have strength 1.0.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellKagome()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellKagome(version::Int64=1; save::Bool=false)
     # SIMPLE KAGOME LATTICE
     if version == 1
         # the lattice vectors
@@ -1031,11 +1300,58 @@ end
 export getUnitcellKagome
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# KAGOME MINUS LATTICE
-# 1 - simple, 6 sites per UC (symmetric around x axis)
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellKagomeMinus(version=1; save=true)
+
+"""
+    getUnitcellKagomeMinus([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D "Kagome^-" lattice* unitcell
+(similar looking to the Kagome but with additional bonds between triangles). The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+6 sites per unitcell, located at
+
+    r1  =  b1  +  1/4 * (b2 - b1)
+    r2  =  b1  +  1/4 * (b2 - a2)
+    r3  =  b1  +  1/4 * (b2 - a1)
+    r4  =  b2  +  1/4 * (b1 - b2)
+    r5  =  b2  +  1/4 * (a2 - b2)
+    r6  =  b2  +  1/4 * (a1 - b2)
+
+with the additional definition of
+
+    b1 = [0.0, 0.0]
+    b2 = [1/sqrt(3.0), 0.0]
+
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`
+as well as `"txp"`, `"typ"` and `"tzp"` for the second triangle.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellKagomeMinus()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellKagomeMinus(version::Int64=1; save::Bool=false)
     # SIMPLE KAGOME MINUS LATTICE
     if version == 1
         # the lattice vectors
@@ -1132,12 +1448,59 @@ function getUnitcellKagomeMinus(version=1; save=true)
 end
 export getUnitcellKagomeMinus
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# HONEYCOMB-XXX LATTICE
-# 1 - simple, 11 sites per UC (symmetric around x axis, gives ZZ edge in strip, all couplings identical)
-# 2 - simple, 11 sites per UC (symmetric around x axis, gives ZZ edge in strip, couplings fine tuned to be square root)
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHoneycombXXX(version=1; save=true)
+
+
+
+"""
+    getUnitcellHoneycombXXX([version::Int64=1; save::Bool=false])
+
+get the implementation of the *2D honeycomb-XXX lattice* unitcell
+(similar looking to the honeycomb but with 3 additional sites on every bond). The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 2 - simple (DEFAULT) & fine-tuned simple
+
+Bravais lattice vectors are
+
+    a1 = [sqrt(3.0)/2, -0.5]
+    a2 = [sqrt(3.0)/2, +0.5]
+
+11 sites per unitcell, located at
+
+    r1  = [0.0,        0.0]
+    r2  = [0.57735,    0.0]
+    r3  = [0.288675,   0.0]
+    r4  = [-0.144338,  0.25]
+    r5  = [-0.144338, -0.25]
+    r6  = [0.144338,   0.0]
+    r7  = [0.433013,   0.0]
+    r8  = [-0.0721688, 0.125]
+    r9  = [-0.216506,  0.375]
+    r10 = [-0.0721688,-0.125]
+    r11 = [-0.216506, -0.375]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `2`, the couplings are fine-tuned to be a perfect squareroot
+as `sqrt(sqrt(3.0/2.0))` and `sqrt(sqrt(2.0/3.0))`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellHoneycombXXX()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellHoneycombXXX(version::Int64=1; save::Bool=false)
     # distinguish by version
     if version == 1
        # the lattice vectors
@@ -1253,6 +1616,23 @@ function getUnitcellHoneycombXXX(version=1; save=true)
     return uc
 end
 export getUnitcellHoneycombXXX
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
