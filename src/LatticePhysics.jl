@@ -127,14 +127,31 @@ export buildFolders
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
 #   TYPE DEFINITIONS OF OBJECT CLASSES IN JULIA
 #
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
-
+#   STRUCTURE OF THE FILE "LatticePhysics_type_definitions.jl"
+#
+#   1) Definition of UNITCELL OBJECT
+#       - Saving
+#       - Loading
+#
+#   2) Definition of LATTICE OBJECT
+#       - Saving
+#       - Loading
+#
+#   3) CONVERSION LATTICE --> UNITCELL
+#
+#   4) OBTAINING GENERAL INFORMATION
+#       - Print Information (printInfo(..))
+#       - obtain the connection strengths of an object
+#
+#   5) OBTAINING CONNECTIVITY INFORMATION
+#       - getConnectivityList(..)
+#       - getConnectionList(..)
+#
+################################################################################
 
 # included in subfile
 include("LatticePhysics_type_definitions.jl")
