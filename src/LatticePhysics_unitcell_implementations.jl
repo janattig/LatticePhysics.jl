@@ -796,6 +796,9 @@ but can be passed exactly as well.
 ```julia-repl
 julia> unitcell = getUnitcellFullyConnectedSquare()
 LatticePhysics.Unitcell(...)
+
+julia> unitcell = getUnitcellFullyConnectedSquare(J1=1.0, J1X=10.0)
+LatticePhysics.Unitcell(...)
 ```
 """
 function getUnitcellFullyConnectedSquare(version::Int64=1; save::Bool=true, J1=1.0, J1X=0.5)
@@ -1638,6 +1641,17 @@ export getUnitcellHoneycombXXX
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 #
 #   Individual FUNCTIONS FOR 3D UNITCELLS
@@ -1650,13 +1664,64 @@ export getUnitcellHoneycombXXX
 
 
 
+
+#----------------------------
+#
+#   3D CUBIC (FCC) BASIS
+#
+#----------------------------
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # DIAMOND LATTICE
 # 1 - simple, 2 sites per UC, all connections have interaction strength J1
 # 2 - 2 sites per UC, additional next-nearest neighbor connections, interaction strengths are J1 and J2
 # 3 - 2 sites per UC, additional anisotropic next-nearest neighbor connections, interaction strengths are J1 and J21, J22
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellDiamond(version=1; save=true, J1=1.0, J2=0.5, J21="J21", J22="J22")
+
+"""
+    getUnitcellDiamond([version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, J21="J21", J22="J22"])
+
+get the implementation of the *3D diamond lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 2 & 3 - simple (DEFAULT) & simple with NNN & simple with NNN and anisotropy
+
+Bravais lattice vectors are
+
+    a1 = 0.5 .* [0, 1, 1]
+    a2 = 0.5 .* [1, 0, 1]
+    a3 = 0.5 .* [1, 1, 0]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+    r2 = [0.25, 0.25, 0.25]
+
+For version `1`, all couplings have strength `J1` (default: `J1=1.0`).
+
+For version `2`, the couplings furthermore include next-nearest neighbors with
+strength `J2` (default: `J2=0.5`).
+
+For version `3`, the next-nearest neighbor couplings are split between those with
+strength `"J21"` and those with strength `"J22"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellDiamond()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, J21="J21", J22="J22")
     if version == 1
         # the lattice vectors
         a1 = 0.5 .* [0, 1, 1]
