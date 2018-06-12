@@ -2903,7 +2903,7 @@ For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, 
 
 
 
-#### 2 & 5 - shifted & shifted Kitaev
+#### 2 & 5 - alternative & alternative Kitaev
 
 Bravais lattice vectors are
 
@@ -3250,12 +3250,54 @@ end
 export getUnitcell_9_3_a
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# HYPEROCTAGON LATTICE (10,3)a
-# 1 - simple, 4 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHyperoctagon(version::Int64=1; save::Bool=false)
+
+"""
+    getUnitcell_10_3_a([version::Int64=1; save::Bool=false])
+    getUnitcellHyperoctagon([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (10,3)a / hyperoctagon lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [1.0,  0.0,  0.0]
+    a2 = [0.5,  0.5, -0.5]
+    a3 = [0.5,  0.5,  0.5]
+
+4 sites per unitcell, located at
+
+    r1 = [1/8,  1/8,  1/8]
+    r2 = [5/8,  3/8, -1/8]
+    r3 = [3/8,  1/8, -1/8]
+    r4 = [7/8,  3/8,  1/8]
+
+Note that the unitcell in this implementation is not bipartite (although the lattice itself is bipartite)!
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_10_3_a()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -3267,37 +3309,33 @@ function getUnitcellHyperoctagon(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            [0.125, 0.125, 0.125],
+            [1/8., 1/8.,  1/8.],
             [5/8., 3/8., -1/8.],
             [3/8., 1/8., -1/8.],
-            [7/8., 3/8., 1/8.]
+            [7/8., 3/8.,  1/8.]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 3; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 0, 0)],  # zz
-            [2; 4; J1; (0, 0, 0)],
+            [1; 3; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],  # zz
+            [2; 4; 1.0; (0, 0, 0)],
 
-            [3; 1; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],  # zz
-            [4; 2; J1; (0, 0, 0)],
+            [3; 1; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],  # zz
+            [4; 2; 1.0; (0, 0, 0)],
 
-            [4; 1; J1; (1, 0, 0)],  # zz
-            [1; 4; J1; (-1, 0, 0)], # zz
+            [4; 1; 1.0; (1, 0, 0)],  # zz
+            [1; 4; 1.0; (-1, 0, 0)], # zz
 
-            [2; 1; J1; (0, 1, 0)],
-            [1; 2; J1; (0, -1, 0)],
+            [2; 1; 1.0; (0, 1, 0)],
+            [1; 2; 1.0; (0, -1, 0)],
 
-            [3; 4; J1; (0, 0, -1)],
-            [4; 3; J1; (0, 0, 1)],
+            [3; 4; 1.0; (0, 0, -1)],
+            [4; 3; 1.0; (0, 0, 1)],
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_hyperoctagon_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_hyperoctagon_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_hyperoctagon_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -3309,10 +3347,10 @@ function getUnitcellHyperoctagon(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            [0.125, 0.125, 0.125],
+            [1/8., 1/8.,  1/8.],
             [5/8., 3/8., -1/8.],
             [3/8., 1/8., -1/8.],
-            [7/8., 3/8., 1/8.]
+            [7/8., 3/8.,  1/8.]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -3345,25 +3383,88 @@ function getUnitcellHyperoctagon(version::Int64=1; save::Bool=false)
     # return the unitcell
     return uc
 end
-function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
-    return getUnitcellHyperoctagon(version, save=save, J1=J1)
-end
-export getUnitcellHyperoctagon
-export getUnitcell_10_3_a
+getUnitcellHyperoctagon = getUnitcell_10_3_a
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# HYPERHONEYCOMB LATTICE (10,3)b
-# 1 - simple, 4 sites per UC, all connections have interaction strength J1
-# 2 - simple, 4 sites per UC, all connections have interaction strength J1, site 4 shifted through the unitcell
-# 4 - Kitaev
-# 5 - Kitaev shifted unitcell
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
+export getUnitcell_10_3_a
+export getUnitcellHyperoctagon
+
+
+
+
+
+
+"""
+    getUnitcell_10_3_b([version::Int64=1; save::Bool=false])
+    getUnitcellHyperhoneycomb([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (10,3)b / hyperhoneycomb lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [-1.0,  1.0, -2.0]
+    a2 = [-1.0,  1.0,  2.0]
+    a3 = [ 2.0,  4.0,  0.0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+    r2 = [1.0,  1.0,  0.0]
+    r3 = [1.0,  2.0,  1.0]
+    r4 = [0.0, -1.0,  1.0]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+#### 2 & 5 - shifted & shifted Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [-1.0,  1.0, -2.0]
+    a2 = [-1.0,  1.0,  2.0]
+    a3 = [ 2.0,  4.0,  0.0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+    r2 = [1.0,  1.0,  0.0]
+    r3 = [1.0,  2.0,  1.0]
+    r4 = [2.0,  3.0,  1.0]
+
+which is the same definition as 1 & 4 but with site 4 shifted through the unitcell along a3 direction.
+
+For version `2`, all couplings have strength 1.0.
+
+For version `5`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_10_3_b()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
-        a1 = [-1, 1, -2]
-        a2 = [-1, 1, 2]
-        a3 = [2, 4, 0]
+        a1 = [-1.0,  1.0, -2.0]
+        a2 = [-1.0,  1.0,  2.0]
+        a3 = [ 2.0,  4.0,  0.0]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -3378,33 +3479,29 @@ function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 4; J1; (0, 0, 0)],
-            [1; 4; J1; (1, 0, 0)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [1; 4; 1.0; (0, 0, 0)],
+            [1; 4; 1.0; (1, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],
-            [2; 3; J1; (0, -1, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, -1, 0)],
 
-            [3; 2; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 1, 0)],
-            [3; 4; J1; (0, 0, 1)],
+            [3; 2; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 1, 0)],
+            [3; 4; 1.0; (0, 0, 1)],
 
-            [4; 1; J1; (0, 0, 0)],
-            [4; 1; J1; (-1, 0, 0)],
-            [4; 3; J1; (0, 0, -1)]
+            [4; 1; 1.0; (0, 0, 0)],
+            [4; 1; 1.0; (-1, 0, 0)],
+            [4; 3; 1.0; (0, 0, -1)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v1_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v1_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v1_unitcell.jld"
     elseif version == 2
         # the lattice vectors
-        a1 = [-1, 1, -2]
-        a2 = [-1, 1, 2]
-        a3 = [2, 4, 0]
+        a1 = [-1.0,  1.0, -2.0]
+        a2 = [-1.0,  1.0,  2.0]
+        a3 = [ 2.0,  4.0,  0.0]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -3419,33 +3516,29 @@ function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 4; J1; (0, 0, -1)],
-            [1; 4; J1; (1, 0, -1)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [1; 4; 1.0; (0, 0, -1)],
+            [1; 4; 1.0; (1, 0, -1)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],
-            [2; 3; J1; (0, -1, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, -1, 0)],
 
-            [3; 2; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 1, 0)],
-            [3; 4; J1; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 1, 0)],
+            [3; 4; 1.0; (0, 0, 0)],
 
-            [4; 1; J1; (0, 0, 1)],
-            [4; 1; J1; (-1, 0, 1)],
-            [4; 3; J1; (0, 0, 0)]
+            [4; 1; 1.0; (0, 0, 1)],
+            [4; 1; 1.0; (-1, 0, 1)],
+            [4; 3; 1.0; (0, 0, 0)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_v2_unitcell.jld"
     elseif version == 4
         # the lattice vectors
-        a1 = [-1, 1, -2]
-        a2 = [-1, 1, 2]
-        a3 = [2, 4, 0]
+        a1 = [-1.0,  1.0, -2.0]
+        a2 = [-1.0,  1.0,  2.0]
+        a3 = [ 2.0,  4.0,  0.0]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -3480,9 +3573,9 @@ function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
         filename = "$(FOLDER_UNITCELLS)3d_hyperhoneycomb_kitaev_unitcell.jld"
     elseif version == 5
         # the lattice vectors
-        a1 = [-1, 1, -2]
-        a2 = [-1, 1, 2]
-        a3 = [2, 4, 0]
+        a1 = [-1.0,  1.0, -2.0]
+        a2 = [-1.0,  1.0,  2.0]
+        a3 = [ 2.0,  4.0,  0.0]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -3524,17 +3617,58 @@ function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
     # return the unitcell
     return uc
 end
-function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
-    return getUnitcellHyperhoneycomb(version, save=save, J1=J1)
-end
+getUnitcellHyperhoneycomb = getUnitcell_10_3_b
+
 export getUnitcellHyperhoneycomb
 export getUnitcell_10_3_b
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (10,3)c
-# 1 - simple, 6 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+"""
+    getUnitcell_10_3_c([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (10,3)c lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [ 1.0,       0.0,         0.0]
+    a2 = [-0.5, sqrt(3)/2,         0.0]
+    a3 = [ 0.0,       0.0, 3*sqrt(3)/2]
+
+6 sites per unitcell, located at
+
+    r1 = [0.25, 1/(4*sqrt(3)), 1/(2*sqrt(3))],
+    r2 = [0.75, 1/(4*sqrt(3)), 2/sqrt(3)],
+    r3 = [0.5,  1/sqrt(3),     7/(2*sqrt(3))],
+    r4 = [0.75, 1/(4*sqrt(3)), 1/sqrt(3)],
+    r5 = [0.5,  1/sqrt(3),     5/(2*sqrt(3))],
+    r6 = [0.25, 1/(4*sqrt(3)), 4/sqrt(3)]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_10_3_c()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
@@ -3557,36 +3691,32 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 4; J1; (0, 0, 0)],
-            [4; 2; J1; (0, 0, 0)],  # zz
-            [2; 5; J1; (0, 0, 0)],
-            [5; 3; J1; (0, 0, 0)],  # zz
-            [3; 6; J1; (0, 0, 0)],
+            [1; 4; 1.0; (0, 0, 0)],
+            [4; 2; 1.0; (0, 0, 0)],  # zz
+            [2; 5; 1.0; (0, 0, 0)],
+            [5; 3; 1.0; (0, 0, 0)],  # zz
+            [3; 6; 1.0; (0, 0, 0)],
 
-            [4; 1; J1; (0, 0, 0)],
-            [2; 4; J1; (0, 0, 0)],  # zz
-            [5; 2; J1; (0, 0, 0)],
-            [3; 5; J1; (0, 0, 0)],  # zz
-            [6; 3; J1; (0, 0, 0)],
+            [4; 1; 1.0; (0, 0, 0)],
+            [2; 4; 1.0; (0, 0, 0)],  # zz
+            [5; 2; 1.0; (0, 0, 0)],
+            [3; 5; 1.0; (0, 0, 0)],  # zz
+            [6; 3; 1.0; (0, 0, 0)],
 
-            [4; 1; J1; (1, 0, 0)],
-            [1; 4; J1; (-1, 0, 0)],
+            [4; 1; 1.0; (1, 0, 0)],
+            [1; 4; 1.0; (-1, 0, 0)],
 
-            [5; 2; J1; (0, 1, 0)],
-            [2; 5; J1; (0, -1, 0)],
+            [5; 2; 1.0; (0, 1, 0)],
+            [2; 5; 1.0; (0, -1, 0)],
 
-            [3; 6; J1; (1, 1, 0)],
-            [6; 3; J1; (-1, -1, 0)],
+            [3; 6; 1.0; (1, 1, 0)],
+            [6; 3; 1.0; (-1, -1, 0)],
 
-            [1; 6; J1; (0, 0, -1)],  # zz
-            [6; 1; J1; (0, 0, 1)], # zz
+            [1; 6; 1.0; (0, 0, -1)],  # zz
+            [6; 1; 1.0; (0, 0, 1)], # zz
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_10_3_c_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_10_3_c_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_10_3_c_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -3645,100 +3775,145 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
 end
 export getUnitcell_10_3_c
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (10,3)d
-# 1 - simple, 8 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+"""
+    getUnitcell_10_3_d([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (10,3)d lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [ 1.0,       0.0,         0.0]
+    a2 = [-0.5, sqrt(3)/2,         0.0]
+    a3 = [ 0.0,       0.0, 3*sqrt(3)/2]
+
+8 sites per unitcell, located at
+
+    r1 = [0.0,     -a, 0.75*c]
+    r2 = [ -a,    0.0,  0.5*c]
+    r3 = [0.0,      a, 0.25*c]
+    r4 = [  a,    0.0,    0.0]
+    r5 = [ -a,   -0.5, 0.25*c]
+    r6 = [0.0,  a-0.5,  0.5*c]
+    r7 = [  a,   -0.5, 0.75*c]
+    r8 = [0.0, -a-0.5,    0.0]
+
+with the additional definition of
+
+    a = 0.25*(2 - sqrt(2))
+    c = 0.5
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_10_3_d()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a = 0.25*(2 - sqrt(2))
         c = 0.5
-        a1 = [1, 0, 0]
-        a2 = [0.5, 0.5, 0.0]
-        a3 = [0.0, 0.0, c]
+        a1 = [0.5, -0.5,  0.0]
+        a2 = [0.5,  0.5,  0.0]
+        a3 = [0.0,  0.0,  0.5]
         lattice_vectors = Array[]
-        push!(lattice_vectors, a1 - a2)
+        push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            [0.0, -a, 0.75*c],
-            [-a, 0.0, 0.5*c],
-            [0, a, 0.25*c],
-            [a, 0.0, 0.0],
-            [-a, -0.5, 0.25*c],
-            [0, a - 0.5, 0.5*c],
-            [a, -0.5, 0.75*c],
-            [0, -a - 0.5, 0.0]
+            [0.0,     -a, 0.75*c],
+            [ -a,    0.0,  0.5*c],
+            [0.0,      a, 0.25*c],
+            [  a,    0.0,    0.0],
+            [ -a,   -0.5, 0.25*c],
+            [0.0,  a-0.5,  0.5*c],
+            [  a,   -0.5, 0.75*c],
+            [0.0, -a-0.5,    0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [3; 4; J1; (0, 0, 0)],
-            [5; 6; J1; (0, 0, 0)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [3; 4; 1.0; (0, 0, 0)],
+            [5; 6; 1.0; (0, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [4; 3; J1; (0, 0, 0)],
-            [6; 5; J1; (0, 0, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [4; 3; 1.0; (0, 0, 0)],
+            [6; 5; 1.0; (0, 0, 0)],
 
-            [2; 3; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],
 
-            [6; 7; J1; (0, 0, 0)],
-            [7; 6; J1; (0, 0, 0)],
+            [6; 7; 1.0; (0, 0, 0)],
+            [7; 6; 1.0; (0, 0, 0)],
 
-            [1; 6; J1; (0, 0, 0)], #zz
-            [6; 1; J1; (0, 0, 0)], #zz
+            [1; 6; 1.0; (0, 0, 0)], #zz
+            [6; 1; 1.0; (0, 0, 0)], #zz
 
-            [4; 5; J1; (0, 1, 0)], #zz
-            [5; 4; J1; (0, -1, 0)], #zz
+            [4; 5; 1.0; (0, 1, 0)], #zz
+            [5; 4; 1.0; (0, -1, 0)], #zz
 
-            [8; 5; J1; (0, 0, 0)],
-            [5; 8; J1; (0, 0, 0)],
+            [8; 5; 1.0; (0, 0, 0)],
+            [5; 8; 1.0; (0, 0, 0)],
 
-            [8; 7; J1; (0, 0, -1)],
-            [7; 8; J1; (0, 0, 1)],
+            [8; 7; 1.0; (0, 0, -1)],
+            [7; 8; 1.0; (0, 0, 1)],
 
-            [2; 7; J1; (-1, 0, 0)], # zz
-            [7; 2; J1; (1, 0, 0)],  # zz
+            [2; 7; 1.0; (-1, 0, 0)], # zz
+            [7; 2; 1.0; (1, 0, 0)],  # zz
 
-            [3; 8; J1; (-1, 1, 0)], # zz
-            [8; 3; J1; (1, -1, 0)],  # zz
+            [3; 8; 1.0; (-1, 1, 0)], # zz
+            [8; 3; 1.0; (1, -1, 0)],  # zz
 
-            [1; 4; J1; (0, 0, 1)],
-            [4; 1; J1; (0, 0, -1)],
+            [1; 4; 1.0; (0, 0, 1)],
+            [4; 1; 1.0; (0, 0, -1)],
 
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_10_3_d_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_10_3_d_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_10_3_d_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a = 0.25*(2 - sqrt(2))
         c = 0.5
-        a1 = [1, 0, 0]
-        a2 = [0.5, 0.5, 0.0]
-        a3 = [0.0, 0.0, c]
+        a1 = [0.5, -0.5,  0.0]
+        a2 = [0.5,  0.5,  0.0]
+        a3 = [0.0,  0.0,  0.5]
         lattice_vectors = Array[]
-        push!(lattice_vectors, a1 - a2)
+        push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            [0.0, -a, 0.75*c],
-            [-a, 0.0, 0.5*c],
-            [0, a, 0.25*c],
-            [a, 0.0, 0.0],
-            [-a, -0.5, 0.25*c],
-            [0, a - 0.5, 0.5*c],
-            [a, -0.5, 0.75*c],
-            [0, -a - 0.5, 0.0]
+            [0.0,     -a, 0.75*c],
+            [ -a,    0.0,  0.5*c],
+            [0.0,      a, 0.25*c],
+            [  a,    0.0,    0.0],
+            [ -a,   -0.5, 0.25*c],
+            [0.0,  a-0.5,  0.5*c],
+            [  a,   -0.5, 0.75*c],
+            [0.0, -a-0.5,    0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
