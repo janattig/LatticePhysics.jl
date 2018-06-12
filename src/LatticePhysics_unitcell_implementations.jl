@@ -4,6 +4,39 @@
 #
 #   STRUCTURE OF THE FILE
 #
+#   2D UNITCELLS
+#   - SQUARE / RECTANGLE
+#       - getUnitcellSquare
+#       - getUnitcellExtendedSquare
+#       - getUnitcellCheckerboard
+#       - getUnitcellShastrySutherland
+#       - getUnitcellAdvancedSquare
+#       - getUnitcellSquareOctagon
+#       - getUnitcellBCC2D
+#       - getUnitcellFullyConnectedSquare
+#   - TRIANGULAR
+#       - getUnitcellTriangular
+#       - getUnitcellHoneycomb
+#       - getUnitcellKagome
+#       - getUnitcellKagomeMinus
+#       - getUnitcellHoneycombXXX
+#
+#   3D UNITCELLS
+#   - CUBIC / FCC
+#       - getUnitcellDiamond
+#       - getUnitcellBCC
+#       - getUnitcellPyrochlore
+#   - (X,3)y FAMILY
+#       - getUnitcell_8_3_a
+#       - getUnitcell_8_3_b
+#       - getUnitcell_8_3_c
+#       - getUnitcell_8_3_n
+#       - getUnitcell_9_3_a
+#       - getUnitcell_10_3_a / getUnitcellHyperoctagon
+#       - getUnitcell_10_3_b / getUnitcellHyperhoneycomb
+#       - getUnitcell_10_3_c
+#       - getUnitcell_10_3_d
+#
 ################################################################################
 
 
