@@ -93,7 +93,10 @@ mutable struct Unitcell
 
 
 
-
+    # the general constructor
+    function Unitcell(lattice_vectors::Array{Array, 1}, basis::Array{Array,1}, connections::Array{Array,1}, filename::String)
+        return new(lattice_vectors, basis, connections, filename)
+    end
     # the custom constructor when loading a unitcell from a file
     function Unitcell(filename::String)
         # define an empty unitcell
@@ -324,6 +327,20 @@ type Lattice
 	# Filename of the jld file
     filename::String
 
+
+	# general Constructor if everything is given
+    function Lattice(
+				unitcell::Unitcell,
+				unitcellRepetitions::Array{Int64, 1},
+				lattice_vectors::Array{Array{Float64, 1}, 1},
+				positions::Array{Array{Float64, 1}, 1},
+				positions_indices::Array{Int64, 1},
+				connections::Array{Array{Any, 1}, 1},
+				filename::String
+			)
+        # just initialize everything and set the position indices to 1
+        return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
+    end
 
 
 	# Constructor if no position indices should be given
