@@ -1671,15 +1671,9 @@ export getUnitcellHoneycombXXX
 #
 #----------------------------
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# DIAMOND LATTICE
-# 1 - simple, 2 sites per UC, all connections have interaction strength J1
-# 2 - 2 sites per UC, additional next-nearest neighbor connections, interaction strengths are J1 and J2
-# 3 - 2 sites per UC, additional anisotropic next-nearest neighbor connections, interaction strengths are J1 and J21, J22
-#-----------------------------------------------------------------------------------------------------------------------------
 
 """
-    getUnitcellDiamond([version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, J21="J21", J22="J22"])
+    getUnitcellDiamond([version::Int64=1; save::Bool=false])
 
 get the implementation of the *3D diamond lattice* unitcell. The `version` integer
 specifies the exact implementation convention that is used and the boolean `save`
@@ -1702,10 +1696,10 @@ Bravais lattice vectors are
     r1 = [0.0,  0.0,  0.0]
     r2 = [0.25, 0.25, 0.25]
 
-For version `1`, all couplings have strength `J1` (default: `J1=1.0`).
+For version `1`, all couplings have strength `1.0`.
 
-For version `2`, the couplings furthermore include next-nearest neighbors with
-strength `J2` (default: `J2=0.5`).
+For version `2`, the nearest neighbor couplings have strength `"J1"` and the lattice
+includes next-nearest neighbor couplings with strength `"J2"`.
 
 For version `3`, the next-nearest neighbor couplings are split between those with
 strength `"J21"` and those with strength `"J22"`.
@@ -1721,7 +1715,7 @@ julia> unitcell = getUnitcellDiamond()
 LatticePhysics.Unitcell(...)
 ```
 """
-function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, J21="J21", J22="J22")
+function getUnitcellDiamond(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = 0.5 .* [0, 1, 1]
@@ -1739,15 +1733,15 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, 
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 2; J1; (-1, 0, 0)],
-            [1; 2; J1; (0, -1, 0)],
-            [1; 2; J1; (0, 0, -1)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [1; 2; 1.0; (-1, 0, 0)],
+            [1; 2; 1.0; (0, -1, 0)],
+            [1; 2; 1.0; (0, 0, -1)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 1; J1; (1, 0, 0)],
-            [2; 1; J1; (0, 1, 0)],
-            [2; 1; J1; (0, 0, 1)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [2; 1; 1.0; (1, 0, 0)],
+            [2; 1; 1.0; (0, 1, 0)],
+            [2; 1; 1.0; (0, 0, 1)],
         ]
         # filename
         if J1==1.0
@@ -1772,45 +1766,45 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, 
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 2; J1; (-1, 0, 0)],
-            [1; 2; J1; (0, -1, 0)],
-            [1; 2; J1; (0, 0, -1)],
+            [1; 2; "J1"; (0, 0, 0)],
+            [1; 2; "J1"; (-1, 0, 0)],
+            [1; 2; "J1"; (0, -1, 0)],
+            [1; 2; "J1"; (0, 0, -1)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 1; J1; (1, 0, 0)],
-            [2; 1; J1; (0, 1, 0)],
-            [2; 1; J1; (0, 0, 1)],
-
-
-            [1; 1; J2; (1, 0, 0)],
-            [1; 1; J2; (-1, 0, 0)],
-            [1; 1; J2; (0, 1, 0)],
-            [1; 1; J2; (0, -1, 0)],
-            [1; 1; J2; (0, 0, 1)],
-            [1; 1; J2; (0, 0, -1)],
-
-            [1; 1; J2; (1, -1, 0)],
-            [1; 1; J2; (-1, 1, 0)],
-            [1; 1; J2; (0, 1, -1)],
-            [1; 1; J2; (0, -1, 1)],
-            [1; 1; J2; (-1, 0, 1)],
-            [1; 1; J2; (1, 0, -1)],
+            [2; 1; "J1"; (0, 0, 0)],
+            [2; 1; "J1"; (1, 0, 0)],
+            [2; 1; "J1"; (0, 1, 0)],
+            [2; 1; "J1"; (0, 0, 1)],
 
 
-            [2; 2; J2; (1, 0, 0)],
-            [2; 2; J2; (-1, 0, 0)],
-            [2; 2; J2; (0, 1, 0)],
-            [2; 2; J2; (0, -1, 0)],
-            [2; 2; J2; (0, 0, 1)],
-            [2; 2; J2; (0, 0, -1)],
+            [1; 1; "J2"; (1, 0, 0)],
+            [1; 1; "J2"; (-1, 0, 0)],
+            [1; 1; "J2"; (0, 1, 0)],
+            [1; 1; "J2"; (0, -1, 0)],
+            [1; 1; "J2"; (0, 0, 1)],
+            [1; 1; "J2"; (0, 0, -1)],
 
-            [2; 2; J2; (1, -1, 0)],
-            [2; 2; J2; (-1, 1, 0)],
-            [2; 2; J2; (0, 1, -1)],
-            [2; 2; J2; (0, -1, 1)],
-            [2; 2; J2; (-1, 0, 1)],
-            [2; 2; J2; (1, 0, -1)]
+            [1; 1; "J2"; (1, -1, 0)],
+            [1; 1; "J2"; (-1, 1, 0)],
+            [1; 1; "J2"; (0, 1, -1)],
+            [1; 1; "J2"; (0, -1, 1)],
+            [1; 1; "J2"; (-1, 0, 1)],
+            [1; 1; "J2"; (1, 0, -1)],
+
+
+            [2; 2; "J2"; (1, 0, 0)],
+            [2; 2; "J2"; (-1, 0, 0)],
+            [2; 2; "J2"; (0, 1, 0)],
+            [2; 2; "J2"; (0, -1, 0)],
+            [2; 2; "J2"; (0, 0, 1)],
+            [2; 2; "J2"; (0, 0, -1)],
+
+            [2; 2; "J2"; (1, -1, 0)],
+            [2; 2; "J2"; (-1, 1, 0)],
+            [2; 2; "J2"; (0, 1, -1)],
+            [2; 2; "J2"; (0, -1, 1)],
+            [2; 2; "J2"; (-1, 0, 1)],
+            [2; 2; "J2"; (1, 0, -1)]
         ]
         # filename
         if J1==1.0 && J2==0.5
@@ -1835,45 +1829,45 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, 
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 2; J1; (-1, 0, 0)],
-            [1; 2; J1; (0, -1, 0)],
-            [1; 2; J1; (0, 0, -1)],
+            [1; 2; "J1"; (0, 0, 0)],
+            [1; 2; "J1"; (-1, 0, 0)],
+            [1; 2; "J1"; (0, -1, 0)],
+            [1; 2; "J1"; (0, 0, -1)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 1; J1; (1, 0, 0)],
-            [2; 1; J1; (0, 1, 0)],
-            [2; 1; J1; (0, 0, 1)],
-
-
-            [1; 1; J21; (1, 0, 0)],
-            [1; 1; J21; (-1, 0, 0)],
-            [1; 1; J21; (0, 1, 0)],
-            [1; 1; J21; (0, -1, 0)],
-            [1; 1; J22; (0, 0, 1)],
-            [1; 1; J22; (0, 0, -1)],
-
-            [1; 1; J22; (1, -1, 0)],
-            [1; 1; J22; (-1, 1, 0)],
-            [1; 1; J21; (0, 1, -1)],
-            [1; 1; J21; (0, -1, 1)],
-            [1; 1; J21; (-1, 0, 1)],
-            [1; 1; J21; (1, 0, -1)],
+            [2; 1; "J1"; (0, 0, 0)],
+            [2; 1; "J1"; (1, 0, 0)],
+            [2; 1; "J1"; (0, 1, 0)],
+            [2; 1; "J1"; (0, 0, 1)],
 
 
-            [2; 2; J21; (1, 0, 0)],
-            [2; 2; J21; (-1, 0, 0)],
-            [2; 2; J21; (0, 1, 0)],
-            [2; 2; J21; (0, -1, 0)],
-            [2; 2; J22; (0, 0, 1)],
-            [2; 2; J22; (0, 0, -1)],
+            [1; 1; "J21"; (1, 0, 0)],
+            [1; 1; "J21"; (-1, 0, 0)],
+            [1; 1; "J21"; (0, 1, 0)],
+            [1; 1; "J21"; (0, -1, 0)],
+            [1; 1; "J22"; (0, 0, 1)],
+            [1; 1; "J22"; (0, 0, -1)],
 
-            [2; 2; J22; (1, -1, 0)],
-            [2; 2; J22; (-1, 1, 0)],
-            [2; 2; J21; (0, 1, -1)],
-            [2; 2; J21; (0, -1, 1)],
-            [2; 2; J21; (-1, 0, 1)],
-            [2; 2; J21; (1, 0, -1)]
+            [1; 1; "J22"; (1, -1, 0)],
+            [1; 1; "J22"; (-1, 1, 0)],
+            [1; 1; "J21"; (0, 1, -1)],
+            [1; 1; "J21"; (0, -1, 1)],
+            [1; 1; "J21"; (-1, 0, 1)],
+            [1; 1; "J21"; (1, 0, -1)],
+
+
+            [2; 2; "J21"; (1, 0, 0)],
+            [2; 2; "J21"; (-1, 0, 0)],
+            [2; 2; "J21"; (0, 1, 0)],
+            [2; 2; "J21"; (0, -1, 0)],
+            [2; 2; "J22"; (0, 0, 1)],
+            [2; 2; "J22"; (0, 0, -1)],
+
+            [2; 2; "J22"; (1, -1, 0)],
+            [2; 2; "J22"; (-1, 1, 0)],
+            [2; 2; "J21"; (0, 1, -1)],
+            [2; 2; "J21"; (0, -1, 1)],
+            [2; 2; "J21"; (-1, 0, 1)],
+            [2; 2; "J21"; (1, 0, -1)]
         ]
         # filename
         if J1==1.0 && J21=="J21" && J22=="J22"
@@ -1892,11 +1886,44 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false, J1=1.0, J2=0.5, 
 end
 export getUnitcellDiamond
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# BCC LATTICE
-# 1 - simple, 2 sites per UC, all connections have interaction strength J1
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellBCC(version=1; save=true, J1=1.0)
+
+"""
+    getUnitcellBCC([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D body centered cubic (BCC) lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1, 0, 0]
+    a2 = [0, 1, 0]
+    a3 = [0, 0, 1]
+
+2 sites per unitcell, located at
+
+    r1 = [0.0, 0.0, 0.0]
+    r2 = [0.5, 0.5, 0.5]
+
+All couplings have strength `1.0`.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellBCC()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellBCC(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -1914,23 +1941,23 @@ function getUnitcellBCC(version=1; save=true, J1=1.0)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 2; J1; (-1, 0, 0)],
-            [1; 2; J1; (0, -1, 0)],
-            [1; 2; J1; (-1, -1, 0)],
-            [1; 2; J1; (0, 0, -1)],
-            [1; 2; J1; (-1, 0, -1)],
-            [1; 2; J1; (0, -1, -1)],
-            [1; 2; J1; (-1, -1, -1)],
+            [1; 2; 1.0; ( 0,  0,  0)],
+            [1; 2; 1.0; (-1,  0,  0)],
+            [1; 2; 1.0; ( 0, -1,  0)],
+            [1; 2; 1.0; (-1, -1,  0)],
+            [1; 2; 1.0; ( 0,  0, -1)],
+            [1; 2; 1.0; (-1,  0, -1)],
+            [1; 2; 1.0; ( 0, -1, -1)],
+            [1; 2; 1.0; (-1, -1, -1)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [2; 1; J1; (1, 0, 0)],
-            [2; 1; J1; (0, 1, 0)],
-            [2; 1; J1; (1, 1, 0)],
-            [2; 1; J1; (0, 0, 1)],
-            [2; 1; J1; (1, 0, 1)],
-            [2; 1; J1; (0, 1, 1)],
-            [2; 1; J1; (1, 1, 1)]
+            [2; 1; 1.0; (0, 0, 0)],
+            [2; 1; 1.0; (1, 0, 0)],
+            [2; 1; 1.0; (0, 1, 0)],
+            [2; 1; 1.0; (1, 1, 0)],
+            [2; 1; 1.0; (0, 0, 1)],
+            [2; 1; 1.0; (1, 0, 1)],
+            [2; 1; 1.0; (0, 1, 1)],
+            [2; 1; 1.0; (1, 1, 1)]
         ]
         # filename
         if J1==1.0
@@ -1949,11 +1976,49 @@ function getUnitcellBCC(version=1; save=true, J1=1.0)
 end
 export getUnitcellBCC
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# PYROCHLORE LATTICE
-# 1 - simple, 4 sites per UC, all connections have interaction strength J1
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellPyrochlore(version=1; save=true, J1=1.0)
+
+
+
+"""
+    getUnitcellPyrochlore([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D pyrochlore lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = 0.5 .* [0, 1, 1]
+    a2 = 0.5 .* [1, 0, 1]
+    a3 = 0.5 .* [1, 1, 0]
+
+4 sites per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+    r2 = [0.0,  0.25, 0.25]
+    r3 = [0.25, 0.0,  0.25]
+    r4 = [0.25, 0.25, 0.0]
+
+All couplings have strength `1.0`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellPyrochlore()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellPyrochlore(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [0, 0.5, 0.5]
@@ -1973,33 +2038,33 @@ function getUnitcellPyrochlore(version=1; save=true, J1=1.0)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [1; 3; J1; (0, 0, 0)],
-            [1; 4; J1; (0, 0, 0)],
-            [2; 1; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],
-            [2; 4; J1; (0, 0, 0)],
-            [3; 1; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 0, 0)],
-            [3; 4; J1; (0, 0, 0)],
-            [4; 1; J1; (0, 0, 0)],
-            [4; 2; J1; (0, 0, 0)],
-            [4; 3; J1; (0, 0, 0)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [1; 3; 1.0; (0, 0, 0)],
+            [1; 4; 1.0; (0, 0, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [2; 4; 1.0; (0, 0, 0)],
+            [3; 1; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],
+            [3; 4; 1.0; (0, 0, 0)],
+            [4; 1; 1.0; (0, 0, 0)],
+            [4; 2; 1.0; (0, 0, 0)],
+            [4; 3; 1.0; (0, 0, 0)],
 
-            [1; 4; J1; (0, 0, -1)],
-            [4; 1; J1; (0, 0, 1)],
-            [1; 2; J1; (-1, 0, 0)],
-            [2; 1; J1; (1, 0, 0)],
-            [1; 3; J1; (0, -1, 0)],
-            [3; 1; J1; (0, 1, 0)],
+            [1; 4; 1.0; (0, 0, -1)],
+            [4; 1; 1.0; (0, 0, 1)],
+            [1; 2; 1.0; (-1, 0, 0)],
+            [2; 1; 1.0; (1, 0, 0)],
+            [1; 3; 1.0; (0, -1, 0)],
+            [3; 1; 1.0; (0, 1, 0)],
 
-            [2; 3; J1; (1, -1, 0)],
-            [3; 2; J1; (-1, 1, 0)],
-            [2; 4; J1; (1, 0, -1)],
-            [4; 2; J1; (-1, 0, 1)],
+            [2; 3; 1.0; (1, -1, 0)],
+            [3; 2; 1.0; (-1, 1, 0)],
+            [2; 4; 1.0; (1, 0, -1)],
+            [4; 2; 1.0; (-1, 0, 1)],
 
-            [3; 4; J1; (0, 1, -1)],
-            [4; 3; J1; (0, -1, 1)]
+            [3; 4; 1.0; (0, 1, -1)],
+            [4; 3; 1.0; (0, -1, 1)]
         ]
         # filename
         if J1==1.0
@@ -2019,12 +2084,77 @@ end
 export getUnitcellPyrochlore
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (8,3)a
-# 1 - simple, 6 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------
+#
+#   (X,3)y FAMILY OF LATTICES (in 3D)
+#
+#-----------------------------------------
+
+
+
+
+
+"""
+    getUnitcell_8_3_a([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (8,3)a lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [ 1.0,         0.0,            0.0]
+    a2 = [-0.5,  sqrt(3)/2.,            0.0]
+    a3 = [ 0.0,         0.0, (3*sqrt(2))/5.]
+
+6 sites per unitcell, located at
+
+    r1 = [ 0.5,     sqrt(3)/10.,            0.0]
+    r2 = [3/5.,      sqrt(3)/5., (2*sqrt(2))/5.]
+    r3 = [ 0.1, (3*sqrt(3))/10.,     sqrt(2)/5.]
+    r4 = [ 0.4,      sqrt(3)/5.,     sqrt(2)/5.]
+    r5 = [ 0.0,  (2*sqrt(3))/5.,            0.0]
+    r6 = [-0.1, (3*sqrt(3))/10., (2*sqrt(2))/5.]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_8_3_a()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1.0, 0.0, 0.0]
@@ -2046,29 +2176,29 @@ function getUnitcell_8_3_a(version=1; save=true, J1=1.0)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 4; J1; (0, 0, 0)],
-            [4; 2; J1; (0, 0, 0)], # zz
-            [4; 3; J1; (0, 0, 0)],
-            [5; 3; J1; (0, 0, 0)],
-            [3; 6; J1; (0, 0, 0)], # zz
+            [1; 4; 1.0; (0, 0, 0)],
+            [4; 2; 1.0; (0, 0, 0)], # zz
+            [4; 3; 1.0; (0, 0, 0)],
+            [5; 3; 1.0; (0, 0, 0)],
+            [3; 6; 1.0; (0, 0, 0)], # zz
 
-            [4; 1; J1; (0, 0, 0)],
-            [2; 4; J1; (0, 0, 0)], # zz
-            [3; 4; J1; (0, 0, 0)],
-            [3; 5; J1; (0, 0, 0)],
-            [6; 3; J1; (0, 0, 0)], # zz
+            [4; 1; 1.0; (0, 0, 0)],
+            [2; 4; 1.0; (0, 0, 0)], # zz
+            [3; 4; 1.0; (0, 0, 0)],
+            [3; 5; 1.0; (0, 0, 0)],
+            [6; 3; 1.0; (0, 0, 0)], # zz
 
-            [5; 1; J1; (0, 1, 0)], # zz
-            [1; 5; J1; (0, -1, 0)], # zz
+            [5; 1; 1.0; (0, 1, 0)], # zz
+            [1; 5; 1.0; (0, -1, 0)], # zz
 
-            [2; 6; J1; (1, 0, 0)],
-            [6; 2; J1; (-1, 0, 0)],
+            [2; 6; 1.0; (1, 0, 0)],
+            [6; 2; 1.0; (-1, 0, 0)],
 
-            [1; 2; J1; (0, 0, -1)],
-            [2; 1; J1; (0, 0, 1)],
+            [1; 2; 1.0; (0, 0, -1)],
+            [2; 1; 1.0; (0, 0, 1)],
 
-            [5; 6; J1; (0, 0, -1)],
-            [6; 5; J1; (0, 0, 1)]
+            [5; 6; 1.0; (0, 0, -1)],
+            [6; 5; 1.0; (0, 0, 1)]
         ]
         # filename
         if J1==1.0
@@ -2139,7 +2269,7 @@ export getUnitcell_8_3_a
 # 1 - simple, 6 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_8_3_b(version=1; save=true, J1=1.0)
+function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
@@ -2248,7 +2378,7 @@ export getUnitcell_8_3_b
 # 1 - simple, 8 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_8_3_c(version=1; save=true, J1=1.0)
+function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1., 0., 0.]
@@ -2381,7 +2511,7 @@ export getUnitcell_8_3_c
 # 1 - simple, 16 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_8_3_n(version=1; save=true, J1=1.0)
+function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a = [1.0, 0.0, 0.0]
@@ -2598,7 +2728,7 @@ export getUnitcell_8_3_n
 # 4 - Kitaev
 # 5 - Kitaev shifted
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_9_3_a(version=1; save=true, J1=1.0)
+function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
     if version==1
         # the lattice vectors
         a = [1.0, 0.0, 0.0]
@@ -2918,7 +3048,7 @@ export getUnitcell_9_3_a
 # 1 - simple, 4 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHyperoctagon(version=1; save=true, J1=1.0)
+function getUnitcellHyperoctagon(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -3008,7 +3138,7 @@ function getUnitcellHyperoctagon(version=1; save=true, J1=1.0)
     # return the unitcell
     return uc
 end
-function getUnitcell_10_3_a(version=1; save=true, J1=1.0)
+function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
     return getUnitcellHyperoctagon(version, save=save, J1=J1)
 end
 export getUnitcellHyperoctagon
@@ -3021,7 +3151,7 @@ export getUnitcell_10_3_a
 # 4 - Kitaev
 # 5 - Kitaev shifted unitcell
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
+function getUnitcellHyperhoneycomb(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [-1, 1, -2]
@@ -3187,7 +3317,7 @@ function getUnitcellHyperhoneycomb(version=1; save=true, J1=1.0)
     # return the unitcell
     return uc
 end
-function getUnitcell_10_3_b(version=1; save=true, J1=1.0)
+function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
     return getUnitcellHyperhoneycomb(version, save=save, J1=J1)
 end
 export getUnitcellHyperhoneycomb
@@ -3198,7 +3328,7 @@ export getUnitcell_10_3_b
 # 1 - simple, 6 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_10_3_c(version=1; save=true, J1=1.0)
+function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a1 = [1, 0, 0]
@@ -3313,7 +3443,7 @@ export getUnitcell_10_3_c
 # 1 - simple, 8 sites per UC, all connections have interaction strength J1
 # 4 - Kitaev
 #-----------------------------------------------------------------------------------------------------------------------------
-function getUnitcell_10_3_d(version=1; save=true, J1=1.0)
+function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
         a = 0.25*(2 - sqrt(2))
