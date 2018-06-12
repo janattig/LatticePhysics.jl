@@ -2201,11 +2201,7 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
             [6; 5; 1.0; (0, 0, 1)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_a_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_a_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_a_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a1 = [1.0, 0.0, 0.0]
@@ -2264,11 +2260,52 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
 end
 export getUnitcell_8_3_a
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (8,3)b
-# 1 - simple, 6 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+"""
+    getUnitcell_8_3_b([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (8,3)b lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [1/2., 1/(2*sqrt(3)),     sqrt(2)/(5*sqrt(3))]
+    a2 = [   0,     1/sqrt(3), (2*sqrt(2))/(5*sqrt(3))]
+    a3 = [   0,             0,               sqrt(6)/5]
+
+6 sites per unitcell, located at
+
+    r1 = [1/10.,   1/(2*sqrt(3)),     sqrt(2)/(5*sqrt(3))]
+    r2 = [ 1/5.,       sqrt(3)/5,               sqrt(6)/5]
+    r3 = [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))]
+    r4 = [ 1/5.,   2/(5*sqrt(3)), (2*sqrt(2))/(5*sqrt(3))]
+    r5 = [3/10., (3*sqrt(3))/10.,               sqrt(6)/5]
+    r6 = [ 2/5.,       1/sqrt(3),         sqrt(2)/sqrt(3)]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_8_3_b()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
@@ -2291,29 +2328,29 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 4; J1; (0, 0, 0)], # zz
-            [4; 2; J1; (0, 0, 0)],
-            [2; 5; J1; (0, 0, 0)], # zz
-            [5; 3; J1; (0, 0, 0)],
-            [3; 6; J1; (0, 0, 0)], # zz
+            [1; 4; 1.0; (0, 0, 0)], # zz
+            [4; 2; 1.0; (0, 0, 0)],
+            [2; 5; 1.0; (0, 0, 0)], # zz
+            [5; 3; 1.0; (0, 0, 0)],
+            [3; 6; 1.0; (0, 0, 0)], # zz
 
-            [4; 1; J1; (0, 0, 0)], # zz
-            [2; 4; J1; (0, 0, 0)],
-            [5; 2; J1; (0, 0, 0)], # zz
-            [3; 5; J1; (0, 0, 0)],
-            [6; 3; J1; (0, 0, 0)], # zz
+            [4; 1; 1.0; (0, 0, 0)], # zz
+            [2; 4; 1.0; (0, 0, 0)],
+            [5; 2; 1.0; (0, 0, 0)], # zz
+            [3; 5; 1.0; (0, 0, 0)],
+            [6; 3; 1.0; (0, 0, 0)], # zz
 
-            [6; 1; J1; (1, 0, 1)],
-            [1; 6; J1; (-1, 0, -1)],
+            [6; 1; 1.0; (1, 0, 1)],
+            [1; 6; 1.0; (-1, 0, -1)],
 
-            [4; 3; J1; (0, -1, 0)],
-            [3; 4; J1; (0, 1, 0)],
+            [4; 3; 1.0; (0, -1, 0)],
+            [3; 4; 1.0; (0, 1, 0)],
 
-            [1; 2; J1; (0, 0, -1)],
-            [2; 1; J1; (0, 0, 1)],
+            [1; 2; 1.0; (0, 0, -1)],
+            [2; 1; 1.0; (0, 0, 1)],
 
-            [5; 6; J1; (0, 0, -1)],
-            [6; 5; J1; (0, 0, 1)]
+            [5; 6; 1.0; (0, 0, -1)],
+            [6; 5; 1.0; (0, 0, 1)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_8_3_b_unitcell.jld"
@@ -2373,11 +2410,53 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
 end
 export getUnitcell_8_3_b
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (8,3)c
-# 1 - simple, 8 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+"""
+    getUnitcell_8_3_c([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (8,3)c lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [   1.,         0.,   0.]
+    a2 = [-1/2., sqrt(3)/2.,   0.]
+    a3 = [   0.,         0., 2/5.]
+
+8 sites per unitcell, located at
+
+    r1 = [ -1/5.,  4/(5*sqrt(3)), 1/10.]
+    r2 = [    0.,  7/(5*sqrt(3)), 1/10.]
+    r3 = [  1/5.,  4/(5*sqrt(3)), 1/10.]
+    r4 = [  1/2.,  1/(2*sqrt(3)), 3/10.]
+    r5 = [    0.,      1/sqrt(3), 1/10.]
+    r6 = [ 3/10., 7/(10*sqrt(3)), 3/10.]
+    r7 = [  1/2., 1/(10*sqrt(3)), 3/10.]
+    r8 = [ 7/10., 7/(10*sqrt(3)), 3/10.]
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_8_3_c()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
@@ -2402,43 +2481,39 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 5; J1; (0, 0, 0)],
-            [2; 5; J1; (0, 0, 0)], # zz
-            [5; 3; J1; (0, 0, 0)],
-            [3; 6; J1; (0, 0, 0)], # zz
-            [6; 4; J1; (0, 0, 0)],
-            [4; 7; J1; (0, 0, 0)], # zz
-            [4; 8; J1; (0, 0, 0)],
+            [1; 5; 1.0; (0, 0, 0)],
+            [2; 5; 1.0; (0, 0, 0)], # zz
+            [5; 3; 1.0; (0, 0, 0)],
+            [3; 6; 1.0; (0, 0, 0)], # zz
+            [6; 4; 1.0; (0, 0, 0)],
+            [4; 7; 1.0; (0, 0, 0)], # zz
+            [4; 8; 1.0; (0, 0, 0)],
 
-            [5; 1; J1; (0, 0, 0)],
-            [5; 2; J1; (0, 0, 0)], # zz
-            [3; 5; J1; (0, 0, 0)],
-            [6; 3; J1; (0, 0, 0)], # zz
-            [4; 6; J1; (0, 0, 0)],
-            [7; 4; J1; (0, 0, 0)], # zz
-            [8; 4; J1; (0, 0, 0)],
+            [5; 1; 1.0; (0, 0, 0)],
+            [5; 2; 1.0; (0, 0, 0)], # zz
+            [3; 5; 1.0; (0, 0, 0)],
+            [6; 3; 1.0; (0, 0, 0)], # zz
+            [4; 6; 1.0; (0, 0, 0)],
+            [7; 4; 1.0; (0, 0, 0)], # zz
+            [8; 4; 1.0; (0, 0, 0)],
 
-            [8; 1; J1; (1, 0, 0)],
-            [1; 8; J1; (-1, 0, 0)],
+            [8; 1; 1.0; (1, 0, 0)],
+            [1; 8; 1.0; (-1, 0, 0)],
 
-            [8; 1; J1; (1, 0, 1)],   # zz
-            [1; 8; J1; (-1, 0, -1)], # zz
+            [8; 1; 1.0; (1, 0, 1)],   # zz
+            [1; 8; 1.0; (-1, 0, -1)], # zz
 
-            [2; 7; J1; (0, 1, 0)],
-            [7; 2; J1; (0, -1, 0)],
+            [2; 7; 1.0; (0, 1, 0)],
+            [7; 2; 1.0; (0, -1, 0)],
 
-            [2; 7; J1; (0, 1, -1)],
-            [7; 2; J1; (0, -1, 1)],
+            [2; 7; 1.0; (0, 1, -1)],
+            [7; 2; 1.0; (0, -1, 1)],
 
-            [3; 6; J1; (0, 0, -1)],
-            [6; 3; J1; (0, 0, 1)]
+            [3; 6; 1.0; (0, 0, -1)],
+            [6; 3; 1.0; (0, 0, 1)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_c_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_c_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_c_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a1 = [1., 0., 0.]
@@ -2506,11 +2581,70 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
 end
 export getUnitcell_8_3_c
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (8,3)n
-# 1 - simple, 16 sites per UC, all connections have interaction strength J1
-# 4 - Kitaev
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+"""
+    getUnitcell_8_3_n([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (8,3)n lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0, 0.0]
+    a2 = [0.0, 1.0, 0.0]
+    a3 = [0.5, 0.5, 2/(2*sqrt(3) + sqrt(2))]
+
+16 sites per unitcell, located at
+
+    r01 =         x*a + (0.5 - x)*b +      0.25*c
+    r02 =     (1-x)*a + (0.5 - x)*b +      0.25*c
+    r03 = (0.5 + x)*a +       0.5*b + (0.5 - z)*c
+    r04 =     (1-x)*a + (0.5 + x)*b +      0.25*c
+    r05 =         x*a + (0.5 + x)*b +      0.25*c
+    r06 = (0.5 - x)*a +       0.5*b + (0.5 - z)*c
+    r07 =                   (1-x)*b +         z*c
+    r08 =                       x*b +         z*c
+    r09 = (0.5 - x)*a +         x*b +      0.25*c
+    r10 =       0.5*a + (0.5 - x)*b + (0.5 - z)*c
+    r11 = (0.5 + x)*a +         x*b +      0.25*c
+    r12 = (0.5 + x)*a +   (1 - x)*b +      0.25*c
+    r13 =       0.5*a + (0.5 + x)*b + (0.5 - z)*c
+    r14 = (0.5 - x)*a +   (1 - x)*b +      0.25*c
+    r15 =         x*a               +         z*c
+    r16 =     (1-x)*a               +         z*c
+
+with the additional definition of
+
+    a = [1.0, 0.0, 0.0]
+    b = [0.0, 1.0, 0.0]
+    c = [0.0, 0.0, 4/(2*sqrt(3) + sqrt(2))]
+
+    x = (sqrt(3) + sqrt(2))/(2*(2*sqrt(3) + sqrt(2)))
+    z = 0.125
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_8_3_n()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
     if version == 1
         # the lattice vectors
@@ -2528,90 +2662,86 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            x*a + (0.5 - x)*b + c/4.,
-            (1-x)*a + (0.5 - x)*b + c/4.,
-            (0.5 + x)*a + b/2. + (0.5 - z)*c,
-            (1-x)*a + (0.5 + x)*b + c/4.,
-            x*a + (0.5 + x)*b + c/4.,
-            (0.5 - x)*a + b/2. + (0.5 - z)*c,
-            (1-x)*b + z*c,
-            x*b + z*c,
-            (0.5 - x)*a + x*b + c/4.,
-            a/2. + (0.5 - x)*b + (0.5 - z)*c,
-            (0.5 + x)*a + x*b + c/4.,
-            (0.5 + x)*a + (1 - x)*b + c/4.,
-            a/2. + (0.5 + x)*b + (0.5 - z)*c,
-            (0.5 - x)*a + (1 - x)*b + c/4.,
-            x*a + z*c,
-            (1-x)*a + z*c
+                    x.*a + (0.5 - x).*b +      0.25.*c,
+                (1-x).*a + (0.5 - x).*b +      0.25.*c,
+            (0.5 + x).*a +       0.5.*b + (0.5 - z).*c,
+                (1-x).*a + (0.5 + x).*b +      0.25.*c,
+                    x.*a + (0.5 + x).*b +      0.25.*c,
+            (0.5 - x).*a +       0.5.*b + (0.5 - z).*c,
+                               (1-x).*b +         z.*c,
+                                   x.*b +         z.*c,
+            (0.5 - x).*a +         x.*b +      0.25.*c,
+                  0.5.*a + (0.5 - x).*b + (0.5 - z).*c,
+            (0.5 + x).*a +         x.*b +      0.25.*c,
+            (0.5 + x).*a +   (1 - x).*b +      0.25.*c,
+                  0.5.*a + (0.5 + x).*b + (0.5 - z).*c,
+            (0.5 - x).*a +   (1 - x).*b +      0.25.*c,
+                    x.*a                +         z.*c,
+                (1-x).*a                +         z.*c
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 10; J1; (0, 0, 0)],
-            [10; 2; J1; (0, 0, 0)],
-            [2; 11; J1; (0, 0, 0)], # zz
-            [11; 3; J1; (0, 0, 0)],
-            [3; 12; J1; (0, 0, 0)],
-            [12; 4; J1; (0, 0, 0)], # zz
-            [4; 13; J1; (0, 0, 0)],
-            [13; 5; J1; (0, 0, 0)],
-            [5; 14; J1; (0, 0, 0)], # zz
-            [14; 6; J1; (0, 0, 0)],
-            [6; 9; J1; (0, 0, 0)],
-            [9; 8; J1; (0, 0, 0)],
-            [9; 1; J1; (0, 0, 0)], # zz
-            [1; 15; J1; (0, 0, 0)],
-            [2; 16; J1; (0, 0, 0)],
-            [14; 7; J1; (0, 0, 0)],
+            [1; 10; 1.0; (0, 0, 0)],
+            [10; 2; 1.0; (0, 0, 0)],
+            [2; 11; 1.0; (0, 0, 0)], # zz
+            [11; 3; 1.0; (0, 0, 0)],
+            [3; 12; 1.0; (0, 0, 0)],
+            [12; 4; 1.0; (0, 0, 0)], # zz
+            [4; 13; 1.0; (0, 0, 0)],
+            [13; 5; 1.0; (0, 0, 0)],
+            [5; 14; 1.0; (0, 0, 0)], # zz
+            [14; 6; 1.0; (0, 0, 0)],
+            [6; 9; 1.0; (0, 0, 0)],
+            [9; 8; 1.0; (0, 0, 0)],
+            [9; 1; 1.0; (0, 0, 0)], # zz
+            [1; 15; 1.0; (0, 0, 0)],
+            [2; 16; 1.0; (0, 0, 0)],
+            [14; 7; 1.0; (0, 0, 0)],
 
-            [10; 1; J1; (0, 0, 0)],
-            [2; 10; J1; (0, 0, 0)],
-            [11; 2; J1; (0, 0, 0)], # zz
-            [3; 11; J1; (0, 0, 0)],
-            [12; 3; J1; (0, 0, 0)],
-            [4; 12; J1; (0, 0, 0)], # zz
-            [13; 4; J1; (0, 0, 0)],
-            [5; 13; J1; (0, 0, 0)],
-            [14; 5; J1; (0, 0, 0)], # zz
-            [6; 14; J1; (0, 0, 0)],
-            [9; 6; J1; (0, 0, 0)],
-            [8; 9; J1; (0, 0, 0)],
-            [1; 9; J1; (0, 0, 0)], # zz
-            [15; 1; J1; (0, 0, 0)],
-            [16; 2; J1; (0, 0, 0)],
-            [7; 14; J1; (0, 0, 0)],
+            [10; 1; 1.0; (0, 0, 0)],
+            [2; 10; 1.0; (0, 0, 0)],
+            [11; 2; 1.0; (0, 0, 0)], # zz
+            [3; 11; 1.0; (0, 0, 0)],
+            [12; 3; 1.0; (0, 0, 0)],
+            [4; 12; 1.0; (0, 0, 0)], # zz
+            [13; 4; 1.0; (0, 0, 0)],
+            [5; 13; 1.0; (0, 0, 0)],
+            [14; 5; 1.0; (0, 0, 0)], # zz
+            [6; 14; 1.0; (0, 0, 0)],
+            [9; 6; 1.0; (0, 0, 0)],
+            [8; 9; 1.0; (0, 0, 0)],
+            [1; 9; 1.0; (0, 0, 0)], # zz
+            [15; 1; 1.0; (0, 0, 0)],
+            [16; 2; 1.0; (0, 0, 0)],
+            [7; 14; 1.0; (0, 0, 0)],
 
-            [11; 8; J1; (1, 0, 0)],
-            [8; 11; J1; (-1, 0, 0)],
+            [11; 8; 1.0; (1, 0, 0)],
+            [8; 11; 1.0; (-1, 0, 0)],
 
-            [12; 7; J1; (1, 0, 0)],
-            [7; 12; J1; (-1, 0, 0)],
+            [12; 7; 1.0; (1, 0, 0)],
+            [7; 12; 1.0; (-1, 0, 0)],
 
-            [7; 10; J1; (0, 1, -1)], # zz
-            [10; 7; J1; (0, -1, 1)], # zz
+            [7; 10; 1.0; (0, 1, -1)], # zz
+            [10; 7; 1.0; (0, -1, 1)], # zz
 
-            [8; 13; J1; (0, 0, -1)], # zz
-            [13; 8; J1; (0, 0, 1)],  # zz
+            [8; 13; 1.0; (0, 0, -1)], # zz
+            [13; 8; 1.0; (0, 0, 1)],  # zz
 
-            [16; 4; J1; (0, -1, 0)],
-            [4; 16; J1; (0, 1, 0)],
+            [16; 4; 1.0; (0, -1, 0)],
+            [4; 16; 1.0; (0, 1, 0)],
 
-            [15; 5; J1; (0, -1, 0)],
-            [5; 15; J1; (0, 1, 0)],
+            [15; 5; 1.0; (0, -1, 0)],
+            [5; 15; 1.0; (0, 1, 0)],
 
-            [15; 3; J1; (0, 0, -1)], # zz
-            [3; 15; J1; (0, 0, 1)],  # zz
+            [15; 3; 1.0; (0, 0, -1)], # zz
+            [3; 15; 1.0; (0, 0, 1)],  # zz
 
-            [16; 6; J1; (1, 0, -1)], # zz
-            [6; 16; J1; (-1, 0, 1)]  # zz
+            [16; 6; 1.0; (1, 0, -1)], # zz
+            [6; 16; 1.0; (-1, 0, 1)]  # zz
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_n_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_8_3_n_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_8_3_n_unitcell.jld"
     elseif version == 4
         # the lattice vectors
         a = [1.0, 0.0, 0.0]
@@ -2628,23 +2758,22 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            x*a + (0.5 - x)*b + c/4.,
-            (1-x)*a + (0.5 - x)*b + c/4.,
-            (0.5 + x)*a + b/2. + (0.5 - z)*c,
-            (1-x)*a + (0.5 + x)*b + c/4.,
-            x*a + (0.5 + x)*b + c/4.,
-            (0.5 - x)*a + b/2. + (0.5 - z)*c,
-            (1-x)*b + z*c,
-            x*b + z*c,
-            (0.5 - x)*a + x*b + c/4.,
-            a/2. + (0.5 - x)*b + (0.5 - z)*c,
-            (0.5 + x)*a + x*b + c/4.,
-            (0.5 + x)*a + (1 - x)*b + c/4.,
-            a/2. + (0.5 + x)*b + (0.5 - z)*c,
-            (0.5 - x)*a + (1 - x)*b + c/4.,
-            x*a + z*c,
-            (1-x)*a + z*c
-
+                    x.*a + (0.5 - x).*b +      0.25.*c,
+                (1-x).*a + (0.5 - x).*b +      0.25.*c,
+            (0.5 + x).*a +       0.5.*b + (0.5 - z).*c,
+                (1-x).*a + (0.5 + x).*b +      0.25.*c,
+                    x.*a + (0.5 + x).*b +      0.25.*c,
+            (0.5 - x).*a +       0.5.*b + (0.5 - z).*c,
+                               (1-x).*b +         z.*c,
+                                   x.*b +         z.*c,
+            (0.5 - x).*a +         x.*b +      0.25.*c,
+                  0.5.*a + (0.5 - x).*b + (0.5 - z).*c,
+            (0.5 + x).*a +         x.*b +      0.25.*c,
+            (0.5 + x).*a +   (1 - x).*b +      0.25.*c,
+                  0.5.*a + (0.5 + x).*b + (0.5 - z).*c,
+            (0.5 - x).*a +   (1 - x).*b +      0.25.*c,
+                    x.*a                +         z.*c,
+                (1-x).*a                +         z.*c
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
