@@ -2850,22 +2850,106 @@ end
 export getUnitcell_8_3_n
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# LATTICE (9,3)a
-# 1 - simple, 12 sites per UC, all connections have interaction strength J1
-# 2 - simple shifted
-# 4 - Kitaev
-# 5 - Kitaev shifted
-#-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+"""
+    getUnitcell_9_3_a([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D (9,3)a lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = (-1/3)*a + (1/3)*b + (1/3)*c
+    a2 = (-1/3)*a + (2/3)*b + (1/3)*c
+    a3 =  (2/3)*a + (1/3)*b + (1/3)*c
+
+12 sites per unitcell, located at
+
+    r01 =    d_f*a
+    r02 =  2*d_h*a +   d_h*b + (1/12)*c
+    r03 =    d_f*a +   d_f*b
+    r04 =    d_h*a + 2*d_h*b - (1/12)*c
+    r05 =              d_f*b
+    r06 =   -d_h*a +   d_h*b + (1/12)*c
+    r07 =   -d_f*a
+    r08 = -2*d_h*a -   d_h*b - (1/12)*c
+    r09 =   -d_f*a -   d_f*b,
+    r10 =   -d_h*a - 2*d_h*b + (1/12)*c
+    r11 =          -   d_f*b
+    r12 =    d_h*a -   d_h*b - (1/12)*c
+
+with the additional definition of
+
+    a = [ 1.0,        0.0, 0.0]
+    b = [-0.5, sqrt(3)/2., 0.0]
+    c = [ 0.0,        0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
+
+    d_f = sqrt(3)/(1+2*sqrt(3))
+    d_h = (29 - 3*sqrt(3))/132
+
+For version `1`, all couplings have strength 1.0.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+#### 2 & 5 - shifted & shifted Kitaev
+
+Bravais lattice vectors are
+
+    a1 = [-sqrt(3)/2, 1/2, 1/sqrt(3)]
+    a2 = [         0,  -1, 1/sqrt(3)]
+    a3 = [ sqrt(3)/2, 1/2, 1/sqrt(3)]
+
+12 sites per unitcell, located at
+
+    r01 = [0, 0, 0],
+    r02 = (1/6).*a1 - (1/6).*a2,
+    r03 = (2/6).*a1 - (2/6).*a2,
+    r04 = (3/6).*a1 - (2/6).*a2 - (1/6).*a3,
+    r05 = (4/6).*a1 - (2/6).*a2 - (2/6).*a3,
+    r06 = (4/6).*a1 - (1/6).*a2 - (3/6).*a3,
+    r07 = (4/6).*a1             - (4/6).*a3,
+    r08 = (3/6).*a1 + (1/6).*a2 - (4/6).*a3,
+    r09 = (2/6).*a1 + (2/6).*a2 - (4/6).*a3,
+    r10 = (1/6).*a1 + (2/6).*a2 - (3/6).*a3,
+    r11 = (2/6).*a1             - (2/6).*a3,
+    r12 = (1/6).*a1             - (1/6).*a3
+
+For version `2`, all couplings have strength 1.0.
+
+For version `5`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcell_9_3_a()
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
     if version==1
         # the lattice vectors
-        a = [1.0, 0.0, 0.0]
+        a = [ 1.0,        0.0, 0.0]
         b = [-0.5, sqrt(3)/2., 0.0]
-        c = [0.0, 0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
-        a1 = -a/3. + b/3. + c/3.
-        a2 = -a/3. -2*b/3. + c/3.
-        a3 = 2*a/3. + b/3. + c/3.
+        c = [ 0.0,        0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
+        a1 = (-1/3.).*a + (1/3.).*b + (1/3.).*c
+        a2 = (-1/3.).*a + (2/3.).*b + (1/3.).*c
+        a3 =  (2/3.).*a + (1/3.).*b + (1/3.).*c
         d_f = sqrt(3)/(1+2*sqrt(3))
         d_h = (29 - 3*sqrt(3))/132.
         lattice_vectors = Array[]
@@ -2874,80 +2958,75 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            d_f * a,
-            2*d_h * a + d_h * b + c/12.,
-            d_f * (a + b),
-            d_h * a + 2*d_h * b - c/12.,
-            d_f * b,
-            -d_h *a + d_h * b + c/12.,
-            -d_f * a,
-            -2*d_h * a - d_h * b - c/12.,
-            -d_f * (a + b),
-            -d_h * a - 2*d_h*b + c/12.,
-            -d_f * b,
-            d_h * a - d_h * b - c/12.
-
+               d_f.*a,
+             2*d_h.*a +   d_h.*b + (1/12).*c,
+               d_f.*a +   d_f.*b,
+               d_h.*a + 2*d_h.*b - (1/12).*c,
+                          d_f.*b,
+              -d_h.*a +   d_h.*b + (1/12).*c,
+              -d_f.*a,
+            -2*d_h.*a -   d_h.*b - (1/12).*c,
+              -d_f.*a -   d_f.*b,
+              -d_h.*a - 2*d_h.*b + (1/12).*c,
+                      -   d_f.*b,
+               d_h.*a -   d_h.*b - (1/12).*c
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],
-            [3; 4; J1; (0, 0, 0)],
-            [4; 5; J1; (0, 0, 0)],
-            [5; 6; J1; (0, 0, 0)],
-            [6; 7; J1; (0, 0, 0)],
-            [7; 8; J1; (0, 0, 0)],
-            [8; 9; J1; (0, 0, 0)],
-            [9; 10; J1; (0, 0, 0)],
-            [10; 11; J1; (0, 0, 0)],
-            [11; 12; J1; (0, 0, 0)],
-            [12; 1; J1; (0, 0, 0)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [3; 4; 1.0; (0, 0, 0)],
+            [4; 5; 1.0; (0, 0, 0)],
+            [5; 6; 1.0; (0, 0, 0)],
+            [6; 7; 1.0; (0, 0, 0)],
+            [7; 8; 1.0; (0, 0, 0)],
+            [8; 9; 1.0; (0, 0, 0)],
+            [9; 10; 1.0; (0, 0, 0)],
+            [10; 11; 1.0; (0, 0, 0)],
+            [11; 12; 1.0; (0, 0, 0)],
+            [12; 1; 1.0; (0, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 0, 0)],
-            [4; 3; J1; (0, 0, 0)],
-            [5; 4; J1; (0, 0, 0)],
-            [6; 5; J1; (0, 0, 0)],
-            [7; 6; J1; (0, 0, 0)],
-            [8; 7; J1; (0, 0, 0)],
-            [9; 8; J1; (0, 0, 0)],
-            [10; 9; J1; (0, 0, 0)],
-            [11; 10; J1; (0, 0, 0)],
-            [12; 11; J1; (0, 0, 0)],
-            [1; 12; J1; (0, 0, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],
+            [4; 3; 1.0; (0, 0, 0)],
+            [5; 4; 1.0; (0, 0, 0)],
+            [6; 5; 1.0; (0, 0, 0)],
+            [7; 6; 1.0; (0, 0, 0)],
+            [8; 7; 1.0; (0, 0, 0)],
+            [9; 8; 1.0; (0, 0, 0)],
+            [10; 9; 1.0; (0, 0, 0)],
+            [11; 10; 1.0; (0, 0, 0)],
+            [12; 11; 1.0; (0, 0, 0)],
+            [1; 12; 1.0; (0, 0, 0)],
 
 
-            [3; 9; J1; (0, -1, 1)], # zz
-            [9; 3; J1; (0, 1, -1)], # zz
+            [3; 9; 1.0; (0, -1, 1)], # zz
+            [9; 3; 1.0; (0, 1, -1)], # zz
 
-            [1; 7; J1; (-1, 0, 1)], # zz
-            [7; 1; J1; (1, 0, -1)], # zz
+            [1; 7; 1.0; (-1, 0, 1)], # zz
+            [7; 1; 1.0; (1, 0, -1)], # zz
 
-            [5; 11; J1; (1, -1, 0)], # zz
-            [11; 5; J1; (-1, 1, 0)], # zz
+            [5; 11; 1.0; (1, -1, 0)], # zz
+            [11; 5; 1.0; (-1, 1, 0)], # zz
 
-            [12; 6; J1; (-1, 0, 0)], # zz
-            [6; 12; J1; (1, 0, 0)], # zz
+            [12; 6; 1.0; (-1, 0, 0)], # zz
+            [6; 12; 1.0; (1, 0, 0)], # zz
 
-            [8; 2; J1; (0, 0, -1)], # zz
-            [2; 8; J1; (0, 0, 1)], # zz
+            [8; 2; 1.0; (0, 0, -1)], # zz
+            [2; 8; 1.0; (0, 0, 1)], # zz
 
-            [4; 10; J1; (0, -1, 0)], # zz
-            [10; 4; J1; (0, 1, 0)]   # zz
+            [4; 10; 1.0; (0, -1, 0)], # zz
+            [10; 4; 1.0; (0, 1, 0)]   # zz
 
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_9_3_a_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_9_3_a_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_9_3_a_unitcell.jld"
     elseif version == 2
         # the lattice vectors
         a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
-        a2 = [0, -1, 1/sqrt(3)]
-        a3 = [sqrt(3)/2, 1/2, 1/sqrt(3)]
+        a2 = [         0.,  -1., 1/sqrt(3)]
+        a3 = [ sqrt(3)/2., 1/2., 1/sqrt(3)]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -2955,70 +3034,70 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         # Basis Definition
         basis = Array[
             [0, 0, 0],
-            a1/6. - a2/6.,
-            a1/3. - a2/3.,
-            a1/2. - a2/3. - a3/6.,
-            2/3.*a1 - a2/3. - a3/3.,
-            2/3.*a1 - a2/6. - a3/2.,
-            2/3.*a1 - 2/3.*a3,
-            a1/2. + a2/6. - 2/3.*a3,
-            a1/3. + a2/3. - 2/3.*a3,
-            a1/6. + a2/3. - a3/2.,
-            a2/3. - a3/3.,
-            a2/6. - a3/6.
+            (1/6).*a1 - (1/6).*a2,
+            (2/6).*a1 - (2/6).*a2,
+            (3/6).*a1 - (2/6).*a2 - (1/6).*a3,
+            (4/6).*a1 - (2/6).*a2 - (2/6).*a3,
+            (4/6).*a1 - (1/6).*a2 - (3/6).*a3,
+            (4/6).*a1             - (4/6).*a3,
+            (3/6).*a1 + (1/6).*a2 - (4/6).*a3,
+            (2/6).*a1 + (2/6).*a2 - (4/6).*a3,
+            (1/6).*a1 + (2/6).*a2 - (3/6).*a3,
+            (2/6).*a1             - (2/6).*a3,
+            (1/6).*a1             - (1/6).*a3
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
         connections = Array[
-            [1; 2; J1; (0, 0, 0)],
-            [2; 3; J1; (0, 0, 0)],
-            [3; 4; J1; (0, 0, 0)],
-            [4; 5; J1; (0, 0, 0)],
-            [5; 6; J1; (0, 0, 0)],
-            [6; 7; J1; (0, 0, 0)],
-            [7; 8; J1; (0, 0, 0)],
-            [8; 9; J1; (0, 0, 0)],
-            [9; 10; J1; (0, 0, 0)],
-            [10; 11; J1; (0, 0, 0)],
-            [11; 12; J1; (0, 0, 0)],
-            [12; 1; J1; (0, 0, 0)],
+            [1; 2; 1.0; (0, 0, 0)],
+            [2; 3; 1.0; (0, 0, 0)],
+            [3; 4; 1.0; (0, 0, 0)],
+            [4; 5; 1.0; (0, 0, 0)],
+            [5; 6; 1.0; (0, 0, 0)],
+            [6; 7; 1.0; (0, 0, 0)],
+            [7; 8; 1.0; (0, 0, 0)],
+            [8; 9; 1.0; (0, 0, 0)],
+            [9; 10; 1.0; (0, 0, 0)],
+            [10; 11; 1.0; (0, 0, 0)],
+            [11; 12; 1.0; (0, 0, 0)],
+            [12; 1; 1.0; (0, 0, 0)],
 
-            [2; 1; J1; (0, 0, 0)],
-            [3; 2; J1; (0, 0, 0)],
-            [4; 3; J1; (0, 0, 0)],
-            [5; 4; J1; (0, 0, 0)],
-            [6; 5; J1; (0, 0, 0)],
-            [7; 6; J1; (0, 0, 0)],
-            [8; 7; J1; (0, 0, 0)],
-            [9; 8; J1; (0, 0, 0)],
-            [10; 9; J1; (0, 0, 0)],
-            [11; 10; J1; (0, 0, 0)],
-            [12; 11; J1; (0, 0, 0)],
-            [1; 12; J1; (0, 0, 0)],
+            [2; 1; 1.0; (0, 0, 0)],
+            [3; 2; 1.0; (0, 0, 0)],
+            [4; 3; 1.0; (0, 0, 0)],
+            [5; 4; 1.0; (0, 0, 0)],
+            [6; 5; 1.0; (0, 0, 0)],
+            [7; 6; 1.0; (0, 0, 0)],
+            [8; 7; 1.0; (0, 0, 0)],
+            [9; 8; 1.0; (0, 0, 0)],
+            [10; 9; 1.0; (0, 0, 0)],
+            [11; 10; 1.0; (0, 0, 0)],
+            [12; 11; 1.0; (0, 0, 0)],
+            [1; 12; 1.0; (0, 0, 0)],
 
-            [1; 7; J1; (-1, 0, 1)],
-            [7; 1; J1; (1, 0, -1)],
-            [2; 8; J1; (0, 0, 1)],
-            [8; 2; J1; (0, 0, -1)],
-            [3; 9; J1; (0, -1, 1)],
-            [9; 3; J1; (0, 1, -1)],
-            [4; 10; J1; (0, -1, 0)],
-            [10; 4; J1; (0, 1, 0)],
-            [5; 11; J1; (1, -1, 0)],
-            [11; 5; J1; (-1, 1, 0)],
-            [6; 12; J1; (1, 0, 0)],
-            [12; 6; J1; (-1, 0, 0)]
+            [1; 7; 1.0; (-1, 0, 1)],
+            [7; 1; 1.0; (1, 0, -1)],
+            [2; 8; 1.0; (0, 0, 1)],
+            [8; 2; 1.0; (0, 0, -1)],
+            [3; 9; 1.0; (0, -1, 1)],
+            [9; 3; 1.0; (0, 1, -1)],
+            [4; 10; 1.0; (0, -1, 0)],
+            [10; 4; 1.0; (0, 1, 0)],
+            [5; 11; 1.0; (1, -1, 0)],
+            [11; 5; 1.0; (-1, 1, 0)],
+            [6; 12; 1.0; (1, 0, 0)],
+            [12; 6; 1.0; (-1, 0, 0)]
         ]
         # filename
         filename = "$(FOLDER_UNITCELLS)3d_9_3_a_V2_unitcell.jld"
     elseif version == 4
         # the lattice vectors
-        a = [1.0, 0.0, 0.0]
+        a = [ 1.0,        0.0, 0.0]
         b = [-0.5, sqrt(3)/2., 0.0]
-        c = [0.0, 0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
-        a1 = -a/3. + b/3. + c/3.
-        a2 = -a/3. -2*b/3. + c/3.
-        a3 = 2*a/3. + b/3. + c/3.
+        c = [ 0.0,        0.0, sqrt(6*(4 + sqrt(3)))/(1 + 2*sqrt(3))]
+        a1 = (-1/3.).*a + (1/3.).*b + (1/3.).*c
+        a2 = (-1/3.).*a + (2/3.).*b + (1/3.).*c
+        a3 =  (2/3.).*a + (1/3.).*b + (1/3.).*c
         d_f = sqrt(3)/(1+2*sqrt(3))
         d_h = (29 - 3*sqrt(3))/132.
         lattice_vectors = Array[]
@@ -3027,19 +3106,18 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         push!(lattice_vectors, a3)
         # Basis Definition
         basis = Array[
-            d_f * a,
-            2*d_h * a + d_h * b + c/12.,
-            d_f * (a + b),
-            d_h * a + 2*d_h * b - c/12.,
-            d_f * b,
-            -d_h *a + d_h * b + c/12.,
-            -d_f * a,
-            -2*d_h * a - d_h * b - c/12.,
-            -d_f * (a + b),
-            -d_h * a - 2*d_h*b + c/12.,
-            -d_f * b,
-            d_h * a - d_h * b - c/12.
-
+               d_f.*a,
+             2*d_h.*a +   d_h.*b + (1/12).*c,
+               d_f.*a +   d_f.*b,
+               d_h.*a + 2*d_h.*b - (1/12).*c,
+                          d_f.*b,
+              -d_h.*a +   d_h.*b + (1/12).*c,
+              -d_f.*a,
+            -2*d_h.*a -   d_h.*b - (1/12).*c,
+              -d_f.*a -   d_f.*b,
+              -d_h.*a - 2*d_h.*b + (1/12).*c,
+                      -   d_f.*b,
+               d_h.*a -   d_h.*b - (1/12).*c
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
@@ -3095,8 +3173,8 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
     elseif version == 5
         # the lattice vectors
         a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
-        a2 = [0, -1, 1/sqrt(3)]
-        a3 = [sqrt(3)/2, 1/2, 1/sqrt(3)]
+        a2 = [         0.,  -1., 1/sqrt(3)]
+        a3 = [ sqrt(3)/2., 1/2., 1/sqrt(3)]
         lattice_vectors = Array[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
@@ -3104,17 +3182,17 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         # Basis Definition
         basis = Array[
             [0, 0, 0],
-            a1/6. - a2/6.,
-            a1/3. - a2/3.,
-            a1/2. - a2/3. - a3/6.,
-            2/3.*a1 - a2/3. - a3/3.,
-            2/3.*a1 - a2/6. - a3/2.,
-            2/3.*a1 - 2/3.*a3,
-            a1/2. + a2/6. - 2/3.*a3,
-            a1/3. + a2/3. - 2/3.*a3,
-            a1/6. + a2/3. - a3/2.,
-            a2/3. - a3/3.,
-            a2/6. - a3/6.
+            (1/6).*a1 - (1/6).*a2,
+            (2/6).*a1 - (2/6).*a2,
+            (3/6).*a1 - (2/6).*a2 - (1/6).*a3,
+            (4/6).*a1 - (2/6).*a2 - (2/6).*a3,
+            (4/6).*a1 - (1/6).*a2 - (3/6).*a3,
+            (4/6).*a1             - (4/6).*a3,
+            (3/6).*a1 + (1/6).*a2 - (4/6).*a3,
+            (2/6).*a1 + (2/6).*a2 - (4/6).*a3,
+            (1/6).*a1 + (2/6).*a2 - (3/6).*a3,
+            (2/6).*a1             - (2/6).*a3,
+            (1/6).*a1             - (1/6).*a3
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
