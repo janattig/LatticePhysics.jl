@@ -5,8 +5,8 @@
 #   STRUCTURE OF THE FILE
 #
 #   1) UNITCELL FROM SITE COLLECTION (automatically determine the connections)
-#       - 2D
-#       - 3D
+#       - 2D (not exported)
+#       - 3D (not exported)
 #       - independent of the dimension
 #
 #   2) UNITCELL GENERATING CODE
@@ -177,8 +177,6 @@ function getUnitcellFromSites2D(
     # return the unitcell
     return unitcell
 end
-export getUnitcellFromSites2D
-
 function getUnitcellFromSites3D(
         sites::Array{Array, 1},
         lattice_vectors::Array{Array, 1};
@@ -325,8 +323,46 @@ function getUnitcellFromSites3D(
     # return the unitcell
     return unitcell
 end
-export getUnitcellFromSites3D
 
+
+
+"""
+    getUnitcellFromSites(
+            sites::Array{Array, 1},
+            lattice_vectors::Array{Array, 1}
+            ;
+            max_ij::Int64=3,
+            epsilon::Float64=1e-8,
+            min_NN::Int64=-1,
+            max_NN::Int64=-1,
+            strength_NN=1.0,
+            name::String="AUTO",
+            save::Bool=false
+        )
+
+Function that generates a fully periodic `Unitcell` object in 2D or 3D which is only based on a collection of `sites`
+and a collection of `lattice_vectors` that is passed.
+Connections will be based on nearest neighbors and will have a strength of `strength_NN`
+
+The search assigns a number of nearest neighbors (between `min_NN` and `max_NN`)
+to every site which are at most `epsilon` different in distance apart.
+Then in a subsequent step, it will also register all returning connections.
+
+Since the periodicity is determined by the number of `lattice_vectors` passed, the sites should have the same
+dimension as this number. I.e. it is only possible to build fully periodic lattices.
+
+
+
+# Examples
+
+```julia-repl
+julia> getUnitcellFromSites(sites, lattice_vectors)
+LatticePhysics.Unitcell(...)
+
+julia> getUnitcellFromSites(sites, lattice_vectors, name="myfancylattice")
+LatticePhysics.Unitcell(...)
+```
+"""
 function getUnitcellFromSites(
         sites::Array{Array, 1},
         lattice_vectors::Array{Array, 1};
