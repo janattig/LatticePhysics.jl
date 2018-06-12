@@ -34,8 +34,8 @@
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 function getUnitcellFromSites2D(
-        sites::Array{Array, 1},
-        lattice_vectors::Array{Array, 1};
+        sites::Array{Array{Float64, 1}, 1},
+        lattice_vectors::Array{Array{Float64, 1}, 1};
         max_ij::Int64=3,
         epsilon::Float64=1e-8,
         min_NN::Int64=-1,
@@ -178,9 +178,9 @@ function getUnitcellFromSites2D(
     return unitcell
 end
 function getUnitcellFromSites3D(
-        sites::Array{Array, 1},
-        lattice_vectors::Array{Array, 1};
-        max_ij::Int64=3,
+        sites::Array{Array{Float64, 1}, 1},
+        lattice_vectors::Array{Array{Float64, 1}, 1};
+        max_ijk::Int64=3,
         epsilon::Float64=1e-8,
         min_NN::Int64=-1,
         max_NN::Int64=-1,
@@ -328,8 +328,8 @@ end
 
 """
     getUnitcellFromSites(
-            sites::Array{Array, 1},
-            lattice_vectors::Array{Array, 1}
+            sites::Array{Array{Float64, 1}, 1},
+            lattice_vectors::Array{Array{Float64, 1}, 1}
             ;
             max_ij::Int64=3,
             epsilon::Float64=1e-8,
@@ -364,9 +364,9 @@ LatticePhysics.Unitcell(...)
 ```
 """
 function getUnitcellFromSites(
-        sites::Array{Array, 1},
-        lattice_vectors::Array{Array, 1};
-        max_ij::Int64=3,
+        sites::Array{Array{Float64, 1}, 1},
+        lattice_vectors::Array{Array{Float64, 1}, 1};
+        max_ijk::Int64=3,
         epsilon::Float64=1e-8,
         min_NN::Int64=-1,
         max_NN::Int64=-1,

@@ -12,7 +12,7 @@
 #
 #   -   Functions to generate Unitcell objects for 2D lattices
 #   -   Functions to generate Unitcell objects for 3D lattices
-#   -   TODO Function to generate Unitcell object from collection of points
+#   -   Function to generate Unitcell object from collection of points
 #   -   Function to print generating code for a given Unitcell object
 #
 #   -   Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells for 2D unitcells
@@ -51,11 +51,11 @@ module LatticePhysics
 using JLD
 
 # PyPlot is used for all plotting of band structures (plotting of lattices is done via SVG file creation)
-using PyCall
-using PyPlot
+#using PyCall
+#using PyPlot
 
 # Optim is used for minimizing the band structure to find the ground state energy of the system
-using Optim
+#using Optim
 
 
 

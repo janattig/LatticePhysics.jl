@@ -94,7 +94,10 @@ mutable struct Unitcell
 
 
     # the general constructor
-    function Unitcell(lattice_vectors::Array{Array, 1}, basis::Array{Array,1}, connections::Array{Array,1}, filename::String)
+    function Unitcell(lattice_vectors::Array{Array{Float64, 1}, 1}, basis::Array{Array{Float64, 1}, 1}, connections::Array{Array,1}, filename::String)
+        return new(lattice_vectors, basis, connections, filename)
+    end
+    function Unitcell(lattice_vectors::Array{Array, 1}, basis::Array{Array, 1}, connections::Array{Array,1}, filename::String)
         return new(lattice_vectors, basis, connections, filename)
     end
     # the custom constructor when loading a unitcell from a file
