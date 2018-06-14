@@ -239,5 +239,29 @@ include("LatticePhysics_unitcell_construction.jl")
 
 
 
+################################################################################
+#
+#   IMPLEMENTATIONS OF DIFFERENT LATTICE CONSTRUCTION RELATED STUFF
+#   AS WELL AS DIFFERNT LATTICE MODIFICATION STUFF
+#
+#   STRUCTURE OF THE FILE
+#
+################################################################################
+
+# included in subfile
+include("LatticePhysics_lattice_construction.jl")
+
+
+
+
+
+
+
+
+
+
+
+
+
 # MODULE END
 end
