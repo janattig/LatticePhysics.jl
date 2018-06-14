@@ -687,7 +687,7 @@ export getLatticeOpen
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # FOR 2D AND 3D
-function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # extract the cardinal directions of the lattice from the array
     N_a1 = repetition_array[1]
@@ -725,7 +725,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
 
     # GENERATE NEW POSITIONS
 	positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
     # check which direction periodic
     if N_a1 < 0
@@ -838,7 +838,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
     # return the lattice
     return lattice
 end
-function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # extract the cardinal directions of the lattice from the array
     N_a1 = repetition_array[1]
@@ -890,7 +890,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
 
     # GENERATE NEW POSITIONS
 	positions = Array[]
-	positions_indices = []
+	positions_indices = Int64[]
 
     # turn all directions to positive numbers
     N_a1 = abs(N_a1)
@@ -1033,12 +1033,35 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
     return lattice
 end
 
-export getLatticeSemiperiodic2D
-export getLatticeSemiperiodic3D
 
 
-# FOR UNKNOWN DIMENSION
-function getLatticeSemiperiodic(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+
+"""
+    getLatticeSemiperiodic(unitcell::Unitcell, repetition_array::Array{Int64} [; save::Bool, load::Bool])
+
+Function to construct a finite lattice with a mix of open and periodic boundary conditions out of a `Unitcell` object.
+The number of unitcells that are put together in each elementery direction is passed in the
+`repetition_array`, where negative entries denote periodic boundary conditions whereas positive entries denote open boundary conditions.
+Note that this function can only handle a mix of periodic and open but not purely open or periodic boundary conditions.
+
+Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> getLatticeSemiperiodic(unitcell, [10, -20])
+LatticePhysics.Lattice(...)
+
+julia> getLatticeSemiperiodic(unitcell, [10, -20], load=true)
+LatticePhysics.Lattice(...)
+```
+"""
+function getLatticeSemiperiodic(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # check how many lattice vectors the unitcell has
     number_lv = size(unitcell.lattice_vectors,1)
