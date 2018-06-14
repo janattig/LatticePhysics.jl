@@ -344,6 +344,19 @@ type Lattice
         # just initialize everything and set the position indices to 1
         return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
     end
+    function Lattice(
+				unitcell::Unitcell,
+				unitcellRepetitions::Array{Int64, 1},
+				lattice_vectors::Array{Array, 1},
+				positions::Array{Array, 1},
+				positions_indices::Array{Int64, 1},
+				connections::Array{Array, 1},
+				filename::String
+			)
+        # just initialize everything and set the position indices to 1
+        return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
+    end
+
 
 
 	# Constructor if no position indices should be given
@@ -812,7 +825,7 @@ function printInfo(lattice::Lattice; detailed=false)
         println(" - connectivity of lattice is okay (including periodic BC)")
     end
 end
-
+export printInfo
 
 
 
