@@ -1155,11 +1155,17 @@ function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=tru
 end
 function getLattice(unitcell::Unitcell, repetitions::Int64; save=true, load=false)
     # just parse through to more general method
-    return getLattice(unitcell, repetitions.*ones(size(unitcell.lattice_vectors,1)), save=save, load=load)
+    return getLattice(unitcell, repetitions.*ones(Int64, size(unitcell.lattice_vectors,1)), save=save, load=load)
 end
 
 
 export getLattice
+
+
+
+
+
+
 
 
 
