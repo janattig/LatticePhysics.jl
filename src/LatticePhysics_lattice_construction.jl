@@ -319,10 +319,10 @@ Note that this function works for both 2D and 3D unitcells.
 # Examples
 
 ```julia-repl
-julia> getLatticePeriodic(unitcell, [10, 20])
+julia> lattice = getLatticePeriodic(unitcell, [10, 20])
 LatticePhysics.Lattice(...)
 
-julia> getLatticePeriodic(unitcell, [10, 20], load=true)
+julia> lattice = getLatticePeriodic(unitcell, [10, 20], load=true)
 LatticePhysics.Lattice(...)
 ```
 """
@@ -645,10 +645,10 @@ Note that this function works for both 2D and 3D unitcells.
 # Examples
 
 ```julia-repl
-julia> getLatticeOpen(unitcell, [10, 20])
+julia> lattice = getLatticeOpen(unitcell, [10, 20])
 LatticePhysics.Lattice(...)
 
-julia> getLatticeOpen(unitcell, [10, 20], load=true)
+julia> lattice = getLatticeOpen(unitcell, [10, 20], load=true)
 LatticePhysics.Lattice(...)
 ```
 """
@@ -1054,10 +1054,10 @@ Note that this function works for both 2D and 3D unitcells.
 # Examples
 
 ```julia-repl
-julia> getLatticeSemiperiodic(unitcell, [10, -20])
+julia> lattice = getLatticeSemiperiodic(unitcell, [10, -20])
 LatticePhysics.Lattice(...)
 
-julia> getLatticeSemiperiodic(unitcell, [10, -20], load=true)
+julia> lattice = getLatticeSemiperiodic(unitcell, [10, -20], load=true)
 LatticePhysics.Lattice(...)
 ```
 """
@@ -1086,14 +1086,36 @@ export getLatticeSemiperiodic
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
-#
-#   Construction of ALL Lattices (that are build from stacking/repeating unitcells)
-#
-#   negative numbers denote periodic directions
-#   positive numbers denote open directions
-#
-#-----------------------------------------------------------------------------------------------------------------------------
+
+"""
+    getLattice(unitcell::Unitcell, repetition_array::Array{Int64} [; save::Bool, load::Bool])
+    getLattice(unitcell::Unitcell, repetitions::Int64 [; save::Bool, load::Bool])
+
+Function to construct a finite lattice with a mix of open and periodic boundary conditions out of a `Unitcell` object.
+The number of unitcells that are put together in each elementery direction is passed in the
+`repetition_array`, where negative entries denote periodic boundary conditions whereas positive entries denote open boundary conditions.
+Note that this function CAN handle any mix of periodic and open including purely open or periodic boundary conditions.
+
+Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> lattice = getLattice(unitcell, [10, -20])
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLattice(unitcell, [10, -20], load=true)
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLattice(unitcell, -20, load=true)
+LatticePhysics.Lattice(...)
+```
+"""
 function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
 
     # check how many periodic directions
