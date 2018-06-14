@@ -357,11 +357,11 @@ export getLatticePeriodic
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # FOR 2D AND 3D
-function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # extract the cardinal directions of the lattice from the array
-    N_a1 = repetition_array[1]
-    N_a2 = repetition_array[2]
+    N_a1 = abs(repetition_array[1])
+    N_a2 = abs(repetition_array[2])
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -389,7 +389,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
     # GENERATE NEW POSITIONS
 	positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
 	function index(i,j,alpha)
@@ -482,12 +482,12 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     return lattice
 
 end
-function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # extract the cardinal directions of the lattice from the array
-    N_a1 = repetition_array[1]
-    N_a2 = repetition_array[2]
-    N_a3 = repetition_array[3]
+    N_a1 = abs(repetition_array[1])
+    N_a2 = abs(repetition_array[2])
+    N_a3 = abs(repetition_array[3])
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -515,7 +515,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
     # GENERATE NEW POSITIONS
 	positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
 	function index(i,j,k,alpha)
@@ -624,12 +624,35 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
 end
 
-export getLatticeOpen2D
-export getLatticeOpen3D
 
 
-# FOR UNKNOWN DIMENSION
-function getLatticeOpen(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+
+"""
+    getLatticeOpen(unitcell::Unitcell, repetition_array::Array{Int64} [; save::Bool, load::Bool])
+
+Function to construct a finite lattice with open boundary conditions
+(bonds are cut when connecting to sites outside the wanted area) on all sides out of a `Unitcell` object.
+The number of unitcells that are put together in each elementery direction is passed in the
+`repetition_array`.
+
+Additionally, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> getLatticeOpen(unitcell, [10, 20])
+LatticePhysics.Lattice(...)
+
+julia> getLatticeOpen(unitcell, [10, 20], load=true)
+LatticePhysics.Lattice(...)
+```
+"""
+function getLatticeOpen(unitcell::Unitcell, repetition_array::Array{Int64}; save::Bool=false, load::Bool=false)
 
     # check how many lattice vectors the unitcell has
     number_lv = size(unitcell.lattice_vectors,1)
