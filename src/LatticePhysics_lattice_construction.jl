@@ -1302,7 +1302,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
 
     # erase positions
     positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
     # insert the real positions
     for p in positions_TMP
@@ -1451,7 +1451,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
 
     # erase positions
     positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
     # insert the real positions
     for p in positions_TMP
@@ -1659,7 +1659,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
 
     # erase positions
     positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
     # insert the real positions
     for p in positions_TMP
@@ -1806,7 +1806,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
 
     # erase positions
     positions = Array[]
-    positions_indices = []
+    positions_indices = Int64[]
 
     # insert the real positions
     for p in positions_TMP
