@@ -150,6 +150,7 @@ export buildFolders
 #   3) CONVERSION LATTICE --> UNITCELL
 #
 #   4) OBTAINING GENERAL INFORMATION
+#       - Testing a Unitcell object
 #       - Print Information (printInfo(..))
 #       - obtain the connection strengths of an object
 #

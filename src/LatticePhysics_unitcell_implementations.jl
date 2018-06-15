@@ -405,7 +405,7 @@ can be passed if one wants to save the unitcell after creation.
 
 # Versions
 
-#### 1 - simple (DEFAULT)
+#### 1 & 4 - simple (DEFAULT) & simple (extended) Kitaev
 
 Bravais lattice vectors are
 
@@ -419,7 +419,9 @@ Bravais lattice vectors are
     r3 = [0.5, 0.5]
     r4 = [0.0, 0.5]
 
-The coupling values are `["t1", ..., "t5"]` for the distinct bonds.
+For version `1`, the couplings all have strength `1.0`.
+
+For version `4`, the coupling values are `["t1", ..., "t5"]` for the distinct bonds.
 
 
 
@@ -433,6 +435,49 @@ LatticePhysics.Unitcell(...)
 function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
     # SIMPLE SHASTRY SUTHERLAND LATTICE
     if version == 1
+        # the lattice vectors
+        a1 = [1.0, 0.0]
+        a2 = [0.0, 1.0]
+        lattice_vectors = Array[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        # Basis Definition
+        basis = Array[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [0.5, 0.5],
+            [0.0, 0.5]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array[
+            [1; 3; 1.0; (0, 0)],
+            [1; 2; 1.0; (-1,0)],
+            [1; 4; 1.0; (0,-1)],
+            [1; 2; 1.0; (0, 0)],
+            [1; 4; 1.0; (0, 0)],
+
+            [2; 4; 1.0; (1,-1)],
+            [2; 1; 1.0; (1, 0)],
+            [2; 3; 1.0; (0, 0)],
+            [2; 1; 1.0; (0, 0)],
+            [2; 3; 1.0; (0,-1)],
+
+            [3; 1; 1.0; (0, 0)],
+            [3; 4; 1.0; (0, 0)],
+            [3; 2; 1.0; (0, 0)],
+            [3; 4; 1.0; (1, 0)],
+            [3; 2; 1.0; (0, 1)],
+
+            [4; 2; 1.0; (-1,1)],
+            [4; 3; 1.0; (0, 0)],
+            [4; 1; 1.0; (0, 1)],
+            [4; 3; 1.0; (-1,0)],
+            [4; 1; 1.0; (0, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)2d_shastry_sutherland_unitcell.jld"
+    elseif version == 4
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
@@ -474,7 +519,7 @@ function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
             [4; 1; "t5"; (0, 0)]
         ]
         # filename
-        filename = "$(FOLDER_UNITCELLS)2d_shastry_sutherland_unitcell.jld"
+        filename = "$(FOLDER_UNITCELLS)2d_shastry_sutherland_kitaev_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -780,13 +825,9 @@ LatticePhysics.Unitcell(...)
 """
 function getUnitcellBCC2D(version::Int64=1; save::Bool=false)
 
-    # generate unitcell
-    uc = Unitcell(lattice_vectors, basis, connections, filename)
-    if save
-        saveUnitcell(uc)
-    end
-    # return the unitcell
-    return uc
+    # only return the redirected Function
+    return getUnitcellSquare(2, save=save)
+
 end
 export getUnitcellBCC2D
 
@@ -1777,11 +1818,7 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
             [2; 1; 1.0; (0, 0, 1)],
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_diamond_unitcell.jld"
     elseif version == 2
         # the lattice vectors
         a1 = 0.5 .* [0, 1, 1]
@@ -1840,11 +1877,7 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
             [2; 2; "J2"; (1, 0, -1)]
         ]
         # filename
-        if J1==1.0 && J2==0.5
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_NN_NNN_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_NN_NNN_$(J1)_$(J2)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_diamond_NN_NNN_unitcell.jld"
     elseif version == 3
         # the lattice vectors
         a1 = 0.5 .* [0, 1, 1]
@@ -1903,11 +1936,7 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
             [2; 2; "J21"; (1, 0, -1)]
         ]
         # filename
-        if J1==1.0 && J21=="J21" && J22=="J22"
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_aniso_NNN_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_diamond_aniso_NNN_$(J1)_$(J21)_$(J22)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_diamond_NN_aniso_NNN_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -1993,11 +2022,7 @@ function getUnitcellBCC(version::Int64=1; save::Bool=false)
             [2; 1; 1.0; (1, 1, 1)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_bcc_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_bcc_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_bcc_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
@@ -2100,11 +2125,7 @@ function getUnitcellPyrochlore(version::Int64=1; save::Bool=false)
             [4; 3; 1.0; (0, -1, 1)]
         ]
         # filename
-        if J1==1.0
-            filename = "$(FOLDER_UNITCELLS)3d_pyrochlore_unitcell.jld"
-        else
-            filename = "$(FOLDER_UNITCELLS)3d_pyrochlore_$(J1)_unitcell.jld"
-        end
+        filename = "$(FOLDER_UNITCELLS)3d_pyrochlore_unitcell.jld"
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
