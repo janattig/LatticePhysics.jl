@@ -6,6 +6,36 @@ using Base.Test
 
 
 
+################################################################################
+#
+#   TYPE DEFINITIONS OF OBJECT CLASSES IN JULIA
+#
+################################################################################
+
+# print part of unitcell test
+println("--> testing unitcell basics (saving / loading / etc.)")
+
+
+
+# get a test unitcell
+unitcell = getUnitcellHoneycomb()
+
+# test saving
+@test typeof(saveUnitcell(unitcell))==String
+# test loading
+@test typeof(loadUnitcell(unitcell))==String
+
+
+# test printing information
+@test printInfo(unitcell)==nothing
+# test testing method
+@test typeof(testUnitcell(unitcell, 2, 2))==Bool
+
+
+
+# empty line
+println("")
+
 
 
 
@@ -16,6 +46,8 @@ using Base.Test
 #
 ################################################################################
 
+# print part of unitcell test
+println("--> testing already implemented unitcells")
 
 
 #   2D UNITCELLS
@@ -143,3 +175,8 @@ using Base.Test
 @test testUnitcell(getUnitcell_10_3_d(), 3, 3)
 @test testUnitcell(getUnitcell_10_3_d(1), 3, 3)
 @test testUnitcell(getUnitcell_10_3_d(4), 3, 3)
+
+
+
+# empty line
+println("")

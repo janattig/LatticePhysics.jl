@@ -95,10 +95,7 @@ mutable struct Unitcell
 
 
     # the general constructor
-    function Unitcell(lattice_vectors::Array{Array{Float64, 1}, 1}, basis::Array{Array{Float64, 1}, 1}, connections::Array{Array,1}, filename::String)
-        return new(lattice_vectors, basis, connections, filename)
-    end
-    function Unitcell(lattice_vectors::Array{Array, 1}, basis::Array{Array, 1}, connections::Array{Array,1}, filename::String)
+    function Unitcell(lattice_vectors::Array{Array{Float64, 1}, 1}, basis::Array{Array{Float64, 1}, 1}, connections::Array{Array{Any,1},1}, filename::String)
         return new(lattice_vectors, basis, connections, filename)
     end
     # the custom constructor when loading a unitcell from a file
@@ -160,7 +157,7 @@ function saveUnitcell(uc::Unitcell, filename::String="NONE")
     end
     # make sure that the file ends with .jld
     if uc.filename[end-4:end] != ".jld"
-        uc.filename = "$(filename).jld"
+        uc.filename = "$(uc.filename).jld"
     end
     # ensure default path is build
     if contains(uc.filename, "/")
@@ -345,19 +342,6 @@ type Lattice
         # just initialize everything and set the position indices to 1
         return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
     end
-    function Lattice(
-				unitcell::Unitcell,
-				unitcellRepetitions::Array{Int64, 1},
-				lattice_vectors::Array{Array, 1},
-				positions::Array{Array, 1},
-				positions_indices::Array{Int64, 1},
-				connections::Array{Array, 1},
-				filename::String
-			)
-        # just initialize everything and set the position indices to 1
-        return new(unitcell, unitcellRepetitions, lattice_vectors, positions, positions_indices, connections, filename)
-    end
-
 
 
 	# Constructor if no position indices should be given
@@ -441,7 +425,7 @@ function saveLattice(lattice::Lattice, filename::String="NONE")
     end
     # make sure that the file ends with .jld
     if lattice.filename[end-4:end] != ".jld"
-        lattice.filename = "$(filename).jld"
+        lattice.filename = "$(lattice.filename).jld"
     end
     # ensure default path is build
     if contains(lattice.filename, "/")

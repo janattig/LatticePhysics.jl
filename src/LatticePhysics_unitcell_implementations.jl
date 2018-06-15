@@ -137,16 +137,16 @@ function getUnitcellSquare(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 1; 1.0; (0, 1)],
             [1; 1; 1.0; (0, -1)],
             [1; 1; 1.0; (1, 0)],
@@ -159,17 +159,17 @@ function getUnitcellSquare(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [1; 2; 1.0; (-1, 0)],
             [1; 2; 1.0; (0, -1)],
@@ -187,11 +187,11 @@ function getUnitcellSquare(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.0],
             [0.5, 0.5],
@@ -199,7 +199,7 @@ function getUnitcellSquare(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "t2"; (-1,0)],
             [1; 4; "t2"; (0,-1)],
             [1; 2; "t1"; (0, 0)],
@@ -277,18 +277,18 @@ function getUnitcellExtendedSquare(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.0],
             [0.0, 0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [1; 2; 1.0; (-1, 0)],
             [1; 3; 1.0; (0, 0)],
@@ -355,17 +355,17 @@ function getUnitcellCheckerboard(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 1; 1.0; (1, 0)],
             [1; 1; 1.0; (-1, 0)],
             [1; 2; 1.0; (0, 0)],
@@ -438,11 +438,11 @@ function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.0],
             [0.5, 0.5],
@@ -450,7 +450,7 @@ function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 3; 1.0; (0, 0)],
             [1; 2; 1.0; (-1,0)],
             [1; 4; 1.0; (0,-1)],
@@ -481,11 +481,11 @@ function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0, 0.0]
         a2 = [0.0, 1.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.5, 0.0],
             [0.5, 0.5],
@@ -493,7 +493,7 @@ function getUnitcellShastrySutherland(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 3; "t1"; (0, 0)],
             [1; 2; "t2"; (-1,0)],
             [1; 4; "t3"; (0,-1)],
@@ -649,11 +649,11 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [3*sqrt(3.0)/4., -3*sqrt(3.0)/4.]
         a2 = [3*sqrt(3.0)/4., 3*sqrt(3.0)/4.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.0, 1/sqrt(3.0)],
 			[-1/sqrt(3.0), 0.0],
@@ -661,7 +661,7 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
 			[2; 4; 1.0; (0, 0)],
 			[3; 4; 1.0; (0, 0)],
@@ -682,11 +682,11 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0 + 1./sqrt(2.0), -(1.0 + 1./sqrt(2.0))]
         a2 = [1.0 + 1./sqrt(2.0),  (1.0 + 1./sqrt(2.0))]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [ 0.5, -0.5],
             [ 0.5,  0.5],
             [-0.5, -0.5],
@@ -694,7 +694,7 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [2; 4; 1.0; (0, 0)],
             [3; 4; 1.0; (0, 0)],
@@ -714,11 +714,11 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [3*sqrt(3.0)/4., -3*sqrt(3.0)/4.]
         a2 = [3*sqrt(3.0)/4., 3*sqrt(3.0)/4.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [0.0, 1/sqrt(3.0)],
 			[-1/sqrt(3.0), 0.0],
@@ -726,7 +726,7 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0,0)],
             [2; 4; "ty"; (0,0)],
             [3; 4; "tx"; (0,0)],
@@ -746,11 +746,11 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [1.0 + 1./sqrt(2.0), -(1.0 + 1./sqrt(2.0))]
         a2 = [1.0 + 1./sqrt(2.0),  (1.0 + 1./sqrt(2.0))]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [ 0.5, -0.5],
             [ 0.5,  0.5],
             [-0.5, -0.5],
@@ -758,7 +758,7 @@ function getUnitcellSquareOctagon(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0,0)],
             [2; 4; "ty"; (0,0)],
             [3; 4; "tx"; (0,0)],
@@ -875,22 +875,22 @@ julia> unitcell = getUnitcellFullyConnectedSquare(J1=1.0, J1X=10.0)
 LatticePhysics.Unitcell(...)
 ```
 """
-function getUnitcellFullyConnectedSquare(version::Int64=1; save::Bool=true, J1=1.0, J1X=0.5)
+function getUnitcellFullyConnectedSquare(version::Int64=1; save::Bool=false, J1=1.0, J1X=0.5)
     if version == 1
         if J1==1.0 && J1X==0.5
             # the lattice vectors
             a1 = [1.0, 0.0]
             a2 = [0.0, 1.0]
-            lattice_vectors = Array[]
+            lattice_vectors = Array{Float64, 1}[]
             push!(lattice_vectors, a1)
             push!(lattice_vectors, a2)
             # Basis Definition
-            basis = Array[
+            basis = Array{Float64, 1}[
                 [0.0, 0.0]
             ]
             # Connection Definition
             # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-            connections = Array[
+            connections = Array{Any, 1}[
                 [1; 1; 1.0; (0, 1)],
                 [1; 1; 1.0; (0, -1)],
                 [1; 1; 1.0; (1, 0)],
@@ -906,16 +906,16 @@ function getUnitcellFullyConnectedSquare(version::Int64=1; save::Bool=true, J1=1
             # the lattice vectors
             a1 = [1.0, 0.0]
             a2 = [0.0, 1.0]
-            lattice_vectors = Array[]
+            lattice_vectors = Array{Float64, 1}[]
             push!(lattice_vectors, a1)
             push!(lattice_vectors, a2)
             # Basis Definition
-            basis = Array[
+            basis = Array{Float64, 1}[
                 [0.0, 0.0]
             ]
             # Connection Definition
             # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-            connections = Array[
+            connections = Array{Any, 1}[
                 [1; 1; J1; (0, 1)],
                 [1; 1; J1; (0, -1)],
                 [1; 1; J1; (1, 0)],
@@ -1019,16 +1019,16 @@ function getUnitcellTriangular(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 1; 1.0; (0, 1)],
             [1; 1; 1.0; (0, -1)],
             [1; 1; 1.0; (1, 0)],
@@ -1042,16 +1042,16 @@ function getUnitcellTriangular(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 1; "1"; (0, 1)],
             [1; 1; "1"; (0, -1)],
             [1; 1; "1"; (1, 0)],
@@ -1165,17 +1165,17 @@ function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [1/sqrt(3.0), 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [1; 2; 1.0; (-1, 0)],
             [1; 2; 1.0; (0, -1)],
@@ -1189,17 +1189,17 @@ function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0), 0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [1/sqrt(3.0), 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [1; 2; 1.0; (-1, 0)],
             [1; 2; 1.0; (1, -1)],
@@ -1213,17 +1213,17 @@ function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [1/sqrt(3.0), 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "1"; (0, 0)],
             [1; 2; "2"; (-1, 0)],
             [1; 2; "2"; (0, -1)],
@@ -1237,17 +1237,17 @@ function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [1/sqrt(3.0), 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0, 0)],
             [1; 2; "ty"; (-1, 0)],
             [1; 2; "tz"; (0, -1)],
@@ -1261,17 +1261,17 @@ function getUnitcellHoneycomb(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0), 0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [1/sqrt(3.0), 0.0]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0, 0)],
             [1; 2; "ty"; (-1, 0)],
             [1; 2; "tz"; (1, -1)],
@@ -1336,18 +1336,18 @@ function getUnitcellKagome(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0],
             [sqrt(3.0)/4, -0.25],
             [sqrt(3.0)/4, +0.25]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0)],
             [1; 3; 1.0; (0, 0)],
             [1; 2; 1.0; (-1, 0)],
@@ -1434,13 +1434,13 @@ function getUnitcellKagomeMinus(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
         b1 = [0.0, 0.0]
         b2 = [1/sqrt(3.0), 0.0]
-        basis = Array[
+        basis = Array{Float64, 1}[
             b1 .+ 1/4 * (b2 .- b1),
             b1 .+ 1/4 * (b2 .- a2),
             b1 .+ 1/4 * (b2 .- a1),
@@ -1450,7 +1450,7 @@ function getUnitcellKagomeMinus(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0,0)],
             [2; 1; 1.0; (0,0)],
             [1; 3; 1.0; (0,0)],
@@ -1476,13 +1476,13 @@ function getUnitcellKagomeMinus(version::Int64=1; save::Bool=false)
         # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
         b1 = [0.0, 0.0]
         b2 = [1/sqrt(3.0), 0.0]
-        basis = Array[
+        basis = Array{Float64, 1}[
             b1 .+ 1/4 * (b2 .- b1),
             b1 .+ 1/4 * (b2 .- a2),
             b1 .+ 1/4 * (b2 .- a1),
@@ -1492,7 +1492,7 @@ function getUnitcellKagomeMinus(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tzp"; (0,0)],
             [2; 1; "tzp"; (0,0)],
             [1; 3; "txp"; (0,0)],
@@ -1583,11 +1583,11 @@ function getUnitcellHoneycombXXX(version::Int64=1; save::Bool=false)
        # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0,0.0],
             [0.57735,0.0],
             [0.288675,0.0],
@@ -1602,7 +1602,7 @@ function getUnitcellHoneycombXXX(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 6; 1.0; (0,0)],
             [6; 1; 1.0; (0,0)],
             [6; 3; 1.0; (0,0)],
@@ -1634,11 +1634,11 @@ function getUnitcellHoneycombXXX(version::Int64=1; save::Bool=false)
        # the lattice vectors
         a1 = [sqrt(3.0)/2, -0.5]
         a2 = [sqrt(3.0)/2, +0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0,0.0],
             [0.57735,0.0],
             [0.288675,0.0],
@@ -1655,7 +1655,7 @@ function getUnitcellHoneycombXXX(version::Int64=1; save::Bool=false)
         a = sqrt(sqrt(2.0/3.0))
         b = sqrt(sqrt(3.0/2.0))
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 6; a; (0,0)],
             [6; 1; a; (0,0)],
             [6; 3; b; (0,0)],
@@ -1795,18 +1795,18 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
         a1 = 0.5 .* [0, 1, 1]
         a2 = 0.5 .* [1, 0, 1]
         a3 = 0.5 .* [1, 1, 0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [0.25, 0.25, 0.25]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [1; 2; 1.0; (-1, 0, 0)],
             [1; 2; 1.0; (0, -1, 0)],
@@ -1824,18 +1824,18 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
         a1 = 0.5 .* [0, 1, 1]
         a2 = 0.5 .* [1, 0, 1]
         a3 = 0.5 .* [1, 1, 0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [0.25, 0.25, 0.25]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "J1"; (0, 0, 0)],
             [1; 2; "J1"; (-1, 0, 0)],
             [1; 2; "J1"; (0, -1, 0)],
@@ -1883,18 +1883,18 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
         a1 = 0.5 .* [0, 1, 1]
         a2 = 0.5 .* [1, 0, 1]
         a3 = 0.5 .* [1, 1, 0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [0.25, 0.25, 0.25]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "J1"; (0, 0, 0)],
             [1; 2; "J1"; (-1, 0, 0)],
             [1; 2; "J1"; (0, -1, 0)],
@@ -1991,18 +1991,18 @@ function getUnitcellBCC(version::Int64=1; save::Bool=false)
         a1 = [1, 0, 0]
         a2 = [0, 1, 0]
         a3 = [0, 0, 1]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [0.5, 0.5, 0.5]
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; ( 0,  0,  0)],
             [1; 2; 1.0; (-1,  0,  0)],
             [1; 2; 1.0; ( 0, -1,  0)],
@@ -2082,12 +2082,12 @@ function getUnitcellPyrochlore(version::Int64=1; save::Bool=false)
         a1 = [0, 0.5, 0.5]
         a2 = [0.5, 0, 0.5]
         a3 = [0.5, 0.5, 0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0., 0., 0.],
             [0., 0.25, 0.25],
             [0.25, 0., 0.25],
@@ -2095,7 +2095,7 @@ function getUnitcellPyrochlore(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [1; 3; 1.0; (0, 0, 0)],
             [1; 4; 1.0; (0, 0, 0)],
@@ -2214,12 +2214,12 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
         a1 = [1.0, 0.0, 0.0]
         a2 = [-0.5, sqrt(3)/2., 0.0]
         a3 = [0.0, 0.0, (3*sqrt(2))/5.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.5, sqrt(3)/10., 0.0],
             [3/5., sqrt(3)/5., (2*sqrt(2))/5.],
             [0.1, (3*sqrt(3))/10., sqrt(2)/5.],
@@ -2229,7 +2229,7 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; 1.0; (0, 0, 0)],
             [4; 2; 1.0; (0, 0, 0)], # zz
             [4; 3; 1.0; (0, 0, 0)],
@@ -2261,12 +2261,12 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
         a1 = [1.0, 0.0, 0.0]
         a2 = [-0.5, sqrt(3)/2., 0.0]
         a3 = [0.0, 0.0, (3*sqrt(2))/5.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.5, sqrt(3)/10., 0.0],
             [3/5., sqrt(3)/5., (2*sqrt(2))/5.],
             [0.1, (3*sqrt(3))/10., sqrt(2)/5.],
@@ -2276,7 +2276,7 @@ function getUnitcell_8_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; "ty"; (0, 0, 0)],
             [4; 2; "tz"; (0, 0, 0)], # zz
             [4; 3; "tx"; (0, 0, 0)],
@@ -2366,12 +2366,12 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
         a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
         a2 = [0, 1/sqrt(3), (2*sqrt(2))/(5*sqrt(3))]
         a3 = [0, 0, sqrt(6)/5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [1/10., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))],
             [1/5., sqrt(3)/5, sqrt(6)/5],
             [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
@@ -2381,7 +2381,7 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; 1.0; (0, 0, 0)], # zz
             [4; 2; 1.0; (0, 0, 0)],
             [2; 5; 1.0; (0, 0, 0)], # zz
@@ -2413,12 +2413,12 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
         a1 = [1/2., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))]
         a2 = [0, 1/sqrt(3), (2*sqrt(2))/(5*sqrt(3))]
         a3 = [0, 0, sqrt(6)/5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [1/10., 1/(2*sqrt(3)), sqrt(2)/(5*sqrt(3))],
             [1/5., sqrt(3)/5, sqrt(6)/5],
             [3/10., 11/(10*sqrt(3)), (4*sqrt(2))/(5*sqrt(3))],
@@ -2428,7 +2428,7 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; "tz"; (0, 0, 0)], # zz
             [4; 2; "ty"; (0, 0, 0)],
             [2; 5; "tz"; (0, 0, 0)], # zz
@@ -2458,7 +2458,9 @@ function getUnitcell_8_3_b(version::Int64=1; save::Bool=false)
     end
     # generate unitcell
     uc = Unitcell(lattice_vectors, basis, connections, filename)
-    saveUnitcell(uc)
+    if save
+        saveUnitcell(uc)
+    end
     # return the unitcell
     return uc
 end
@@ -2517,12 +2519,12 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
         a1 = [1., 0., 0.]
         a2 = [-1/2., sqrt(3)/2., 0.]
         a3 = [0., 0., 2/5.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [-1/5., 4/(5*sqrt(3)), 1/10.],  #1
             [ 0., 7/(5*sqrt(3)), 1/10.],    #2
             [ 1/5., 4/(5*sqrt(3)), 1/10.],  #3
@@ -2534,7 +2536,7 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 5; 1.0; (0, 0, 0)],
             [2; 5; 1.0; (0, 0, 0)], # zz
             [5; 3; 1.0; (0, 0, 0)],
@@ -2573,12 +2575,12 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
         a1 = [1., 0., 0.]
         a2 = [-1/2., sqrt(3)/2., 0.]
         a3 = [0., 0., 2/5.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [-1/5., 4/(5*sqrt(3)), 1/10.], #1
             [ 0., 7/(5*sqrt(3)), 1/10.], #2
             [ 1/5., 4/(5*sqrt(3)), 1/10.], #3
@@ -2590,7 +2592,7 @@ function getUnitcell_8_3_c(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 5; "tx"; (0, 0, 0)],
             [2; 5; "tz"; (0, 0, 0)], # zz
             [5; 3; "ty"; (0, 0, 0)],
@@ -2710,12 +2712,12 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         a3 = 0.5*(a+b+c)
         x = (sqrt(3) + sqrt(2))/(2*(2*sqrt(3) + sqrt(2)))
         z = 0.125
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
                     x.*a + (0.5 - x).*b +      0.25.*c,
                 (1-x).*a + (0.5 - x).*b +      0.25.*c,
             (0.5 + x).*a +       0.5.*b + (0.5 - z).*c,
@@ -2735,7 +2737,7 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 10; 1.0; (0, 0, 0)],
             [10; 2; 1.0; (0, 0, 0)],
             [2; 11; 1.0; (0, 0, 0)], # zz
@@ -2806,12 +2808,12 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         a3 = 0.5*(a+b+c)
         x = (sqrt(3) + sqrt(2))/(2*(2*sqrt(3) + sqrt(2)))
         z = 0.125
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
                     x.*a + (0.5 - x).*b +      0.25.*c,
                 (1-x).*a + (0.5 - x).*b +      0.25.*c,
             (0.5 + x).*a +       0.5.*b + (0.5 - z).*c,
@@ -2831,7 +2833,7 @@ function getUnitcell_8_3_n(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 10; "tx"; (0, 0, 0)],
             [10; 2; "ty"; (0, 0, 0)],
             [2; 11; "tz"; (0, 0, 0)], # zz
@@ -3006,12 +3008,12 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         a3 =  (2/3.).*a + (1/3.).*b + (1/3.).*c
         d_f = sqrt(3)/(1+2*sqrt(3))
         d_h = (29 - 3*sqrt(3))/132.
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
                d_f.*a,
              2*d_h.*a +   d_h.*b + (1/12).*c,
                d_f.*a +   d_f.*b,
@@ -3027,7 +3029,7 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [2; 3; 1.0; (0, 0, 0)],
             [3; 4; 1.0; (0, 0, 0)],
@@ -3081,12 +3083,12 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
         a2 = [         0.,  -1., 1/sqrt(3)]
         a3 = [ sqrt(3)/2., 1/2., 1/sqrt(3)]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0, 0, 0],
             (1/6).*a1 - (1/6).*a2,
             (2/6).*a1 - (2/6).*a2,
@@ -3102,7 +3104,7 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [2; 3; 1.0; (0, 0, 0)],
             [3; 4; 1.0; (0, 0, 0)],
@@ -3154,12 +3156,12 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         a3 =  (2/3.).*a + (1/3.).*b + (1/3.).*c
         d_f = sqrt(3)/(1+2*sqrt(3))
         d_h = (29 - 3*sqrt(3))/132.
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
                d_f.*a,
              2*d_h.*a +   d_h.*b + (1/12).*c,
                d_f.*a +   d_f.*b,
@@ -3175,7 +3177,7 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0, 0, 0)],
             [2; 3; "ty"; (0, 0, 0)],
             [3; 4; "tx"; (0, 0, 0)],
@@ -3229,12 +3231,12 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         a1 = [-sqrt(3)/2., 1/2., 1/sqrt(3)]
         a2 = [         0.,  -1., 1/sqrt(3)]
         a3 = [ sqrt(3)/2., 1/2., 1/sqrt(3)]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0, 0, 0],
             (1/6).*a1 - (1/6).*a2,
             (2/6).*a1 - (2/6).*a2,
@@ -3250,7 +3252,7 @@ function getUnitcell_9_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0, 0, 0)],
             [2; 3; "ty"; (0, 0, 0)],
             [3; 4; "tx"; (0, 0, 0)],
@@ -3357,12 +3359,12 @@ function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
         a1 = [1, 0, 0]
         a2 = [0.5, 0.5, -0.5]
         a3 = [0.5, 0.5, 0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [1/8., 1/8.,  1/8.],
             [5/8., 3/8., -1/8.],
             [3/8., 1/8., -1/8.],
@@ -3370,7 +3372,7 @@ function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 3; 1.0; (0, 0, 0)],
             [3; 2; 1.0; (0, 0, 0)],  # zz
             [2; 4; 1.0; (0, 0, 0)],
@@ -3395,12 +3397,12 @@ function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
         a1 = [1, 0, 0]
         a2 = [0.5, 0.5, -0.5]
         a3 = [0.5, 0.5, 0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [1/8., 1/8.,  1/8.],
             [5/8., 3/8., -1/8.],
             [3/8., 1/8., -1/8.],
@@ -3408,7 +3410,7 @@ function getUnitcell_10_3_a(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 3; "tx"; (0, 0, 0)],
             [3; 2; "tz"; (0, 0, 0)],  # zz
             [2; 4; "tx"; (0, 0, 0)],
@@ -3519,12 +3521,12 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         a1 = [-1.0,  1.0, -2.0]
         a2 = [-1.0,  1.0,  2.0]
         a3 = [ 2.0,  4.0,  0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [1.0, 1.0, 0.0],
             [1.0, 2.0, 1.0],
@@ -3532,7 +3534,7 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [1; 4; 1.0; (0, 0, 0)],
             [1; 4; 1.0; (1, 0, 0)],
@@ -3556,12 +3558,12 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         a1 = [-1.0,  1.0, -2.0]
         a2 = [-1.0,  1.0,  2.0]
         a3 = [ 2.0,  4.0,  0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [1.0, 1.0, 0.0],
             [1.0, 2.0, 1.0],
@@ -3569,7 +3571,7 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [1; 4; 1.0; (0, 0, -1)],
             [1; 4; 1.0; (1, 0, -1)],
@@ -3593,12 +3595,12 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         a1 = [-1.0,  1.0, -2.0]
         a2 = [-1.0,  1.0,  2.0]
         a3 = [ 2.0,  4.0,  0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [1.0, 1.0, 0.0],
             [1.0, 2.0, 1.0],
@@ -3606,7 +3608,7 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tz"; (0, 0, 0)],
             [1; 4; "tx"; (0, 0, 0)],
             [1; 4; "ty"; (1, 0, 0)],
@@ -3630,12 +3632,12 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         a1 = [-1.0,  1.0, -2.0]
         a2 = [-1.0,  1.0,  2.0]
         a3 = [ 2.0,  4.0,  0.0]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0, 0.0, 0.0],
             [1.0, 1.0, 0.0],
             [1.0, 2.0, 1.0],
@@ -3643,7 +3645,7 @@ function getUnitcell_10_3_b(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tz"; (0, 0, 0)],
             [1; 4; "tx"; (0, 0, -1)],
             [1; 4; "ty"; (1, 0, -1)],
@@ -3729,12 +3731,12 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
         a1 = [1, 0, 0]
         a2 = [-0.5, sqrt(3)/2., 0.0]
         a3 = [0.0, 0.0, (3*sqrt(3))/2.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.25, 1/(4*sqrt(3)), 1/(2*sqrt(3))],
             [0.75, 1/(4*sqrt(3)), 2/sqrt(3)],
             [0.5, 1/sqrt(3), 7/(2*sqrt(3))],
@@ -3744,7 +3746,7 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; 1.0; (0, 0, 0)],
             [4; 2; 1.0; (0, 0, 0)],  # zz
             [2; 5; 1.0; (0, 0, 0)],
@@ -3776,12 +3778,12 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
         a1 = [1, 0, 0]
         a2 = [-0.5, sqrt(3)/2., 0.0]
         a3 = [0.0, 0.0, (3*sqrt(3))/2.]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.25, 1/(4*sqrt(3)), 1/(2*sqrt(3))],
             [0.75, 1/(4*sqrt(3)), 2/sqrt(3)],
             [0.5, 1/sqrt(3), 7/(2*sqrt(3))],
@@ -3791,7 +3793,7 @@ function getUnitcell_10_3_c(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 4; "tx"; (0, 0, 0)],
             [4; 2; "tz"; (0, 0, 0)],  # zz
             [2; 5; "tx"; (0, 0, 0)],
@@ -3891,12 +3893,12 @@ function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
         a1 = [0.5, -0.5,  0.0]
         a2 = [0.5,  0.5,  0.0]
         a3 = [0.0,  0.0,  0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0,     -a, 0.75*c],
             [ -a,    0.0,  0.5*c],
             [0.0,      a, 0.25*c],
@@ -3908,7 +3910,7 @@ function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; 1.0; (0, 0, 0)],
             [3; 4; 1.0; (0, 0, 0)],
             [5; 6; 1.0; (0, 0, 0)],
@@ -3954,12 +3956,12 @@ function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
         a1 = [0.5, -0.5,  0.0]
         a2 = [0.5,  0.5,  0.0]
         a3 = [0.0,  0.0,  0.5]
-        lattice_vectors = Array[]
+        lattice_vectors = Array{Float64, 1}[]
         push!(lattice_vectors, a1)
         push!(lattice_vectors, a2)
         push!(lattice_vectors, a3)
         # Basis Definition
-        basis = Array[
+        basis = Array{Float64, 1}[
             [0.0,     -a, 0.75*c],
             [ -a,    0.0,  0.5*c],
             [0.0,      a, 0.25*c],
@@ -3971,7 +3973,7 @@ function getUnitcell_10_3_d(version::Int64=1; save::Bool=false)
         ]
         # Connection Definition
         # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
-        connections = Array[
+        connections = Array{Any, 1}[
             [1; 2; "tx"; (0, 0, 0)],
             [3; 4; "tx"; (0, 0, 0)],
             [5; 6; "ty"; (0, 0, 0)],

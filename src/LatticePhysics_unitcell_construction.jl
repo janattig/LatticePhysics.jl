@@ -45,7 +45,7 @@ function getUnitcellFromSites2D(
         save::Bool=false
     )
     # make a new list with connections
-    connections = Array[]
+    connections = Array{Any, 1}[]
     # define what "close to" means
     function distance(p1, p2)
         return sqrt(sum((p1.-p2).*(p1.-p2)))
@@ -141,7 +141,7 @@ function getUnitcellFromSites2D(
         end
     end
     # correct all connections - i.e. find out if the returning connection is present, if not: add it
-    connections_additional = Array[]
+    connections_additional = Array{Any, 1}[]
     for c in connections
         # check if "-c" is present
         found = false
@@ -189,7 +189,7 @@ function getUnitcellFromSites3D(
         save::Bool=false
     )
     # make a new list with connections
-    connections = Array[]
+    connections = Array{Any, 1}[]
     # define what "close to" means
     function distance(p1, p2)
         return sqrt(sum((p1.-p2).*(p1.-p2)))
@@ -287,7 +287,7 @@ function getUnitcellFromSites3D(
         end
     end
     # correct all connections - i.e. find out if the returning connection is present, if not: add it
-    connections_additional = Array[]
+    connections_additional = Array{Any, 1}[]
     for c in connections
         # check if "-c" is present
         found = false
@@ -450,13 +450,13 @@ function printUnitcellGeneratingCode(unitcell::Unitcell; version::Int64=1)
             index = index+1
             println("       a$(index) = $(l)")
         end
-        println("       lattice_vectors = Array[]")
+        println("       lattice_vectors = Array{Float64, 1}[]")
         for index in 1:size(unitcell.lattice_vectors, 1)
             println("       push!(lattice_vectors, a$(index))")
         end
         # Basis
         println("       # Basis Definition")
-        println("       basis = Array[")
+        println("       basis = Array{Float64, 1}[")
         for b in unitcell.basis[1:end-1]
             println("           $(b),")
         end
@@ -465,7 +465,7 @@ function printUnitcellGeneratingCode(unitcell::Unitcell; version::Int64=1)
         # Connections
         println("       # Connection Definition")
         println("       # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]")
-        println("       connections = Array[")
+        println("       connections = Array{Any, 1}[")
         for c in unitcell.connections[1:end-1]
             if typeof(c[3]) == String
                 println("           [$(c[1]); $(c[2]); \"$(c[3])\"; $(c[4])],")
@@ -501,13 +501,13 @@ function printUnitcellGeneratingCode(unitcell::Unitcell; version::Int64=1)
             index = index+1
             println("   a$(index) = $(l)")
         end
-        println("   lattice_vectors = Array[]")
+        println("   lattice_vectors = Array{Float64, 1}[]")
         for index in 1:size(unitcell.lattice_vectors, 1)
             println("   push!(lattice_vectors, a$(index))")
         end
         # Basis
         println("   # Basis Definition")
-        println("   basis = Array[")
+        println("   basis = Array{Float64, 1}[")
         for b in unitcell.basis[1:end-1]
             println("       $(b),")
         end
@@ -516,7 +516,7 @@ function printUnitcellGeneratingCode(unitcell::Unitcell; version::Int64=1)
         # Connections
         println("   # Connection Definition")
         println("   # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]")
-        println("   connections = Array[")
+        println("   connections = Array{Any, 1}[")
         for c in unitcell.connections[1:end-1]
             if typeof(c[3]) == String
                 println("       [$(c[1]); $(c[2]); \"$(c[3])\"; $(c[4])],")
