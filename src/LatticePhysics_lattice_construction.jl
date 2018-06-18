@@ -1190,7 +1190,7 @@ export getLattice
 
 
 # generate a lattice in 2D by bond distance (open boundary conditions)
-function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
+function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -1198,7 +1198,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -1215,8 +1215,8 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # arrays for new positions and connections
-    positions   = []
-    connections = Array[]
+    positions   = Array{Float64, 1}[]
+    connections = Array{Any,1}[]
 
     # checklist for all sites that are checked if added etc
     checklist   = []
@@ -1301,7 +1301,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
     positions_TMP = positions
 
     # erase positions
-    positions = Array[]
+    positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
     # insert the real positions
@@ -1322,13 +1322,13 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
 
     # save everything to a Lattice object
     lattice = Lattice(
-        unitcell,
-        [],
-        [],
-        positions,
-        positions_indices,
-        connections,
-        filename
+            unitcell,
+            Array{Int64, 1}[],
+            Array{Float64, 1}[],
+            positions,
+            positions_indices,
+            connections,
+            filename
         )
     # save the lattice object
     if save
@@ -1340,7 +1340,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
 
 end
 # generate a lattice in 3D by bond distance (open boundary conditions)
-function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
+function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -1348,7 +1348,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_by_bonddistance_$(bonddistance)_from_$(origin).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -1365,8 +1365,8 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # arrays for new positions and connections
-    positions   = []
-    connections = Array[]
+    positions   = Array{Float64, 1}[]
+    connections = Array{Any, 1}[]
 
     # checklist for all sites that are checked if added etc
     checklist   = []
@@ -1450,7 +1450,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
     positions_TMP = positions
 
     # erase positions
-    positions = Array[]
+    positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
     # insert the real positions
@@ -1471,13 +1471,13 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
 
     # save everything to a Lattice object
     lattice = Lattice(
-        unitcell,
-        [],
-        [],
-        positions,
-        positions_indices,
-        connections,
-        filename
+            unitcell,
+            Array{Int64, 1}[],
+            Array{Float64, 1}[],
+            positions,
+            positions_indices,
+            connections,
+            filename
         )
     # save the lattice object
     if save
@@ -1488,8 +1488,32 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
     return lattice
 end
 
-# generate a flake of any dimension by bond distance
-function getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=true)
+
+
+"""
+    getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64 [; origin::Int64=1, load::Bool=false, save::Bool=false])
+
+Function to construct a finite lattice as spreading around an origin site up to a certain bond distance. The lattice is
+created from a passed `Unitcell` object.
+
+Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> lattice = getLatticeByBondDistance(unitcell, 5)
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLatticeByBondDistance(unitcell, 7, origin=2)
+LatticePhysics.Lattice(...)
+```
+"""
+function getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64; origin::Int64=1, load=false, save=false)
 
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
@@ -1515,10 +1539,6 @@ function getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64; origi
     end
 
 end
-
-
-export getLatticeByBondDistance2D
-export getLatticeByBondDistance3D
 
 export getLatticeByBondDistance
 
