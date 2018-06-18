@@ -12,6 +12,9 @@
 #   - of a site
 #   - of complete lattice
 #
+#
+#   BUG: Plaquettes dont implement periodic boundaries so far
+#
 ################################################################################
 
 
