@@ -179,6 +179,8 @@ end;
             # - just getting lattice
             @test testLattice(getLatticeInSphere(unitcell_2d, 2.0), 0, 2)
             @test testLattice(getLatticeInSphere(unitcell_3d, 2.0), 0, 3)
+            @test testLattice(getLatticeInSphere(unitcell_2d, 2.0, origin=2), 0, 2)
+            @test testLattice(getLatticeInSphere(unitcell_3d, 2.0, origin=2), 0, 3)
             # - getting lattice and saving
             @test testLattice(getLatticeInSphere(unitcell_2d, 2.0, save=true), 0, 2)
             @test testLattice(getLatticeInSphere(unitcell_3d, 2.0, save=true), 0, 3)
@@ -195,12 +197,34 @@ end;
             # - just getting lattice
             @test testLattice(getLatticeInBox(unitcell_2d, box), 0, 2)
             @test testLattice(getLatticeInBox(unitcell_3d, box), 0, 3)
+            @test testLattice(getLatticeInBox(unitcell_2d, box, origin=2), 0, 2)
+            @test testLattice(getLatticeInBox(unitcell_3d, box, origin=2), 0, 3)
             # - getting lattice and saving
             @test testLattice(getLatticeInBox(unitcell_2d, box, save=true), 0, 2)
             @test testLattice(getLatticeInBox(unitcell_3d, box, save=true), 0, 3)
             # - getting lattice and saving and loading
             @test testLattice(getLatticeInBox(unitcell_2d, box, save=true, load=true), 0, 2)
             @test testLattice(getLatticeInBox(unitcell_3d, box, save=true, load=true), 0, 3)
+        # end testset
+        end;
+
+        # GENERAL
+        @testset "General shape" begin
+            # defining a box that workds for 2d and 3d
+            shape_function(point) = sum(point.*point) < 2.0
+            # - just getting lattice
+            @test testLattice(getLatticeInShape(unitcell_2d, shape_function), 0, 2)
+            @test testLattice(getLatticeInShape(unitcell_3d, shape_function), 0, 3)
+            @test testLattice(getLatticeInShape(unitcell_2d, shape_function, "myshape"), 0, 2)
+            @test testLattice(getLatticeInShape(unitcell_3d, shape_function, "myshape"), 0, 3)
+            @test testLattice(getLatticeInShape(unitcell_2d, shape_function, "myshape", origin=2), 0, 2)
+            @test testLattice(getLatticeInShape(unitcell_3d, shape_function, "myshape", origin=2), 0, 3)
+            # - getting lattice and saving
+            @test testLattice(getLatticeInShape(unitcell_2d, shape_function, "myshape", save=true), 0, 2)
+            @test testLattice(getLatticeInShape(unitcell_3d, shape_function, "myshape", save=true), 0, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLatticeInShape(unitcell_2d, shape_function, "myshape", save=true, load=true), 0, 2)
+            @test testLattice(getLatticeInShape(unitcell_3d, shape_function, "myshape", save=true, load=true), 0, 3)
         # end testset
         end;
 

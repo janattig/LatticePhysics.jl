@@ -1921,7 +1921,6 @@ function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::Strin
         return
     end
 end
-
 export getLatticeInShape
 
 
