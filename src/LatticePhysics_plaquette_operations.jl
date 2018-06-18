@@ -146,7 +146,7 @@ Array{Array{Int64, 1}}[
 """
 function getPlaquettesOfLattice(lattice::Lattice, len::Int64)
     # get all plaquettes of all sites
-    plaquettes = Array{int64,1}[]
+    plaquettes = Array{Int64,1}[]
     plaquettes_sorted = Array{Int64,1}[]
     for i in 1:size(lattice.positions,1)
         # obtain plaquettes
