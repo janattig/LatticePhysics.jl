@@ -239,13 +239,25 @@ include("LatticePhysics_unitcell_construction.jl")
 
 
 
-
 ################################################################################
 #
 #   IMPLEMENTATIONS OF DIFFERENT LATTICE CONSTRUCTION RELATED STUFF
 #   AS WELL AS DIFFERNT LATTICE MODIFICATION STUFF
 #
 #   STRUCTURE OF THE FILE
+#
+#   1) CONSTRUCTION BASED ON UNITCELLS (2D & 3D)
+#   - Periodic Boundaries
+#   - Semi-Periodic Boundaries
+#   - Open Boundaries
+#   - General Boundaries
+#
+#   2) CONSTRUCTION BASED ON BOND DISTANCE (2D & 3D)
+#
+#   3) CONSTRUCTION BASED ON SHAPE (2D & 3D)
+#   - General Shape
+#   - Sphere
+#   - Box
 #
 ################################################################################
 
