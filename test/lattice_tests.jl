@@ -41,8 +41,6 @@ lattice_testset = @testset "Lattice tests" begin
     end;
 
 
-
-
     @testset "Connectivity information functions" begin
         # testing connectivity information
         @test typeof(getConnectivityList(lattice)) == Array{Array,1}
@@ -50,7 +48,7 @@ lattice_testset = @testset "Lattice tests" begin
         @test typeof(getConnectionList(lattice)) == Array{Array,1}
         # testing connection strength information
         @test typeof(getConnectionStrengthList(lattice)) == Array{Any,1}
-    end
+    end;
 
 # end the testset here
 end;

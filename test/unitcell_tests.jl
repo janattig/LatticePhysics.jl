@@ -38,8 +38,6 @@ unitcell_testset = @testset "Unitcell tests" begin
     end;
 
 
-
-
     @testset "Connectivity information functions" begin
         # testing connectivity information
         @test typeof(getConnectivityList(unitcell)) == Array{Array,1}
@@ -47,7 +45,7 @@ unitcell_testset = @testset "Unitcell tests" begin
         @test typeof(getConnectionList(unitcell)) == Array{Array,1}
         # testing connection strength information
         @test typeof(getConnectionStrengthList(unitcell)) == Array{Any,1}
-    end
+    end;
 
 # end the testset here
 end;
