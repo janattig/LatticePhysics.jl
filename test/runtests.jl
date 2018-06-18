@@ -9,5 +9,6 @@ latticephysics_testset = @testset "All LatticePhysics.jl tests" begin
     include("unitcell_tests.jl")
 
     # LATTICE STUFF
+    include("lattice_tests.jl")
 
 end;

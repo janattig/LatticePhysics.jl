@@ -64,7 +64,7 @@ function getLatticePeriodic2D(unitcell::Unitcell, repetition_array::Array{Int64}
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
@@ -88,7 +88,7 @@ function getLatticePeriodic2D(unitcell::Unitcell, repetition_array::Array{Int64}
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -132,7 +132,7 @@ function getLatticePeriodic2D(unitcell::Unitcell, repetition_array::Array{Int64}
 	end
 
     # generate new lattice vectors, now spanning the WHOLE lattice
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
     a1 = uc_lattice_vectors[1] .* N_a1
     a2 = uc_lattice_vectors[2] .* N_a2
     push!(lattice_vectors, a1)
@@ -189,7 +189,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
 
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
@@ -215,7 +215,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -273,7 +273,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
 
 
     # generate new lattice vectors, now spanning the WHOLE lattice
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
     a1 = uc_lattice_vectors[1] .* N_a1
     a2 = uc_lattice_vectors[2] .* N_a2
     a3 = uc_lattice_vectors[3] .* N_a3
@@ -388,7 +388,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
@@ -412,7 +412,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -461,7 +461,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
 
     # generate new lattice vectors, now spanning the WHOLE lattice (zero lattice vectors indicating no periodicity = finite)
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
 
     # save everything to a Lattice object
     lattice = Lattice(
@@ -514,7 +514,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
 	# define the index function to get the index of an element in the array
@@ -540,7 +540,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -602,7 +602,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
 
 
     # generate new lattice vectors, now spanning the WHOLE lattice (zero lattice vectors indicating no periodicity = finite)
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
 
     # save everything to a Lattice object
     lattice = Lattice(
@@ -724,7 +724,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
     # check which direction periodic
@@ -757,7 +757,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -811,7 +811,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
 	end
 
     # generate new lattice vectors, now spanning the WHOLE lattice (zero lattice vectors indicating no periodicity = finite)
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
     if periodic_direction == 1
         a1 = uc_lattice_vectors[1] .* N_a1
         push!(lattice_vectors, a1)
@@ -889,7 +889,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
 
 
     # GENERATE NEW POSITIONS
-	positions = Array[]
+	positions = Array{Float64, 1}[]
 	positions_indices = Int64[]
 
     # turn all directions to positive numbers
@@ -920,7 +920,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
     end
 
     # GENERATE NEW CONNECTIONS
-	connections = Array[]
+	connections = Array{Any,1}[]
 
 	# iterate over all unit cells
 	for i in 1:N_a1
@@ -1000,7 +1000,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
 
 
     # generate new lattice vectors, now spanning the WHOLE lattice
-    lattice_vectors = Array[]
+    lattice_vectors = Array{Float64, 1}[]
     a1 = uc_lattice_vectors[1] .* N_a1
     a2 = uc_lattice_vectors[2] .* N_a2
     a3 = uc_lattice_vectors[3] .* N_a3
@@ -1215,7 +1215,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # arrays for new positions and connections
-    positions   = Array{Float64, 1}[]
+    positions   = []
     connections = Array{Any,1}[]
 
     # checklist for all sites that are checked if added etc
@@ -1323,7 +1323,7 @@ function getLatticeByBondDistance2D(unitcell::Unitcell, bonddistance::Int64; ori
     # save everything to a Lattice object
     lattice = Lattice(
             unitcell,
-            Array{Int64, 1}[],
+            Int64[],
             Array{Float64, 1}[],
             positions,
             positions_indices,
@@ -1365,7 +1365,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
     uc_lattice_vectors  = unitcell.lattice_vectors
 
     # arrays for new positions and connections
-    positions   = Array{Float64, 1}[]
+    positions   = []
     connections = Array{Any, 1}[]
 
     # checklist for all sites that are checked if added etc
@@ -1472,7 +1472,7 @@ function getLatticeByBondDistance3D(unitcell::Unitcell, bonddistance::Int64; ori
     # save everything to a Lattice object
     lattice = Lattice(
             unitcell,
-            Array{Int64, 1}[],
+            Int64[],
             Array{Float64, 1}[],
             positions,
             positions_indices,
@@ -1593,7 +1593,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
 
     # arrays for new positions and connections
     positions   = []
-    connections = Array[]
+    connections = Array{Any,1}[]
 
     # checklist for all sites that are checked if added etc
     checklist   = []
@@ -1678,7 +1678,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
     positions_TMP = positions
 
     # erase positions
-    positions = Array[]
+    positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
     # insert the real positions
@@ -1741,7 +1741,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
 
     # arrays for new positions and connections
     positions   = []
-    connections = Array[]
+    connections = Array{Any,1}[]
 
     # checklist for all sites that are checked if added etc
     checklist   = []
@@ -1825,7 +1825,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
     positions_TMP = positions
 
     # erase positions
-    positions = Array[]
+    positions = Array{Float64, 1}[]
     positions_indices = Int64[]
 
     # insert the real positions
@@ -2040,7 +2040,7 @@ export getLatticeInBox
 function getTransformedLatticeBondToSite(lattice::Lattice; connection_strength="AUTO")
     # new positions and connections
     positions = copy(lattice.positions)
-    connections = Array[]
+    connections = Array{Any,1}[]
     connectionsTreated = Array[]
     # generate a new filename
     filename_new = replace(lattice.filename, ".jld", "_X.jld")
@@ -2108,7 +2108,7 @@ export getTransformedLatticeBondToSite
 function getTransformedUnitcellBondToSite(unitcell::Unitcell; connection_strength="AUTO")
     # new positions and connections
     positions = copy(unitcell.basis)
-    connections = Array[]
+    connections = Array{Any,1}[]
     connectionsTreated = Array[]
     # generate a new filename
     filename_new = replace(unitcell.filename, ".jld", "_X.jld")
