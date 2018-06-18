@@ -101,7 +101,7 @@ mutable struct Unitcell
     # the custom constructor when loading a unitcell from a file
     function Unitcell(filename::String)
         # define an empty unitcell
-        uc = new(nothing,nothing,nothing,filename)
+        uc = new(Array{Float64, 1}[],Array{Float64, 1}[],Array{Any, 1}[],filename)
         # load the uc
         loadUnitcell(uc)
         # return the uc
@@ -110,7 +110,7 @@ mutable struct Unitcell
     # the dummy constructor (for lattices that do not need a UC)
     function Unitcell()
         # just initialize everything
-        return new([], [], [], UNITCELL_DUMMY_FILENAME)
+        return new(Array{Float64, 1}[],Array{Float64, 1}[],Array{Any, 1}[],UNITCELL_DUMMY_FILENAME)
     end
 
 end
@@ -371,7 +371,7 @@ type Lattice
     # Constructor when loading from a file
     function Lattice(filename::String)
         # define an empty unitcell
-        lattice = new(Unitcell(),[], nothing,nothing,[],nothing,filename)
+        lattice = new(Unitcell(),Array{Int64, 1}[], Array{Float64, 1}[],Array{Float64, 1}[],Array{Int64, 1}[],Array{Any, 1}[],filename)
         # load the uc
         loadLattice(lattice)
         # return the uc
@@ -381,7 +381,7 @@ type Lattice
     # Dummy constructor
     function Lattice()
         # define an empty unitcell
-        lattice = new(Unitcell(),[], nothing,nothing,[],nothing,LATTICE_DUMMY_FILENAME)
+        lattice = new(Unitcell(),Array{Int64, 1}[], Array{Float64, 1}[],Array{Float64, 1}[],Array{Int64, 1}[],Array{Any, 1}[],LATTICE_DUMMY_FILENAME)
         # return the uc
         return lattice
     end

@@ -28,12 +28,14 @@ lattice_testset = @testset "Lattice tests" begin
         @test typeof(saveLattice(lattice))==String
         # test loading
         @test typeof(loadLattice(lattice))==String
+        @test typeof(loadLattice(lattice.filename))==Lattice
     end;
 
 
     @testset "Test and Information functions" begin
         # test printing information
-        @test printInfo(unitcell)==nothing
+        @test printInfo(lattice)==nothing
+        @test printInfo(lattice, detailed=true)==nothing
         # test testing method
         #@test typeof(testUnitcell(unitcell, 2, 2))==Bool
     end;

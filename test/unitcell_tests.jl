@@ -25,6 +25,7 @@ unitcell_testset = @testset "Unitcell tests" begin
         @test typeof(saveUnitcell(unitcell))==String
         # test loading
         @test typeof(loadUnitcell(unitcell))==String
+        @test typeof(loadUnitcell(unitcell.filename))==Unitcell
     end;
 
 
