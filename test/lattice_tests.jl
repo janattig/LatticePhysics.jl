@@ -191,7 +191,7 @@ end;
         # BOX
         @testset "Box" begin
             # defining a box that workds for 2d and 3d
-            box = [10.0, 5.0, 6.0]
+            box = [4.0, 2.0, 3.0]
             # - just getting lattice
             @test testLattice(getLatticeInBox(unitcell_2d, box), 0, 2)
             @test testLattice(getLatticeInBox(unitcell_3d, box), 0, 3)
