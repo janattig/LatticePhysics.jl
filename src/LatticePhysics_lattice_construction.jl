@@ -46,7 +46,7 @@ function getLatticePeriodic2D(unitcell::Unitcell, repetition_array::Array{Int64}
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -170,7 +170,7 @@ function getLatticePeriodic3D(unitcell::Unitcell, repetition_array::Array{Int64}
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_periodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -369,7 +369,7 @@ function getLatticeOpen2D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -495,7 +495,7 @@ function getLatticeOpen3D(unitcell::Unitcell, repetition_array::Array{Int64}; sa
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_open_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -706,7 +706,7 @@ function getLatticeSemiperiodic2D(unitcell::Unitcell, repetition_array::Array{In
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -870,7 +870,7 @@ function getLatticeSemiperiodic3D(unitcell::Unitcell, repetition_array::Array{In
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_semiperiodic_$(N_a1)_$(N_a2)_$(N_a3).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -1116,7 +1116,7 @@ julia> lattice = getLattice(unitcell, -20, load=true)
 LatticePhysics.Lattice(...)
 ```
 """
-function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=true, load=false)
+function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=false, load=false)
 
     # check how many periodic directions
     number_pd = 0
@@ -1153,7 +1153,7 @@ function getLattice(unitcell::Unitcell, repetition_array::Array{Int64}; save=tru
     end
 
 end
-function getLattice(unitcell::Unitcell, repetitions::Int64; save=true, load=false)
+function getLattice(unitcell::Unitcell, repetitions::Int64; save=false, load=false)
     # just parse through to more general method
     return getLattice(unitcell, repetitions.*ones(Int64, size(unitcell.lattice_vectors,1)), save=save, load=load)
 end
@@ -1576,7 +1576,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end
@@ -1724,7 +1724,7 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     else
-        filename = "FOLDER_LATTICES$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
+        filename = "$(FOLDER_LATTICES)$(split(unitcell.filename, FOLDER_UNITCELLS[end])[end])"
         filename = replace(filename, ".jld", "_in_shape_$(shapename).jld")
         filename = replace(filename, "_unitcell_", "_lattice_")
     end

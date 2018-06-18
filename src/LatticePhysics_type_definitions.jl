@@ -156,7 +156,7 @@ function saveUnitcell(uc::Unitcell, filename::String="NONE")
         uc.filename = filename
     end
     # make sure that the file ends with .jld
-    if uc.filename[end-4:end] != ".jld"
+    if uc.filename[end-3:end] != ".jld"
         uc.filename = "$(uc.filename).jld"
     end
     # ensure default path is build
@@ -424,7 +424,7 @@ function saveLattice(lattice::Lattice, filename::String="NONE")
         lattice.filename = filename
     end
     # make sure that the file ends with .jld
-    if lattice.filename[end-4:end] != ".jld"
+    if lattice.filename[end-3:end] != ".jld"
         lattice.filename = "$(lattice.filename).jld"
     end
     # ensure default path is build

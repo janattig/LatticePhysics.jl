@@ -31,6 +31,7 @@ unitcell_testset = @testset "Unitcell tests" begin
     @testset "Test and Information functions" begin
         # test printing information
         @test printInfo(unitcell)==nothing
+        @test printInfo(unitcell, detailed=true)==nothing
         # test testing method
         @test typeof(testUnitcell(unitcell, 2, 2))==Bool
     end;
