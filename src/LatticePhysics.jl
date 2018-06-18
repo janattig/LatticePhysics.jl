@@ -276,6 +276,17 @@ include("LatticePhysics_lattice_construction.jl")
 #
 #   STRUCTURE OF THE FILE
 #
+#   1) FINDING PLAQUETTES IN LATTICE OBJECTS
+#   - of a site
+#   - of complete lattice
+#
+#   2) PRINTING PLAQUETTE STATISTICS
+#   - of a site
+#   - of complete lattice
+#
+#
+#   BUG: Plaquettes dont implement periodic boundaries so far
+#
 ################################################################################
 
 # included in subfile
