@@ -248,8 +248,8 @@ include("LatticePhysics_unitcell_construction.jl")
 #
 #   1) CONSTRUCTION BASED ON UNITCELLS (2D & 3D)
 #   - Periodic Boundaries
-#   - Semi-Periodic Boundaries
 #   - Open Boundaries
+#   - Semi-Periodic Boundaries
 #   - General Boundaries
 #
 #   2) CONSTRUCTION BASED ON BOND DISTANCE (2D & 3D)
@@ -263,6 +263,23 @@ include("LatticePhysics_unitcell_construction.jl")
 
 # included in subfile
 include("LatticePhysics_lattice_construction.jl")
+
+
+
+
+
+
+
+################################################################################
+#
+#   IMPLEMENTATIONS OF DIFFERENT PLAQUETTE RELATED FUNCTIONS
+#
+#   STRUCTURE OF THE FILE
+#
+################################################################################
+
+# included in subfile
+include("LatticePhysics_plaquette_operations.jl")
 
 
 
