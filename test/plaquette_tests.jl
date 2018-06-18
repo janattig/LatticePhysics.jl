@@ -54,8 +54,6 @@ plaquette_testset = @testset "Plaquette tests" begin
         unitcell = getUnitcellHyperoctagon()
         # get a test lattice
         lattice = getLatticeByBondDistance(unitcell, 7)
-        # set the testsite
-        testsite = 1
 
 
         @testset "Finding plaquettes of one site" for testsite in [1,2,3]
@@ -81,6 +79,43 @@ plaquette_testset = @testset "Plaquette tests" begin
 # end the testset here
 end;
 
+
+
+
+
+
+################################################################################
+#
+#    PRINTING INFORMATION ABOUT PLAQUETTES
+#
+################################################################################
+
+# begin the testset
+@testset "Printing Plaquette information" begin
+
+    # get a test unitcell
+    unitcell_2d = getUnitcellHoneycomb()
+    unitcell_3d = getUnitcellHyperoctagon()
+    # get a test lattice
+    lattice_2d = getLatticeByBondDistance(unitcell_2d, 7)
+    lattice_3d = getLatticeByBondDistance(unitcell_3d, 7)
+
+    # ONE SITE
+    @testset "Printing plaquette information for one site" for testsite in [1,2,3]
+        @test printPlaquetteStatisticsOfSite(lattice_2d, testsite)==nothing
+        @test printPlaquetteStatisticsOfSite(lattice_2d, testsite, detailed=true)==nothing
+        @test printPlaquetteStatisticsOfSite(lattice_2d, testsite, max_length=10)==nothing
+    end;
+
+    # COMPLETE LATTICE
+    @testset "Printing plaquette information for complete lattice" begin
+        @test printPlaquetteStatisticsOfLattice(lattice_2d)==nothing
+        @test printPlaquetteStatisticsOfLattice(lattice_2d, detailed=true)==nothing
+        @test printPlaquetteStatisticsOfLattice(lattice_2d, max_length=10)==nothing
+    end;
+
+# end the test block here
+end;
 
 
 
