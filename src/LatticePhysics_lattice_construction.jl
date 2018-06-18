@@ -1493,7 +1493,7 @@ end
 """
     getLatticeByBondDistance(unitcell::Unitcell, bonddistance::Int64 [; origin::Int64=1, load::Bool=false, save::Bool=false])
 
-Function to construct a finite lattice as spreading around an origin site up to a certain bond distance. The lattice is
+Function to construct a finite lattice (with open boundary conditions) as spreading around an origin site up to a certain bond distance. The lattice is
 created from a passed `Unitcell` object.
 
 Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
@@ -1509,7 +1509,7 @@ Note that this function works for both 2D and 3D unitcells.
 julia> lattice = getLatticeByBondDistance(unitcell, 5)
 LatticePhysics.Lattice(...)
 
-julia> lattice = getLatticeByBondDistance(unitcell, 7, origin=2)
+julia> lattice = getLatticeByBondDistance(unitcell, 8, origin=2)
 LatticePhysics.Lattice(...)
 ```
 """
@@ -1568,7 +1568,7 @@ export getLatticeByBondDistance
 #   General building in shape for 2D and 3D and general lattices
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
+function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::String="unknown"; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -1699,13 +1699,13 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
 
     # save everything to a Lattice object
     lattice = Lattice(
-        unitcell,
-        [],
-        [],
-        positions,
-        positions_indices,
-        connections,
-        filename
+            unitcell,
+            Int64[],
+            Array{Float64, 1}[],
+            positions,
+            positions_indices,
+            connections,
+            filename
         )
     # save the lattice object
     if save
@@ -1716,7 +1716,7 @@ function getLatticeInShape2D(unitcell::Unitcell, shape::Function, shapename::Str
     return lattice
 
 end
-function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
+function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::String="unknown"; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # generate the filename of the output
     if contains(unitcell.filename, FOLDER_UNITCELLS)
@@ -1844,15 +1844,16 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
         end
     end
 
+
     # save everything to a Lattice object
     lattice = Lattice(
-        unitcell,
-        [],
-        [],
-        positions,
-        positions_indices,
-        connections,
-        filename
+            unitcell,
+            Int64[],
+            Array{Float64, 1}[],
+            positions,
+            positions_indices,
+            connections,
+            filename
         )
     # save the lattice object
     if save
@@ -1864,7 +1865,38 @@ function getLatticeInShape3D(unitcell::Unitcell, shape::Function, shapename::Str
 
 end
 
-function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::String; origin::Int64=1, load=false, save=true)
+
+
+
+
+"""
+    getLatticeInShape(unitcell::Unitcell, shape::Function, [ shapename::String="unknown" ; origin::Int64=1, load::Bool=false, save::Bool=false])
+
+Function to construct a finite lattice (with open boundary conditions)
+as spreading around an origin site up to a certain shape which is given by the passed `Function` `shape`.
+The lattice is created from a passed `Unitcell` object.
+
+Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> lattice = getLatticeInShape(unitcell, shape_function)
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLatticeInShape(unitcell, shape_function, "myshape")
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLatticeInShape(unitcell, shape_function, "myshape", origin=2)
+LatticePhysics.Lattice(...)
+```
+"""
+function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::String="unknown"; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
@@ -1890,11 +1922,10 @@ function getLatticeInShape(unitcell::Unitcell, shape::Function, shapename::Strin
     end
 end
 
-
-export getLatticeInShape2D
-export getLatticeInShape3D
-
 export getLatticeInShape
+
+
+
 
 
 
@@ -1904,8 +1935,32 @@ export getLatticeInShape
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# SPECIAL CASE: SPHERE / CIRCLE with radius
-function getLatticeInSphere(unitcell::Unitcell, radius::Float64; origin::Int64=1, load=false, save=true)
+
+"""
+    getLatticeInSphere(unitcell::Unitcell, radius::Float64 [; origin::Int64=1, load::Bool=false, save::Bool=false])
+
+Function to construct a finite lattice (with open boundary conditions)
+as spreading around an origin site up to a radius (forming a sphere / circle).
+The lattice is created from a passed `Unitcell` object.
+
+Also, the newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> lattice = getLatticeInSphere(unitcell, 3.0)
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLatticeInSphere(unitcell, 3.0, origin=2)
+LatticePhysics.Lattice(...)
+```
+"""
+function getLatticeInSphere(unitcell::Unitcell, radius::Float64; origin::Int64=1, load::Bool=false, save::Bool=false)
 
     # check how many periodic dimensions the unitcell has
     N_dims = size(unitcell.lattice_vectors, 1)
@@ -1942,7 +1997,33 @@ end
 export getLatticeInSphere
 
 
-# SPECIAL CASE: BOX / RECTANGLE with extent_array denoting the length of the different sides of the box (centered around the origin)
+"""
+    getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64} [; origin::Int64=1, load::Bool=false, save::Bool=false])
+
+Function to construct a finite lattice (with open boundary conditions)
+as spreading around an origin site up to the boundaries of a given box / rectangle.
+The lattice is created from a passed `Unitcell` object.
+
+The box dimensions are given by the passed `extent_array` which contains the length in all elementary
+directions as `Float64` numbers. The origin site is place exactly at the center of the box.
+
+The newly created `Lattice` object can directly be saved. If this has been done before, passing a `load=true`
+will allow to load the object instead of creating it again.
+
+Note that this function works for both 2D and 3D unitcells.
+
+
+
+# Examples
+
+```julia-repl
+julia> lattice = getLatticeInSphere(unitcell, 3.0)
+LatticePhysics.Lattice(...)
+
+julia> lattice = getLatticeInSphere(unitcell, 3.0, origin=2)
+LatticePhysics.Lattice(...)
+```
+"""
 function getLatticeInBox(unitcell::Unitcell, extent_array::Array{Float64}; origin::Int64=1, load=false, save=true)
 
     # check how many periodic dimensions the unitcell has
@@ -1987,17 +2068,6 @@ end
 export getLatticeInBox
 
 
-
-
-
-
-
-#
-# TODO
-#
-# getLatticeGrapheneFlake
-# getLatticeTriangularFlake
-#
 
 
 
