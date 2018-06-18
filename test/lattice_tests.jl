@@ -169,7 +169,7 @@ end;
         @test testLattice(getLatticeByBondDistance(unitcell_2d, 4, save=true, load=true), 0, 2)
         @test testLattice(getLatticeByBondDistance(unitcell_3d, 4, save=true, load=true), 0, 3)
 
-    # end of unitcell based construction
+    # end of bond distance based construction
     end;
 
 
@@ -230,7 +230,7 @@ end;
         # end testset
         end;
 
-    # end of unitcell based construction
+    # end of shape based construction
     end;
 
 
