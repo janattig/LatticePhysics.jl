@@ -160,6 +160,8 @@ end;
         # - just getting lattice
         @test testLattice(getLatticeByBondDistance(unitcell_2d, 4), 0, 2)
         @test testLattice(getLatticeByBondDistance(unitcell_3d, 4), 0, 3)
+        @test testLattice(getLatticeByBondDistance(unitcell_2d, 4, origin=2), 0, 2)
+        @test testLattice(getLatticeByBondDistance(unitcell_3d, 4, origin=2), 0, 3)
         # - getting lattice and saving
         @test testLattice(getLatticeByBondDistance(unitcell_2d, 4, save=true), 0, 2)
         @test testLattice(getLatticeByBondDistance(unitcell_3d, 4, save=true), 0, 3)
