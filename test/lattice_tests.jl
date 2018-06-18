@@ -59,6 +59,128 @@ end;
 
 
 
+################################################################################
+#
+#   IMPLEMENTATIONS OF DIFFERENT LATTICE CONSTRUCTION RELATED STUFF
+#   AS WELL AS DIFFERNT LATTICE MODIFICATION STUFF
+#
+################################################################################
+
+# begin the testset
+@testset "Lattice construction functions" begin
+
+    # get a test unitcell
+    unitcell_2d = getUnitcellHoneycomb()
+    unitcell_3d = getUnitcellDiamond()
+
+
+    # BASED ON UNITCELLS
+    @testset "Construction based on Unitcells" begin
+
+        # PERIODIC
+        @testset "Periodic" begin
+            # SPECIFIC FUNCTION
+            # - just getting lattice
+            @test testLattice(getLatticePeriodic(unitcell_2d, [-4,-4]), 2, 2)
+            @test testLattice(getLatticePeriodic(unitcell_3d, [-4,-4,-4]), 3, 3)
+            # - getting lattice and saving
+            @test testLattice(getLatticePeriodic(unitcell_2d, [-4,-4], save=true), 2, 2)
+            @test testLattice(getLatticePeriodic(unitcell_3d, [-4,-4,-4], save=true), 3, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLatticePeriodic(unitcell_2d, [-4,-4], save=true, load=true), 2, 2)
+            @test testLattice(getLatticePeriodic(unitcell_3d, [-4,-4,-4], save=true, load=true), 3, 3)
+            # GENERAL FUNCTION
+            # - just getting lattice
+            @test testLattice(getLattice(unitcell_2d, [-4,-4]), 2, 2)
+            @test testLattice(getLattice(unitcell_3d, [-4,-4,-4]), 3, 3)
+            # - getting lattice and saving
+            @test testLattice(getLattice(unitcell_2d, [-4,-4], save=true), 2, 2)
+            @test testLattice(getLattice(unitcell_3d, [-4,-4,-4], save=true), 3, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLattice(unitcell_2d, [-4,-4], save=true, load=true), 2, 2)
+            @test testLattice(getLattice(unitcell_3d, [-4,-4,-4], save=true, load=true), 3, 3)
+        end;
+
+        # SEMI PERIODIC
+        @testset "Semi-Periodic" begin
+            # SPECIFIC FUNCTION
+            # - just getting lattice
+            @test testLattice(getLatticeSemiperiodic(unitcell_2d, [4,-4]), 1, 2)
+            @test testLattice(getLatticeSemiperiodic(unitcell_3d, [4,-4,-4]), 2, 3)
+            # - getting lattice and saving
+            @test testLattice(getLatticeSemiperiodic(unitcell_2d, [4,-4], save=true), 1, 2)
+            @test testLattice(getLatticeSemiperiodic(unitcell_3d, [4,-4,-4], save=true), 2, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLatticeSemiperiodic(unitcell_2d, [4,-4], save=true, load=true), 1, 2)
+            @test testLattice(getLatticeSemiperiodic(unitcell_3d, [4,-4,-4], save=true, load=true), 2, 3)
+            # GENERAL FUNCTION
+            # - just getting lattice
+            @test testLattice(getLattice(unitcell_2d, [4,-4]), 1, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,-4,-4]), 2, 3)
+            # - getting lattice and saving
+            @test testLattice(getLattice(unitcell_2d, [4,-4], save=true), 1, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,-4,-4], save=true), 2, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLattice(unitcell_2d, [4,-4], save=true, load=true), 1, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,-4,-4], save=true, load=true), 2, 3)
+        end;
+
+        # OPEN
+        @testset "Open" begin
+            # SPECIFIC FUNCTION
+            # - just getting lattice
+            @test testLattice(getLatticeOpen(unitcell_2d, [4,4]), 0, 2)
+            @test testLattice(getLatticeOpen(unitcell_3d, [4,4,4]), 0, 3)
+            # - getting lattice and saving
+            @test testLattice(getLatticeOpen(unitcell_2d, [4,4], save=true), 0, 2)
+            @test testLattice(getLatticeOpen(unitcell_3d, [4,4,4], save=true), 0, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLatticeOpen(unitcell_2d, [4,4], save=true, load=true), 0, 2)
+            @test testLattice(getLatticeOpen(unitcell_3d, [4,4,4], save=true, load=true), 0, 3)
+            # GENERAL FUNCTION
+            # - just getting lattice
+            @test testLattice(getLattice(unitcell_2d, [4,4]), 0, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,4,4]), 0, 3)
+            # - getting lattice and saving
+            @test testLattice(getLattice(unitcell_2d, [4,4], save=true), 0, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,4,4], save=true), 0, 3)
+            # - getting lattice and saving and loading
+            @test testLattice(getLattice(unitcell_2d, [4,4], save=true, load=true), 0, 2)
+            @test testLattice(getLattice(unitcell_3d, [4,4,4], save=true, load=true), 0, 3)
+        end;
+
+    # end of unitcell based construction
+    end;
+
+
+
+    # BASED ON BOND DISTANCE
+    @testset "Construction based on Bond Distance" begin
+
+        # - just getting lattice
+        @test testLattice(getLatticeByBondDistance(unitcell_2d, 4), 0, 2)
+        @test testLattice(getLatticeByBondDistance(unitcell_3d, 4), 0, 3)
+        # - getting lattice and saving
+        @test testLattice(getLatticeByBondDistance(unitcell_2d, 4, save=true), 0, 2)
+        @test testLattice(getLatticeByBondDistance(unitcell_3d, 4, save=true), 0, 3)
+        # - getting lattice and saving and loading
+        @test testLattice(getLatticeByBondDistance(unitcell_2d, 4, save=true, load=true), 0, 2)
+        @test testLattice(getLatticeByBondDistance(unitcell_3d, 4, save=true, load=true), 0, 3)
+
+    # end of unitcell based construction
+    end;
+
+
+
+# end the testset here
+end;
+
+
+
+
+
+
+
 
 
 
