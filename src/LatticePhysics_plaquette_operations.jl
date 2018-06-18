@@ -4,7 +4,17 @@
 #
 #   STRUCTURE OF THE FILE
 #
+#   1) FINDING PLAQUETTES IN LATTICE OBJECTS
+#   - of a site
+#   - of complete lattice
+#
+#   2) PRINTING PLAQUETTE STATISTICS
+#   - of a site
+#   - of complete lattice
+#
 ################################################################################
+
+
 
 
 
@@ -134,7 +144,7 @@ Array{Array{Int64, 1}}[
 function getPlaquettesOfLattice(lattice::Lattice, len::Int64)
     # get all plaquettes of all sites
     plaquettes = Array{int64,1}[]
-    plaquettes_sorted = Array{int64,1}[]
+    plaquettes_sorted = Array{Int64,1}[]
     for i in 1:size(lattice.positions,1)
         # obtain plaquettes
         plaquettes_site = getPlaquettesOfSite(lattice, i, len)
@@ -162,6 +172,10 @@ function getPlaquettesOfLattice(lattice::Lattice, len::Int64)
     return plaquettes
 end
 export getPlaquettesOfLattice
+
+
+
+
 
 
 
