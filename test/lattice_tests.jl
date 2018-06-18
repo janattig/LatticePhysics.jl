@@ -37,7 +37,7 @@ lattice_testset = @testset "Lattice tests" begin
         @test printInfo(lattice)==nothing
         @test printInfo(lattice, detailed=true)==nothing
         # test testing method
-        #@test typeof(testUnitcell(unitcell, 2, 2))==Bool
+        @test typeof(testLattice(lattice, 2, 2))==Bool
     end;
 
 

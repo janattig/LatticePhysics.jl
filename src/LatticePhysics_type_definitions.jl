@@ -681,6 +681,89 @@ export testUnitcell
 
 
 
+
+
+
+
+
+"""
+    testLattice(lattice::Lattice, N_lattice_vectors::Int64, N_space_dimension::Int64)
+
+Performs a series of tests on a given `Lattice` object so see if it is implemented correctly.
+Checks include the following:
+1) test if the number of `lattice_vectors` is as expected
+2) test if the number of spatial dimensions is correct for every site in the lattice
+3) test if the filename does not contain `"FOLDER_LATTICES"` (as in this case a \$ would be missing somewhere)
+4) test if the connectivity is okay (if every connection has a counterpart)
+
+The return value is a `Bool` indicating if the test is passed or not. If the test fails, the
+failure reason is printed as well.
+
+
+# Examples
+
+```julia-repl
+julia> testLattice(lattice, 2, 2)
+...
+```
+"""
+function testLattice(lattice::Lattice, N_lattice_vectors::Int64, N_space_dimension::Int64)
+    # check if the unitcell has enough lattice vectors
+    if size(lattice.lattice_vectors,1) != N_lattice_vectors
+        println("Uncorrect number of lattice vectors ($(size(lattice.lattice_vectors,1)) instead of $(N_lattice_vectors))")
+        return false
+    end
+    # check if the space dimension for all sites is okay
+    for p in lattice.positions
+        if size(p,1) != N_space_dimension
+            println("Site ($(p)) has uncorrect space dimension ($(size(p,1)) instead of $(N_space_dimension))")
+            return false
+        end
+    end
+    # check if the filename does not contain FOLDER_UNITCELLS (this would mean someone forgot a "$")
+    if contains(lattice.filename, "FOLDER_LATTICES")
+        println("filename ($(lattice.filename)) still contains \"FOLDER_LATTICES\"")
+        return false
+    end
+    # check if connectivity okay
+    for c1 in lattice.connections
+        # so far no counterpart found
+        counterpart = false
+        # search for a counterpart in all connections
+        for c2 in lattice.connections
+            # skip identical
+            if c1==c2
+                continue
+            end
+            # skip if indices of sites are not correct
+            if c1[1] != c2[2] || c1[2] != c2[1]
+                continue
+            end
+            # skip if connection strength not equal
+            if c1[3] != c2[3]
+                continue
+            end
+            # skip if the lattice wraps dont sum up
+            if sum([abs(element) for element in collect(c1[4]) .+ collect(c2[4])]) > 1e-9
+                continue
+            end
+            # if everything passed up to here, a counterpart has been found
+            counterpart = true
+            break
+        end
+        if counterpart == false
+            println("connection $(c1) does not have counterpart, connectivity broken")
+            return false
+        end
+    end
+    # now, return true as all tests are passed
+    return true
+end
+export testLattice
+
+
+
+
 """
     printInfo(unitcell::Unitcell [; detailed::Bool=false])
     printInfo(lattice::Lattice [; detailed::Bool=false])
