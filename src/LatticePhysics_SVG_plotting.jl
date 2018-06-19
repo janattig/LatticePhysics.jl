@@ -973,6 +973,27 @@ export plotLattice2D
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function plotLattice3D(
 		lattice::Lattice;
 		border_percentage=0.1,

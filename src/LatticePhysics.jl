@@ -323,10 +323,10 @@ include("LatticePhysics_plaquette_operations.jl")
 #
 #   2) PLOTTING LATTICES
 #       - plot in 2D
-#       - plot in 3D
-#       - plot independent of dimension
+#       - TODO plot in 3D
+#       - TODO plot independent of dimension
 #
-#   3) PLOTTING PLAQUETTES (only 2D)
+#   3) TODO PLOTTING PLAQUETTES (only 2D)
 #
 ################################################################################
 
