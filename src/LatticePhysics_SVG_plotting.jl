@@ -1,27 +1,43 @@
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
+#   IMPLEMENTATIONS OF DIFFERENT LATTICE PLOTTING FUNCTIONS FOR
 #   PLOTTING TO SVG IMAGES
 #
-#-----------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------
+#   STRUCTURE OF THE FILE
+#
+#   1) HELPER SVG FUNCTIONS
+#
+#   2) PLOTTING LATTICES
+#
+#   3) PLOTTING PLAQUETTES
+#
+################################################################################
 
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
+
+################################################################################
 #
 #   HELPER METHODS FOR SVG CREATION
 #   Get the correct SVG code lines for SVG beginning and end of document
 #   Get the correct SVG code lines for certain objects
 #
-#-----------------------------------------------------------------------------------------------------------------------------
+#   NOTE:   ALL OF THESE FUNCTIONS ARE NOT EXPORTED BUT ONLY USED!
+#           ( THEREFORE NO DOCSTRINGS NECESSARY )
+#
+################################################################################
 
-# HEADER STRING (must be first in every SVG file)
+
+
+
+
+
+
+# Function to construct a HEADER STRING (must be first in every SVG file)
 # width and height denote the dimensions of the image in px
 function getSVGHeaderString(width::Int64, height::Int64)
-	headerstring = """<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
-<svg
+	headerstring = """<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg
 	xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
 	xmlns:cc=\"http://creativecommons.org/ns#\"
 	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"
@@ -45,53 +61,76 @@ function getSVGHeaderString(width::Int64, height::Int64)
 				<dc:title></dc:title>
 			</cc:Work>
 		</rdf:RDF>
-	</metadata>
-
-"""
+	</metadata>\n\n"""
 	return headerstring
 end
 
-# FOOTER STRING (must be end of every SVG file)
+# Function to construct the FOOTER STRING (must be end of every SVG file)
 function getSVGFooterString()
-    return """
-</svg>
-"""
+    return """\n</svg>\n"""
 end
 
-# STRING FOR AN ELLIPSE
+
+
+
+# STRINGS FOR AN ELLIPSE
 # Parameters are
 # - id: The id which the object has later on
 # - centerX / centerY: The coordinates of the ellipse center in the canvas
 # - radiusX / radiusY: The radii of the ellipse
 # - color: hex string of the ellipse color
-# formerly: getEllipseString
-function getSVGStringEllipse(id, centerX, centerY, radiusX, radiusY, color; label=987654321, labelcolor="#000000")
+# Optional:
+# - label: The label of the ellipse
+# - labelcolor: the color of the label
+# - opacity: the opacity of filling the ellipse
+function getSVGStringEllipse(
+            id,
+            centerX::Float64, centerY::Float64,
+            radiusX::Float64, radiusY::Float64,
+            color::String;
+            label::String="NONE",
+            labelcolor::String="#000000",
+            opacity::Float64=1.0
+        )
+    # construct the String with only the ellipse
 	es = """
 	<ellipse
-		style=\"color:$(color);fill:$(color);fill-opacity:1;fill-rule:nonzero\"
+		style=\"color:$(color);fill:$(color);fill-opacity:$(opacity);fill-rule:nonzero\"
 		id=\"$(id)\"
 		cx=\"$(centerX)\"
 		cy=\"$(centerY)\"
 		rx=\"$(radiusX)px\"
-		ry=\"$(radiusY)px\" />
-
-"""
+		ry=\"$(radiusY)px\" />\n"""
     # check if to add a label
-    if label != 987654321
+    if label != "NONE"
         es = """
     $(es)
 
     <text
-    x=\"$(centerX)\"
-    y=\"$(centerY+radiusY/2)\"
-    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
+        x=\"$(centerX)\"
+        y=\"$(centerY+radiusY/2)\"
+        style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
     >
-    $(label)
-    </text>
-"""
+        $(label)
+    </text>\n"""
     end
+    # return the string
 	return es
 end
+
+# OTHER VERSIONS OF ELLIPSE STRING
+function getSVGStringEllipse(
+            id,
+            centerX::Float64, centerY::Float64,
+            radius::Float64,
+            color::String;
+            label::String="NONE",
+            labelcolor::String="#000000",
+            opacity::Float64=1.0
+        )
+    return getSVGStringEllipse(id, centerX, centerY, radius, radius, color, label=label, labelcolor=labelcolor, opacity=opacity)
+end
+
 
 # STRING FOR A STROKED ELLIPSE
 # Parameters are
@@ -249,6 +288,20 @@ end
 
 
 
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   PLOTTING TO SVG IMAGES
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------
 
 
 
