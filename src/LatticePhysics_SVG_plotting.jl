@@ -140,34 +140,70 @@ end
 # - colorFill: hex string of the ellipse fill color
 # - colorStroke: hex string of the ellipse stroke color
 # - strokewidth: Float or Int giving the width of the surrounding stroke
-# formerly: getStrokedEllipseString
-function getSVGStringEllipseStroked(id, centerX, centerY, radiusX, radiusY, colorFill, colorStroke, strokewidth; label=987654321, labelcolor="#000000")
+# Optional:
+# - label: The label of the ellipse
+# - labelcolor: the color of the label
+# - opacity: the opacity of filling the ellipse
+function getSVGStringEllipseStroked(
+            id,
+            centerX::Float64, centerY::Float64,
+            radiusX::Float64, radiusY::Float64,
+            colorFill::String,
+            colorStroke::String,
+            strokewidth::Float64;
+            label::String="NONE",
+            labelcolor::String="#000000",
+            opacityFill::Float64=1.0,
+            opacityStroke::Float64=1.0
+        )
+    # construct the string for the ellipse
 	es = """
 	<ellipse
-		style=\"color:$(colorFill);fill:$(colorFill);fill-opacity:1;fill-rule:nonzero;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1\"
+		style=\"color:$(colorFill);fill:$(colorFill);fill-opacity:$(opacityFill);fill-rule:nonzero;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacityStroke)\"
 		id=\"$(id)\"
 		cx=\"$(centerX)\"
 		cy=\"$(centerY)\"
 		rx=\"$(radiusX)px\"
-		ry=\"$(radiusY)px\" />
-
-"""
+		ry=\"$(radiusY)px\" />\n"""
     # check if to add a label
-    if label != 987654321
+    if label != "NONE"
         es = """
     $(es)
 
     <text
-    x=\"$(centerX)\"
-    y=\"$(centerY+radiusY/2)\"
-    style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
+        x=\"$(centerX)\"
+        y=\"$(centerY+radiusY/2)\"
+        style=\"text-anchor: middle; font-size: $(radiusX*1.2)px; fill:$(labelcolor)\"
     >
-    $(label)
-    </text>
-"""
+        $(label)
+    </text>\n"""
     end
+    # return the string
 	return es
 end
+
+
+# OTHER VERSIONS OF ELLIPSE STRING
+function getSVGStringEllipseStroked(
+            id,
+            centerX::Float64, centerY::Float64,
+            radius::Float64,
+            colorFill::String,
+            colorStroke::String,
+            strokewidth::Float64;
+            label::String="NONE",
+            labelcolor::String="#000000",
+            opacityFill::Float64=1.0,
+            opacityStroke::Float64=1.0
+        )
+    return getSVGStringEllipseStroked(id, centerX, centerY, radius, radius, colorFill, colorStroke, strokewidth, label=label, labelcolor=labelcolor, opacityFill=opacityFill, opacityStroke=opacityStroke)
+end
+
+
+
+
+
+
 
 # STRING FOR A LINE
 # Parameters are
