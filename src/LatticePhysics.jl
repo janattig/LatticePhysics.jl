@@ -304,5 +304,45 @@ include("LatticePhysics_plaquette_operations.jl")
 
 
 
+
+
+################################################################################
+#
+#   IMPLEMENTATIONS OF DIFFERENT LATTICE PLOTTING FUNCTIONS FOR
+#   PLOTTING TO SVG IMAGES
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) HELPER SVG FUNCTIONS
+#       - Header / Footer String
+#       - Ellipse (stroked) String
+#       - Line String
+#       - Plaquette String
+#       - Color conversion
+#       - Color collections / sequences
+#
+#   2) PLOTTING LATTICES
+#       - plot in 2D
+#       - plot in 3D
+#       - plot independent of dimension
+#
+#   3) PLOTTING PLAQUETTES (only 2D)
+#
+################################################################################
+
+# included in subfile
+include("LatticePhysics_SVG_plotting.jl")
+
+
+
+
+
+
+
+
+
+
+
+
 # MODULE END
 end

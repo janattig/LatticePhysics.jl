@@ -14,8 +14,11 @@
 #       - Color collections / sequences
 #
 #   2) PLOTTING LATTICES
+#       - plot in 2D
+#       - plot in 3D
+#       - plot independent of dimension
 #
-#   3) PLOTTING PLAQUETTES
+#   3) PLOTTING PLAQUETTES (only 2D)
 #
 ################################################################################
 
