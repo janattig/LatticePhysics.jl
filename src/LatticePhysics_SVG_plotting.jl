@@ -302,11 +302,11 @@ end
 
 
 
-# GET AUTOMATICAL SEQUENCE OF COLORS
-function getColorSequence(len::Int64)
-    # define a new list for the sequence
-    colors = Array[]
-    # fill the sequence depending on the number of requested elements
+# GET AUTOMATICAL COLLECTIONS OF COLORS
+function getRandomColors(len::Int64)
+    # define a new list for the collection
+    colors = Array{Int64,1}[]
+    # fill the collection depending on the number of requested elements
     if len <= 1
         # only one color --> black
         push!(colors, [0,0,0])
@@ -320,7 +320,7 @@ function getColorSequence(len::Int64)
         push!(colors, [0,255,0])
         push!(colors, [0,0,255])
     else
-        # continuous sequence of random colors
+        # collection of random colors
         for i in 1:len
             push!(colors, [rand(1:255),rand(1:255),rand(1:255)])
         end
@@ -328,10 +328,10 @@ function getColorSequence(len::Int64)
     # return the sequence
     return colors
 end
-function getGreySequence(len::Int64)
-    # define a new list for the sequence
-    colors = Array[]
-    # fill the sequence depending on the number of requested elements
+function getRandomGreys(len::Int64)
+    # define a new list for the collection
+    colors = Array{Int64,1}[]
+    # fill the collection depending on the number of requested elements
     if len <= 1
         # only one color --> black
         push!(colors, [0,0,0])
@@ -345,14 +345,40 @@ function getGreySequence(len::Int64)
         push!(colors, [90,90,90])
         push!(colors, [180,180,180])
     else
-        # continuous sequence
+        # random collection of greys
         for i in 1:len
-            c = round(Int64, i/len * 200)
-            push!(colors, [c,c,c])
+            push!(colors, rand(10:240).*[1,1,1])
         end
     end
-    # return the sequence
+    # return the collection
     return colors
+end
+function getColorSequence(len::Int64, colorMin::Array{Int64,1}, colorMax::Array{Int64,1})
+    # construct a sequence out of it
+    if len == 1
+        return Array{Int64,1}[
+            colorMin
+        ]
+    elseif len == 2
+        return Array{Int64,1}[
+            colorMin,
+            colorMax
+        ]
+    else
+        # construct a new sequence
+        sequence = Array{Int64,1}[]
+        # iterate over all relevant points
+        for i in 1:len
+            # determine where between 0 and 1
+            alpha = (i-1)/(len-1)
+            # multiply accordingly
+            colorFloat = alpha.*colorMax .+ (1-alpha).*colorMin
+            # parse to Int64
+            push!(sequence, Int.(floor.(colorFloat)))
+        end
+        # return the sequence
+        return sequence
+    end
 end
 
 
