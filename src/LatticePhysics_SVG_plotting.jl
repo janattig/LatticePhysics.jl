@@ -22,6 +22,7 @@
 #   HELPER METHODS FOR SVG CREATION
 #   Get the correct SVG code lines for SVG beginning and end of document
 #   Get the correct SVG code lines for certain objects
+#   Get colors in String format / get Color sequences
 #
 #   NOTE:   ALL OF THESE FUNCTIONS ARE NOT EXPORTED BUT ONLY USED!
 #           ( THEREFORE NO DOCSTRINGS NECESSARY )
@@ -213,25 +214,32 @@ end
 # - colorStroke: hex string of the color that the line has
 # - strokewidth: Float or Int giving the width of the line
 # - dashed: is the line dashed or not
-# formerly: getLineString
-function getSVGStringLine(id, from, to, colorStroke, strokewidth; dashed=false, opacity::Float64=1.0)
+function getSVGStringLine(
+            id,
+            from::Array{Float64,1},
+            to::Array{Float64,1},
+            colorStroke::String,
+            strokewidth::Float64;
+            dashed::Bool=false,
+            opacity::Float64=1.0
+        )
+    # change behavior for dashed vs. non-dashed
 	if dashed
-        ls = """
+        return """
 	<path
 		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-linecap:butt;stroke-dasharray:$(strokewidth),$(strokewidth*2);stroke-dashoffset:0;stroke-opacity:$(opacity)\"
 		id=\"$(id)\"
-		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>
-"""
+		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>\n"""
     else
-        ls = """
+        return """
 	<path
 		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacity)\"
 		id=\"$(id)\"
-		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>
-"""
+		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>\n"""
     end
-	return ls
 end
+
+
 
 
 # STRING FOR A PLAQUETTE
@@ -240,19 +248,49 @@ end
 # - plaquette_points: list of point coordinates of points that form the plaquette
 # - colorFill: hex string of the color that the plaquette has
 # - opacity: Opacity of the plaquette
-function getSVGStringPlaquette(id, plaquette_points, colorFill; opacity=0.5)
+function getSVGStringPlaquette(
+            id,
+            plaquette_points::Array{Array{Float64.1}, 1},
+            colorFill::String;
+            opacity::Float64=0.5
+        )
+    # Build up the path points into a string
     plaquette_string = "M"
     for p in plaquette_points
         plaquette_string = "$(plaquette_string) $(p[1]),$(p[2])"
     end
     plaquette_string = "$(plaquette_string) z"
+    # build up the SVG string that fills the paths inside
     ps = """
 	<path
 		style=\"fill:$(colorFill);fill-opacity:$(opacity);fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1\"
 		d=\"$(plaquette_string)\"
-		id=\"$(id)\" />
-"""
+		id=\"$(id)\" />\n"""
 end
+
+
+
+
+
+
+
+
+
+
+
+
+######################
+#
+#   COLOR FUNCTIONS
+#
+######################
+
+
+
+
+
+
+
 
 # CONVERSION OF RGB COLORS TO HEX STRINGS
 function color_hex(r::Int64,g::Int64,b::Int64)
