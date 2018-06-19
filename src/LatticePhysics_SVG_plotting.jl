@@ -516,7 +516,7 @@ function plotLattice2D(
     		colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
             colorcode_bonds_automation::String = "OFF",
     		openfile::Bool=false,
-            export_pdf::Bool=false,
+            inkscape_export_pdf::Bool=false,
             print_used_options::Bool=true
 		)
 
@@ -868,18 +868,19 @@ function plotLattice2D(
 
 
 
-
-
-
+    ##########---------------------
+    # STEP 4 #  FILE FINISH
+    ##########---------------------
 
 	# convert to pdf
-    if export_pdf
+    if inkscape_export_pdf
 	    run(`inkscape $(filename_output) --export-pdf $(filename_output[1:end-4]).pdf`)
     end
+
 	# if file shall be opened
 	if openfile
         if is_linux()
-		    run(`ristretto $(filename_output)`)
+		    run(`xdg-open $(filename_output)`)
         elseif is_windows()
             try
                 if export_pdf

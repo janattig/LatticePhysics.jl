@@ -4,3 +4,5 @@
 unitcells/
 lattices/
 band_structures/
+2d_*
+3d_*
