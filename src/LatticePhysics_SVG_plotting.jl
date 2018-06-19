@@ -6,6 +6,12 @@
 #   STRUCTURE OF THE FILE
 #
 #   1) HELPER SVG FUNCTIONS
+#       - Header / Footer String
+#       - Ellipse (stroked) String
+#       - Line String
+#       - Plaquette String
+#       - Color conversion
+#       - Color collections / sequences
 #
 #   2) PLOTTING LATTICES
 #
@@ -160,7 +166,7 @@ function getSVGStringEllipseStroked(
     # construct the string for the ellipse
 	es = """
 	<ellipse
-		style=\"color:$(colorFill);fill:$(colorFill);fill-opacity:$(opacityFill);fill-rule:nonzero;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacityStroke)\"
+		style=\"color:$(colorFill);fill:$(colorFill);fill-opacity:$(opacityFill);fill-rule:nonzero;stroke:$(colorStroke);stroke-width:$(strokewidth)px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacityStroke)\"
 		id=\"$(id)\"
 		cx=\"$(centerX)\"
 		cy=\"$(centerY)\"
@@ -227,13 +233,13 @@ function getSVGStringLine(
 	if dashed
         return """
 	<path
-		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-linecap:butt;stroke-dasharray:$(strokewidth),$(strokewidth*2);stroke-dashoffset:0;stroke-opacity:$(opacity)\"
+		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth)px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-linecap:butt;stroke-dasharray:$(strokewidth),$(strokewidth*2);stroke-dashoffset:0;stroke-opacity:$(opacity)\"
 		id=\"$(id)\"
 		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>\n"""
     else
         return """
 	<path
-		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth);stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacity)\"
+		style=\"fill:none;fill-rule:evenodd;stroke:$(colorStroke);stroke-width:$(strokewidth)px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:$(opacity)\"
 		id=\"$(id)\"
 		d=\"m $(from[1]),$(from[2]) $(to[1]-from[1]),$(to[2]-from[2])\"/>\n"""
     end
@@ -250,7 +256,7 @@ end
 # - opacity: Opacity of the plaquette
 function getSVGStringPlaquette(
             id,
-            plaquette_points::Array{Array{Float64.1}, 1},
+            plaquette_points::Array{Array{Float64,1}, 1},
             colorFill::String;
             opacity::Float64=0.5
         )
@@ -286,12 +292,6 @@ end
 ######################
 
 
-
-
-
-
-
-
 # CONVERSION OF RGB COLORS TO HEX STRINGS
 function color_hex(r::Int64,g::Int64,b::Int64)
     return "#$(hex(r,2))$(hex(g,2))$(hex(b,2))"
@@ -301,8 +301,7 @@ function color_hex(rgb::Array{Int64})
 end
 
 
-
-# GET AUTOMATICAL COLLECTIONS OF COLORS
+# GET AUTOMATICAL COLLECTIONS OF COLORS (AS ARRAYS OF [R,G,B])
 function getRandomColors(len::Int64)
     # define a new list for the collection
     colors = Array{Int64,1}[]
@@ -395,6 +394,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------
 #
@@ -402,10 +419,6 @@ end
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------
-
-
-
-
 
 
 
@@ -443,134 +456,407 @@ end
 #   -   DOF: Float indicating the strength of the Depth of Field in color gradient
 #
 #-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+    plotLattice2D(
+
+    )
+
+Function to plot a `Lattice` object with 2D sites.
+
+
+
+
+Additional options include the following:
+
+- `colorcode_bonds::Dict` a dictonary in which every bond interaction strength (as string) is mapped to a color
+- `colorcode_bonds_automation::String` determines if the bond colorcode defined by `colorcode_bonds` should be redefined
+  based on bond-strength. Possible options are
+    - `"OFF"`   no redefinition
+    - `"GREY"`  redefinition with random grey colors
+    - `"COLOR"` redefinition with random colors
+
+
+
+
+```julia-repl
+julia> plotLattice2D(lattice)
+...
+
+```
+"""
 function plotLattice2D(
-		lattice::Lattice;
-		conversion = 160,
-		border_percentage=0.1,
-		filename_output::String="AUTO",
-		site_radius=25,
-		site_border_width_percentage::Float64=0.2,
-        site_labels="OFF",
-		bond_thickness::Int64=8,
-		visualize_periodic=false,
-		colorcode_sites = Dict(0 => [255,255,255], 1 => [255,255,255]),
-		colorcode_bonds = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
-        colorcode_bonds_automation::String = "OFF",
-		openfile=false,
-        export_pdf=true
+    		lattice::Lattice
+            ;
+    		size_long_side::Int64 = 1200,
+    		border_percentage::Float64 = 0.05,
+    		filename_output::String="AUTO",
+    		site_radius::Float64=-0.2,
+    		site_border_width_percentage::Float64=0.15,
+            site_labels::String="OFF",
+    		bond_thickness::Float64=-0.1,
+    		visualize_periodic::Bool=false,
+    		colorcode_sites::Dict = Dict(0 => [255,255,255], 1 => [255,255,255]),
+    		colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+            colorcode_bonds_automation::String = "OFF",
+    		openfile::Bool=false,
+            export_pdf::Bool=false,
+            print_used_options::Bool=true
 		)
 
-    # define the filename_output if it is set to AUTO
+
+
+    ##########---------------------------------
+    # STEP 1 #  INITIALIZATION OF PARAMTERS
+    ##########---------------------------------
+
+    # Maybe print what is being done
+    if print_used_options
+        println("Plotting lattice object with filename \"$(lattice.filename)\"")
+    end
+
+    # define the FILENAME of the output file if it is set to "AUTO"
     if filename_output=="AUTO"
         filename_output = "$(lattice.filename[1:end-4])_plot.svg"
         filename_output = replace(filename_output, FOLDER_LATTICES, "")
+        # maybe print
+        if print_used_options
+            println("- Changing SVG filename to \"$(filename_output)\"")
+        end
+    elseif print_used_options
+        println("- Using given SVG filename \"$(filename_output)\"")
     end
 
-	# load positions and connections
-	positions	= lattice.positions
-	connections = lattice.connections
-
-    # maybe overwrite dictonary
-    if colorcode_bonds_automation == "GREY"
-        # construct the list of interaction strengths
-        cs_list = getConnectionStrengthList(lattice)
-        # get the color code list
-        cc_list = getGreySequence(size(cs_list, 1))
-        # put in a new dictonary
-        colorcode_bonds = Dict()
-        # insert all pairs
-        for i in 1:size(cc_list, 1)
-            colorcode_bonds[string(cs_list[i])] = cc_list[i]
-        end
-    elseif colorcode_bonds_automation == "COLOR"
-        # construct the list of interaction strengths
-        cs_list = getConnectionStrengthList(lattice)
-        # get the color code list
-        cc_list = getColorSequence(size(cs_list, 1))
-        # put in a new dictonary
-        colorcode_bonds = Dict()
-        # insert all pairs
-        for i in 1:size(cc_list, 1)
-            colorcode_bonds[string(cs_list[i])] = cc_list[i]
-        end
-    end
-
-	# repair color dictonary
-	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
-	colorcode_sites[0] = get(colorcode_sites, 0, [255,255,255])
 
 
-	# define styles for the different sites, i.e. strings that are saved into the svg strings
-	site_r 				= site_radius
-	site_border			= "#000000"
-	site_border_width	= "$(site_border_width_percentage*site_radius)px"
 
-	# sites to plot
-	pos_x = zeros(size(positions,1))
-	pos_y = zeros(size(positions,1))
+
+
+
+
+    ############---------------------------------------------------
+    # STEP 2.1 #  LOADING OF POSITION DATA & FORMATTING OF CANVAS
+    ############---------------------------------------------------
+
+	# load positions and connections from lattice
+	positions	    = copy(lattice.positions)
+    indices_to_plot = copy(lattice.positions_indices)
+
+	# sites to plot, reformatting the x and y values
+	positions_x = zeros(size(positions,1))
+	positions_y = zeros(size(positions,1))
 	for i in 1:size(positions,1)
-		pos_x[i] = positions[i][1]
-		pos_y[i] = positions[i][2]
+		positions_x[i] = positions[i][1]
+		positions_y[i] = positions[i][2]
 	end
-	sites_to_plot = positions
-	indices_to_plot = lattice.positions_indices
-	xvals = pos_x
-	yvals = pos_y
-	border 			= border_percentage * (maximum(pos_x) + maximum(pos_y) - minimum(pos_x) - minimum(pos_y))/4
+    # shift all positions so that the center of mass is at (0,0)
+    positions_x = positions_x .+ mean(positions_x)
+    positions_y = positions_y .+ mean(positions_y)
 
-	# connections to plot (all)
-	connections_to_plot = copy(connections)
-    # the neutral connection wrap, i.e. which wrap identifies a non-periodic connection
-	neutral_connection_wrap = (0,0)
-	if size(lattice.lattice_vectors,1) == 1
-		neutral_connection_wrap = (0)
-	end
+    # get the width and height of the lattice that is desired to plot
+	width_lattice  = maximum(positions_x) - minimum(positions_x)
+	height_lattice = maximum(positions_y) - minimum(positions_y)
+	min_x	= minimum(positions_x)
+	min_y	= minimum(positions_y)
 
+    # get the conversion factor
+    if width_lattice > height_lattice
+        # the long side is the X direction, define conversion
+        conversion = (1 - 2*border_percentage) * size_long_side / width_lattice
+    else
+        # the long side is the Y direction, define conversion
+        conversion = (1 - 2*border_percentage) * size_long_side / height_lattice
+    end
 
-	# define the width and height of the canvas
-	width_UC 	= (maximum(xvals) + site_radius/conversion + border) - (minimum(xvals) - site_radius/conversion - border)
-	height_UC	= (maximum(yvals) + site_radius/conversion + border) - (minimum(yvals) - site_radius/conversion - border)
-	min_x	= minimum(xvals) - site_radius/conversion - border
-	min_y	= minimum(yvals) - site_radius/conversion - border
-	width	= conversion*(width_UC)
-	height	= conversion*(height_UC)
+    # determine the border that is necessary
+	border = border_percentage * size_long_side
+    if print_used_options
+        println("- Chosing border based on border_percentage=\"$(border_percentage)\"")
+    end
+
+    # define the width and height of the canvas
+	width	= Int(floor(conversion * width_lattice   +  2 * border))
+	height	= Int(floor(conversion * height_lattice  +  2 * border))
+    if print_used_options
+        println("- Chosing canvas size based on size_long_side=\"$(size_long_side)\" to be $(width)x$(height)")
+    end
 
 	# define the conversion functions for coordinates
 	function X(x)
-		return conversion*(x - min_x)
+		return conversion*(x - min_x) + border
 	end
 	function Y(y)
-		return + conversion*(y - min_y)
+		return conversion*(y - min_y) + border
 	end
+
+    function POS(position)
+        return conversion .* (position .- [min_x, min_y])  .+    [border, border]
+    end
+
+
+    ############---------------------------------
+    # STEP 2.2 #  LOADING OF CONNECTION DATA
+    ############---------------------------------
+
+	# connections to plot (all)
+	connections = copy(lattice.connections)
+
+    # Function to determine if a connection should be plotted
+    # 0 yes, no periodic
+    # 1 yes, periodic
+    # -1 no
+    function shallBePlotted(c::Array{Any,1})
+        # check the sum of all wraps
+        if sum(abs.(c[4])) > 0
+            if visualize_periodic
+                return 1
+            else
+                return -1
+            end
+        else
+            return 0
+        end
+    end
+
+    # print plotting of connections
+    if print_used_options
+        if visualize_periodic
+            println("- Periodic connections will be plotted, based on visualize_periodic=$(visualize_periodic)")
+        else
+            println("- Periodic connections will not be plotted, based on visualize_periodic=$(visualize_periodic)")
+        end
+    end
+
+
+
+
+    ############-------------------------------------
+    # STEP 2.3 #  DETERMINATION OF SITE & BOND DATA
+    ############-------------------------------------
+
+
+    ##############--------------
+    # STEP 2.3.1 #  SITE DATA
+    ##############--------------
+
+    # check if site radius has to be chosen
+    if site_radius < 0
+        # site radius is given in relative units, first maybe print
+        if print_used_options
+            println("- Site radius is given in relative units to be site_radius=\"$(site_radius)\"")
+        end
+        # then, calculate the minimum length of connections
+        min_length = width
+        for c in connections
+            # check if the connection is NOT PERIODIC and NOT FROM SITE TO ITSELF
+            if sum(abs.(c[4]))==0 && c[1]!=c[2]
+                # determine the length of the position on the canvas
+                c_vector = POS(positions[Int(c[1])]) .- POS(positions[Int(c[2])])
+                c_length = sqrt(sum(c_vector .* c_vector))
+                # check if smaller then minimum length
+                min_length = min(min_length, c_length)
+            end
+        end
+        # set the radius of a site to be -site_radius*min_length
+        site_radius = -site_radius*min_length
+        # maybe print
+        if print_used_options
+            println("- Site radius changed to absolute units to be site_radius=\"$(site_radius)\" as minimal bond length is $(min_length)")
+        end
+    else
+        # site radius is given in absolute units, maybe print
+        if print_used_options
+            println("- Site radius is given in absolute units to be site_radius=\"$(site_radius)\"")
+        end
+    end
+
+    # Define the site border width
+    site_border_width	= site_border_width_percentage*site_radius
+    if print_used_options
+        println("- Site border width is set in absolute units to $(site_border_width)px from site_border_width_percentage=\"$(site_border_width_percentage)\"")
+    end
+
+
+    # define site border color
+    site_border			= "#000000"
+    if print_used_options
+        println("- Site border color is set to \"$(site_border)\"")
+    end
+
+    # repair color dictonary by making sure default elements exist
+    colorcode_sites[0]   = get(colorcode_sites, 0, [255,255,255])
+    # maybe print
+    if print_used_options
+        println("- Site colors passed with dictonary:")
+        for k in keys(colorcode_sites)
+            println("    - \"$(k)\" -> $(colorcode_sites[k])")
+        end
+    end
+
+
+
+
+    ##############--------------
+    # STEP 2.3.2 #  BOND DATA
+    ##############--------------
+
+    # check if bond thickness has to be chosen
+    if bond_thickness < 0
+        # bond thickness is given in relative units, first maybe print
+        if print_used_options
+            println("- Bond thickness is given in relative units to be bond_thickness=\"$(bond_thickness)\"")
+        end
+        # then, calculate the minimum length of connections
+        min_length = size_long_side
+        for c in connections
+            # check if the connection is NOT PERIODIC and NOT FROM SITE TO ITSELF
+            if sum(abs.(c[4]))==0 && c[1]!=c[2]
+                # determine the length of the position on the canvas
+                c_vector = POS(positions[Int(c[1])]) .- POS(positions[Int(c[2])])
+                c_length = sqrt(sum(c_vector .* c_vector))
+                # check if smaller then minimum length
+                min_length = min(min_length, c_length)
+            end
+        end
+        # set the thickness of a bond to be -bond_thickness*min_length
+        bond_thickness = -bond_thickness*min_length
+        # maybe print
+        if print_used_options
+            println("- Bond thickness changed to absolute units to be bond_thickness=\"$(bond_thickness)\" as minimal bond length is $(min_length)")
+        end
+    else
+        # bond thickness is given in absolute units, maybe print
+        if print_used_options
+            println("- Bond thickness is given in absolute units to be bond_thickness=\"$(bond_thickness)\"")
+        end
+    end
+
+
+    # HANDLING BOND COLORS
+
+    # get list of all connections strengths
+    cs_list = getConnectionStrengthList(lattice)
+    # parse all elements to strings
+    cs_list = String["$(element)" for element in cs_list]
+    # sort the list
+    sort!(cs_list)
+
+    # BOND COLOR DICTONARY
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # get the color code list
+        cc_list = getRandomGreys(length(cs_list))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[cs_list[i]] = cc_list[i]
+        end
+        # maybe print
+        if print_used_options
+            println("- Using random GREY for bonds, $(length(cc_list)) greys used")
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # get the color code list
+        cc_list = getRandomColors(length(cs_list))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[cs_list[i]] = cc_list[i]
+        end
+        # maybe print
+        if print_used_options
+            println("- Using random COLOR for bonds, $(length(cc_list)) colors used")
+        end
+    elseif colorcode_bonds_automation == "OFF"
+        # maybe print
+        if print_used_options
+            println("- No redefinition of bond colors, using provided dictonary:")
+            for k in keys(colorcode_bonds)
+                println("    - \"$(k)\" -> $(colorcode_bonds[k])")
+            end
+        end
+    else
+        # maybe print
+        if print_used_options
+            println("- Could not identify redefinition of bond colors based on colorcode_bonds_automation=\"$(colorcode_bonds_automation)\", using provided dictonary:")
+            for k in keys(colorcode_bonds)
+                println("    - \"$(k)\" -> $(colorcode_bonds[k])")
+            end
+        end
+    end
+
+	# repair color dictonary by making sure default elements exist
+	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ##########---------------------
+    # STEP 3 #  SVG FILE CREATION
+    ##########---------------------
 
 	# open the SVG file
 	file = open(filename_output, "w")
 
 	# write the headerstring
-	write(file, getSVGHeaderString(round(Int64, width), round(Int64, height)))
+	write(file, getSVGHeaderString(width, height))
 
 	# write all connections
-	for (i,c) in enumerate(connections_to_plot)
-		if (c[4] == neutral_connection_wrap)
+	for (i,c) in enumerate(connections)
+        # non periodic
+		if shallBePlotted(c) == 0
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])], [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])], connection_color, bond_thickness))
-		elseif visualize_periodic
+			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
+        # periodic and wanted to be plotted
+        elseif shallBePlotted(c) == 1
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", [X(positions[Int(c[1])][1]), Y(positions[Int(c[1])][2])], [X(positions[Int(c[2])][1]), Y(positions[Int(c[2])][2])], connection_color, bond_thickness, dashed=true))
+			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
         end
 	end
 
 	# write all sites
-	for (i,s) in enumerate(sites_to_plot)
+	for (i,s) in enumerate(positions)
+        # get the site color of the respective site
         site_color_basic = get(colorcode_sites, indices_to_plot[i], colorcode_sites[0])
 		site_color = color_hex(site_color_basic)
+        # build up a labelcolor that is sufficiently different
         label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+        # write the string depending on the choice of label
         if site_labels == "POSITION INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=indices_to_plot[i], labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=indices_to_plot[i], labelcolor=label_color))
         elseif site_labels == "LATTICE INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
         else
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_r, site_r, site_color, site_border, site_border_width))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
         end
 	end
 
@@ -578,6 +864,13 @@ function plotLattice2D(
 	write(file, getSVGFooterString())
 	# close the file
 	close(file)
+
+
+
+
+
+
+
 
 	# convert to pdf
     if export_pdf
@@ -607,6 +900,19 @@ function plotLattice2D(
 
 end
 export plotLattice2D
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function plotLattice3D(
@@ -1153,6 +1459,25 @@ function plotLattice(
     end
 end
 export plotLattice
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
