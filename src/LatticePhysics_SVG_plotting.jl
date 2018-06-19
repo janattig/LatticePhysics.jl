@@ -192,7 +192,6 @@ function getSVGStringEllipseStroked(
 	return es
 end
 
-
 # OTHER VERSIONS OF ELLIPSE STRING
 function getSVGStringEllipseStroked(
             id,
@@ -569,7 +568,7 @@ function plotLattice2D(
             colorcode_bonds_automation::String = "OFF",
     		openfile::Bool=false,
             inkscape_export_pdf::Bool=false,
-            print_used_options::Bool=true
+            print_used_options::Bool=false
 		)
 
 
@@ -607,8 +606,8 @@ function plotLattice2D(
     ############---------------------------------------------------
 
 	# load positions and connections from lattice
-	positions	    = copy(lattice.positions)
-    indices_to_plot = copy(lattice.positions_indices)
+	positions	    = deepcopy(lattice.positions)
+    indices_to_plot = deepcopy(lattice.positions_indices)
 
 	# sites to plot, reformatting the x and y values
 	positions_x = zeros(size(positions,1))
@@ -618,8 +617,14 @@ function plotLattice2D(
 		positions_y[i] = positions[i][2]
 	end
     # shift all positions so that the center of mass is at (0,0)
-    positions_x = positions_x .+ mean(positions_x)
-    positions_y = positions_y .+ mean(positions_y)
+    mean_x = mean(positions_x)
+    mean_y = mean(positions_y)
+	for i in 1:size(positions,1)
+		positions_x[i]  -= mean_x
+		positions_y[i]  -= mean_y
+		positions[i][1] -= mean_x
+		positions[i][2] -= mean_y
+	end
 
     # get the width and height of the lattice that is desired to plot
 	width_lattice  = maximum(positions_x) - minimum(positions_x)
@@ -639,14 +644,14 @@ function plotLattice2D(
     # determine the border that is necessary
 	border = border_percentage * size_long_side
     if print_used_options
-        println("- Chosing border based on border_percentage=\"$(border_percentage)\"")
+        println("- Chosing border based on border_percentage=$(border_percentage)")
     end
 
     # define the width and height of the canvas
 	width	= Int(floor(conversion * width_lattice   +  2 * border))
 	height	= Int(floor(conversion * height_lattice  +  2 * border))
     if print_used_options
-        println("- Chosing canvas size based on size_long_side=\"$(size_long_side)\" to be $(width)x$(height)")
+        println("- Chosing canvas size based on size_long_side=$(size_long_side) to be $(width)x$(height)")
     end
 
 	# define the conversion functions for coordinates
@@ -711,7 +716,7 @@ function plotLattice2D(
     if site_radius < 0
         # site radius is given in relative units, first maybe print
         if print_used_options
-            println("- Site radius is given in relative units to be site_radius=\"$(site_radius)\"")
+            println("- Site radius is given in relative units to be site_radius=$(site_radius)")
         end
         # then, calculate the minimum length of connections
         min_length = width
@@ -729,26 +734,26 @@ function plotLattice2D(
         site_radius = -site_radius*min_length
         # maybe print
         if print_used_options
-            println("- Site radius changed to absolute units to be site_radius=\"$(site_radius)\" as minimal bond length is $(min_length)")
+            println("- Site radius changed to absolute units to be site_radius=$(site_radius) as minimal bond length is $(min_length)")
         end
     else
         # site radius is given in absolute units, maybe print
         if print_used_options
-            println("- Site radius is given in absolute units to be site_radius=\"$(site_radius)\"")
+            println("- Site radius is given in absolute units to be site_radius=$(site_radius)")
         end
     end
 
     # Define the site border width
     site_border_width	= site_border_width_percentage*site_radius
     if print_used_options
-        println("- Site border width is set in absolute units to $(site_border_width)px from site_border_width_percentage=\"$(site_border_width_percentage)\"")
+        println("- Site border width is set in absolute units to $(site_border_width)px from site_border_width_percentage=$(site_border_width_percentage)")
     end
 
 
     # define site border color
     site_border			= "#000000"
     if print_used_options
-        println("- Site border color is set to \"$(site_border)\"")
+        println("- Site border color is set to $(site_border)")
     end
 
     # repair color dictonary by making sure default elements exist
@@ -757,7 +762,7 @@ function plotLattice2D(
     if print_used_options
         println("- Site colors passed with dictonary:")
         for k in keys(colorcode_sites)
-            println("    - \"$(k)\" -> $(colorcode_sites[k])")
+            println("    - $(k) -> $(colorcode_sites[k])")
         end
     end
 
@@ -772,7 +777,7 @@ function plotLattice2D(
     if bond_thickness < 0
         # bond thickness is given in relative units, first maybe print
         if print_used_options
-            println("- Bond thickness is given in relative units to be bond_thickness=\"$(bond_thickness)\"")
+            println("- Bond thickness is given in relative units to be bond_thickness=$(bond_thickness)")
         end
         # then, calculate the minimum length of connections
         min_length = size_long_side
@@ -790,12 +795,12 @@ function plotLattice2D(
         bond_thickness = -bond_thickness*min_length
         # maybe print
         if print_used_options
-            println("- Bond thickness changed to absolute units to be bond_thickness=\"$(bond_thickness)\" as minimal bond length is $(min_length)")
+            println("- Bond thickness changed to absolute units to be bond_thickness=$(bond_thickness) as minimal bond length is $(min_length)")
         end
     else
         # bond thickness is given in absolute units, maybe print
         if print_used_options
-            println("- Bond thickness is given in absolute units to be bond_thickness=\"$(bond_thickness)\"")
+            println("- Bond thickness is given in absolute units to be bond_thickness=$(bond_thickness)")
         end
     end
 
@@ -904,9 +909,9 @@ function plotLattice2D(
         label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
         # write the string depending on the choice of label
         if site_labels == "POSITION INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=indices_to_plot[i], labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
         elseif site_labels == "LATTICE INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=i, labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
         else
 		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
         end
