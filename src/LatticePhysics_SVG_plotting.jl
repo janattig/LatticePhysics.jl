@@ -475,15 +475,36 @@ end
 
 """
     plotLattice2D(
-
+        lattice::Lattice;
+        size_long_side::Int64 = 1200,
+        border_percentage::Float64 = 0.05,
+        filename_output::String="AUTO",
+        site_radius::Float64=-0.2,
+        site_border_width_percentage::Float64=0.15,
+        site_labels::String="OFF",
+        bond_thickness::Float64=-0.1,
+        visualize_periodic::Bool=false,
+        colorcode_sites::Dict = Dict(0 => [255,255,255], 1 => [255,255,255]),
+        colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
+        openfile::Bool=false,
+        inkscape_export_pdf::Bool=false,
+        print_used_options::Bool=true
     )
 
-Function to plot a `Lattice` object with 2D sites.
+Function to plot a `Lattice` object in two dimensions.
 
 
 
+
+# Options
 
 Additional options include the following:
+
+- `filename_output::String` the filename of the output file. If not chosen explicitly, automatically sets itself based on the lattice filename.
+
+- `size_long_side::Int64` size of the longer side of the image in pixels
+- `border_percentage::Float64` amount of border that is added around the lattice (relative to the total linear extent of the lattice)
 
 - `colorcode_bonds::Dict` a dictonary in which every bond interaction strength (as string) is mapped to a color
 - `colorcode_bonds_automation::String` determines if the bond colorcode defined by `colorcode_bonds` should be redefined
@@ -491,12 +512,40 @@ Additional options include the following:
     - `"OFF"`   no redefinition
     - `"GREY"`  redefinition with random grey colors
     - `"COLOR"` redefinition with random colors
+- `bond_thickness::Float64` gives the thickness of bonds in the plot. For positive numbers, the unit is px, for negative numbers,
+  the thickness is given in terms of shortest bond length.
+- `visualize_periodic::Bool` determines wheather periodic connections should be drawn as dashed lines
+
+- `colorcode_sites::Dict` a dictonary in which every site index (as integer) is mapped to a color
+- `site_radius::Float64` gives the radius of sites in the plot. For positive numbers, the unit is px, for negative numbers,
+  the radius is given in terms of shortest bond length.
+- `site_border_width_percentage::Float64` percentage of site radius which should be used as border
+- `site_labels::String` options for on-site labels, possible options are
+    - `"OFF"`   no labels
+    - `"POSITION INDEX"` indices given by the `positions_indices` field inside the `Lattice` object
+    - `"LATTICE INDEX"` the indices with which the site can be adressed in the `Lattice` object
+
+- `openfile::Bool` determines if the image should be opened after creation (passes the filename to the operating system)
+- `inkscape_export_pdf::Bool` determines wheather a pdf version should be created by using Inkscape
+- `print_used_options::Bool` determines if the options that are chosen should be printed as well
 
 
+
+
+# Examples
 
 
 ```julia-repl
 julia> plotLattice2D(lattice)
+...
+
+julia> plotLattice2D(lattice, openfile=true)
+...
+
+julia> plotLattice2D(lattice, site_labels="POSITON INDEX")
+...
+
+julia> plotLattice2D(lattice, site_labels="POSITON INDEX", site_radius=-0.2, bond_thickness=-0.1)
 ...
 
 ```
