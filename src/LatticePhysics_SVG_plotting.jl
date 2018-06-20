@@ -2192,7 +2192,7 @@ function plotPlaquettes2D(
         # get the plaquette point list
         points = Array{Float64,1}[]
         for index in p
-            push!(points, POS(positions[p]))
+            push!(points, POS(positions[index]))
         end
         # plot plaquette
         write(file, getSVGStringPlaquette("plaq$(i)", points, color_plaquette, opacity=opacity_plaquettes))
