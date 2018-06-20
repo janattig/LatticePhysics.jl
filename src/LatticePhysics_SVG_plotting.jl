@@ -5,7 +5,7 @@
 #
 #   STRUCTURE OF THE FILE
 #
-#   1) HELPER SVG FUNCTIONS
+#   1) HELPER SVG FUNCTIONS (NOTE: not exported)
 #       - Header / Footer String
 #       - Ellipse (stroked) String
 #       - Line String
@@ -15,10 +15,10 @@
 #
 #   2) PLOTTING LATTICES
 #       - plot in 2D
-#       - plot in 3D
-#       - plot independent of dimension
+#       - TODO plot in 3D
+#       - TODO plot independent of dimension
 #
-#   3) PLOTTING PLAQUETTES (only 2D)
+#   3) TODO PLOTTING PLAQUETTES (only 2D)
 #
 ################################################################################
 
@@ -1722,6 +1722,533 @@ function plotPlaquettes2D(
 	if openfile
         if is_linux()
 		    run(`ristretto $(filename_output)`)
+        elseif is_windows()
+            try
+                if export_pdf
+                    run(`explorer $(filename_output[1:end-4]).pdf`)
+                else
+                    run(`explorer $(filename_output)`)
+                end
+            end
+        elseif is_apple()
+            run(`open $(filename_output)`)
+        else
+            println("wanted to show file but operating system not supported for showing file")
+        end
+	end
+
+	# return the output filename
+	return filename_output
+
+end
+export plotPlaquettes2D
+
+
+
+
+
+
+"""
+    plotPlaquettes2D(
+        lattice::Lattice,
+        plaquettes::Array{Array{Int64,1},1},
+        plaquette_values::Array{Float64,1};
+        size_long_side::Int64 = 1200,
+        border_percentage::Float64 = 0.05,
+        filename_output::String="AUTO",
+        site_radius::Float64=-0.2,
+        site_border_width_percentage::Float64=0.15,
+        site_labels::String="OFF",
+        bond_thickness::Float64=-0.1,
+        visualize_periodic::Bool=false,
+        colorcode_sites::Dict = Dict(0 => [255,255,255], 1 => [255,255,255]),
+        colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+        colorcode_bonds_automation::String = "OFF",
+		colorcode_plaquettes::Dict = Dict(0.0 => [0,0,0], 1.0 => [255,0,0], -1.0 => [0,100,255]),
+        opacity_plaquettes::Float64 = 0.5,
+        openfile::Bool=false,
+        inkscape_export_pdf::Bool=false,
+        print_used_options::Bool=true
+    )
+
+Function to plot plaquettes of a `Lattice` object in two dimensions.
+
+
+
+
+# Options
+
+Additional options include the following:
+
+- `filename_output::String` the filename of the output file. If not chosen explicitly, automatically sets itself based on the lattice filename.
+
+- `size_long_side::Int64` size of the longer side of the image in pixels
+- `border_percentage::Float64` amount of border that is added around the lattice (relative to the total linear extent of the lattice)
+
+- `colorcode_bonds::Dict` a dictonary in which every bond interaction strength (as string) is mapped to a color
+- `colorcode_bonds_automation::String` determines if the bond colorcode defined by `colorcode_bonds` should be redefined
+  based on bond-strength. Possible options are
+    - `"OFF"`   no redefinition
+    - `"GREY"`  redefinition with random grey colors
+    - `"COLOR"` redefinition with random colors
+- `bond_thickness::Float64` gives the thickness of bonds in the plot. For positive numbers, the unit is px, for negative numbers,
+  the thickness is given in terms of shortest bond length.
+- `visualize_periodic::Bool` determines wheather periodic connections should be drawn as dashed lines
+
+- `colorcode_sites::Dict` a dictonary in which every site index (as integer) is mapped to a color
+- `site_radius::Float64` gives the radius of sites in the plot. For positive numbers, the unit is px, for negative numbers,
+  the radius is given in terms of shortest bond length.
+- `site_border_width_percentage::Float64` percentage of site radius which should be used as border
+- `site_labels::String` options for on-site labels, possible options are
+    - `"OFF"`   no labels
+    - `"POSITION INDEX"` indices given by the `positions_indices` field inside the `Lattice` object
+    - `"LATTICE INDEX"` the indices with which the site can be adressed in the `Lattice` object
+
+- `openfile::Bool` determines if the image should be opened after creation (passes the filename to the operating system)
+- `inkscape_export_pdf::Bool` determines wheather a pdf version should be created by using Inkscape
+- `print_used_options::Bool` determines if the options that are chosen should be printed as well
+
+
+
+
+# Examples
+
+
+```julia-repl
+julia> plotPlaquettes2D(lattice, plaquettes, plaquette_values)
+...
+
+julia> plotPlaquettes2D(lattice, plaquettes, plaquette_values, openfile=true)
+...
+
+julia> plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_labels="POSITON INDEX")
+...
+
+julia> plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_labels="POSITON INDEX", site_radius=-0.2, bond_thickness=-0.1)
+...
+
+```
+"""
+function plotPlaquettes2D(
+    		lattice::Lattice,
+            plaquettes::Array{Array{Int64,1},1},
+            plaquette_values::Array{Float64,1}
+            ;
+    		size_long_side::Int64 = 1200,
+    		border_percentage::Float64 = 0.05,
+    		filename_output::String="AUTO",
+    		site_radius::Float64=-0.2,
+    		site_border_width_percentage::Float64=0.15,
+            site_labels::String="OFF",
+    		bond_thickness::Float64=-0.1,
+    		visualize_periodic::Bool=false,
+    		colorcode_sites::Dict = Dict(0 => [255,255,255], 1 => [255,255,255]),
+    		colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+            colorcode_bonds_automation::String = "OFF",
+    		colorcode_plaquettes::Dict = Dict(0.0 => [0,0,0], 1.0 => [255,0,0], -1.0 => [0,100,255]),
+            opacity_plaquettes::Float64 = 0.5,
+    		openfile::Bool=false,
+            inkscape_export_pdf::Bool=false,
+            print_used_options::Bool=false
+		)
+
+
+
+    ##########---------------------------------
+    # STEP 1 #  INITIALIZATION OF PARAMTERS
+    ##########---------------------------------
+
+    # Maybe print what is being done
+    if print_used_options
+        println("Plotting lattice object with filename \"$(lattice.filename)\"")
+    end
+
+    # define the FILENAME of the output file if it is set to "AUTO"
+    if filename_output=="AUTO"
+        filename_output = "$(lattice.filename[1:end-4])_plot.svg"
+        filename_output = replace(filename_output, FOLDER_LATTICES, "")
+        # maybe print
+        if print_used_options
+            println("- Changing SVG filename to \"$(filename_output)\"")
+        end
+    elseif print_used_options
+        println("- Using given SVG filename \"$(filename_output)\"")
+    end
+
+
+
+
+
+
+
+
+    ############---------------------------------------------------
+    # STEP 2.1 #  LOADING OF POSITION DATA & FORMATTING OF CANVAS
+    ############---------------------------------------------------
+
+	# load positions and connections from lattice
+	positions	    = deepcopy(lattice.positions)
+    indices_to_plot = deepcopy(lattice.positions_indices)
+
+	# sites to plot, reformatting the x and y values
+	positions_x = zeros(size(positions,1))
+	positions_y = zeros(size(positions,1))
+	for i in 1:size(positions,1)
+		positions_x[i] = positions[i][1]
+		positions_y[i] = positions[i][2]
+	end
+    # shift all positions so that the center of mass is at (0,0)
+    mean_x = mean(positions_x)
+    mean_y = mean(positions_y)
+	for i in 1:size(positions,1)
+		positions_x[i]  -= mean_x
+		positions_y[i]  -= mean_y
+		positions[i][1] -= mean_x
+		positions[i][2] -= mean_y
+	end
+
+    # get the width and height of the lattice that is desired to plot
+	width_lattice  = maximum(positions_x) - minimum(positions_x)
+	height_lattice = maximum(positions_y) - minimum(positions_y)
+	min_x	= minimum(positions_x)
+	min_y	= minimum(positions_y)
+
+    # get the conversion factor
+    if width_lattice > height_lattice
+        # the long side is the X direction, define conversion
+        conversion = (1 - 2*border_percentage) * size_long_side / width_lattice
+    else
+        # the long side is the Y direction, define conversion
+        conversion = (1 - 2*border_percentage) * size_long_side / height_lattice
+    end
+
+    # determine the border that is necessary
+	border = border_percentage * size_long_side
+    if print_used_options
+        println("- Chosing border based on border_percentage=$(border_percentage)")
+    end
+
+    # define the width and height of the canvas
+	width	= Int(floor(conversion * width_lattice   +  2 * border))
+	height	= Int(floor(conversion * height_lattice  +  2 * border))
+    if print_used_options
+        println("- Chosing canvas size based on size_long_side=$(size_long_side) to be $(width)x$(height)")
+    end
+
+	# define the conversion functions for coordinates
+	function X(x)
+		return conversion*(x - min_x) + border
+	end
+	function Y(y)
+		return conversion*(y - min_y) + border
+	end
+
+    function POS(position)
+        return conversion .* (position .- [min_x, min_y])  .+    [border, border]
+    end
+
+
+    ############---------------------------------
+    # STEP 2.2 #  LOADING OF CONNECTION DATA
+    ############---------------------------------
+
+	# connections to plot (all)
+	connections = copy(lattice.connections)
+
+    # Function to determine if a connection should be plotted
+    # 0 yes, no periodic
+    # 1 yes, periodic
+    # -1 no
+    function shallBePlotted(c::Array{Any,1})
+        # check the sum of all wraps
+        if sum(abs.(c[4])) > 0
+            if visualize_periodic
+                return 1
+            else
+                return -1
+            end
+        else
+            return 0
+        end
+    end
+
+    # print plotting of connections
+    if print_used_options
+        if visualize_periodic
+            println("- Periodic connections will be plotted, based on visualize_periodic=$(visualize_periodic)")
+        else
+            println("- Periodic connections will not be plotted, based on visualize_periodic=$(visualize_periodic)")
+        end
+    end
+
+
+
+
+    ############-------------------------------------
+    # STEP 2.3 #  DETERMINATION OF SITE & BOND DATA
+    ############-------------------------------------
+
+
+    ##############--------------
+    # STEP 2.3.1 #  SITE DATA
+    ##############--------------
+
+    # check if site radius has to be chosen
+    if site_radius < 0
+        # site radius is given in relative units, first maybe print
+        if print_used_options
+            println("- Site radius is given in relative units to be site_radius=$(site_radius)")
+        end
+        # then, calculate the minimum length of connections
+        min_length = width
+        for c in connections
+            # check if the connection is NOT PERIODIC and NOT FROM SITE TO ITSELF
+            if sum(abs.(c[4]))==0 && c[1]!=c[2]
+                # determine the length of the position on the canvas
+                c_vector = POS(positions[Int(c[1])]) .- POS(positions[Int(c[2])])
+                c_length = sqrt(sum(c_vector .* c_vector))
+                # check if smaller then minimum length
+                min_length = min(min_length, c_length)
+            end
+        end
+        # set the radius of a site to be -site_radius*min_length
+        site_radius = -site_radius*min_length
+        # maybe print
+        if print_used_options
+            println("- Site radius changed to absolute units to be site_radius=$(site_radius) as minimal bond length is $(min_length)")
+        end
+    else
+        # site radius is given in absolute units, maybe print
+        if print_used_options
+            println("- Site radius is given in absolute units to be site_radius=$(site_radius)")
+        end
+    end
+
+    # Define the site border width
+    site_border_width	= site_border_width_percentage*site_radius
+    if print_used_options
+        println("- Site border width is set in absolute units to $(site_border_width)px from site_border_width_percentage=$(site_border_width_percentage)")
+    end
+
+
+    # define site border color
+    site_border			= "#000000"
+    if print_used_options
+        println("- Site border color is set to $(site_border)")
+    end
+
+    # repair color dictonary by making sure default elements exist
+    colorcode_sites[0]   = get(colorcode_sites, 0, [255,255,255])
+    # maybe print
+    if print_used_options
+        println("- Site colors passed with dictonary:")
+        for k in keys(colorcode_sites)
+            println("    - $(k) -> $(colorcode_sites[k])")
+        end
+    end
+
+
+
+
+    ##############--------------
+    # STEP 2.3.2 #  BOND DATA
+    ##############--------------
+
+    # check if bond thickness has to be chosen
+    if bond_thickness < 0
+        # bond thickness is given in relative units, first maybe print
+        if print_used_options
+            println("- Bond thickness is given in relative units to be bond_thickness=$(bond_thickness)")
+        end
+        # then, calculate the minimum length of connections
+        min_length = size_long_side
+        for c in connections
+            # check if the connection is NOT PERIODIC and NOT FROM SITE TO ITSELF
+            if sum(abs.(c[4]))==0 && c[1]!=c[2]
+                # determine the length of the position on the canvas
+                c_vector = POS(positions[Int(c[1])]) .- POS(positions[Int(c[2])])
+                c_length = sqrt(sum(c_vector .* c_vector))
+                # check if smaller then minimum length
+                min_length = min(min_length, c_length)
+            end
+        end
+        # set the thickness of a bond to be -bond_thickness*min_length
+        bond_thickness = -bond_thickness*min_length
+        # maybe print
+        if print_used_options
+            println("- Bond thickness changed to absolute units to be bond_thickness=$(bond_thickness) as minimal bond length is $(min_length)")
+        end
+    else
+        # bond thickness is given in absolute units, maybe print
+        if print_used_options
+            println("- Bond thickness is given in absolute units to be bond_thickness=$(bond_thickness)")
+        end
+    end
+
+
+    # HANDLING BOND COLORS
+
+    # get list of all connections strengths
+    cs_list = getConnectionStrengthList(lattice)
+    # parse all elements to strings
+    cs_list = String["$(element)" for element in cs_list]
+    # sort the list
+    sort!(cs_list)
+
+    # BOND COLOR DICTONARY
+    # maybe overwrite dictonary
+    if colorcode_bonds_automation == "GREY"
+        # get the color code list
+        cc_list = getRandomGreys(length(cs_list))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[cs_list[i]] = cc_list[i]
+        end
+        # maybe print
+        if print_used_options
+            println("- Using random GREY for bonds, $(length(cc_list)) greys used")
+        end
+    elseif colorcode_bonds_automation == "COLOR"
+        # get the color code list
+        cc_list = getRandomColors(length(cs_list))
+        # put in a new dictonary
+        colorcode_bonds = Dict()
+        # insert all pairs
+        for i in 1:size(cc_list, 1)
+            colorcode_bonds[cs_list[i]] = cc_list[i]
+        end
+        # maybe print
+        if print_used_options
+            println("- Using random COLOR for bonds, $(length(cc_list)) colors used")
+        end
+    elseif colorcode_bonds_automation == "OFF"
+        # maybe print
+        if print_used_options
+            println("- No redefinition of bond colors, using provided dictonary:")
+            for k in keys(colorcode_bonds)
+                println("    - \"$(k)\" -> $(colorcode_bonds[k])")
+            end
+        end
+    else
+        # maybe print
+        if print_used_options
+            println("- Could not identify redefinition of bond colors based on colorcode_bonds_automation=\"$(colorcode_bonds_automation)\", using provided dictonary:")
+            for k in keys(colorcode_bonds)
+                println("    - \"$(k)\" -> $(colorcode_bonds[k])")
+            end
+        end
+    end
+
+	# repair color dictonary by making sure default elements exist
+	colorcode_bonds["0"] = get(colorcode_bonds, "0", [0,0,0])
+
+
+
+
+    ##############------------------
+    # STEP 2.3.3 #  PLAQUETTE DATA
+    ##############------------------
+
+    # fix the dictonary colorcode
+    colorcode_plaquettes[0.0] = get(colorcode_plaquettes, 0.0, [0,0,0])
+
+    # maybe print stuff
+    if print_used_options
+        # opacity
+        println("- opacity of plaquttes is given as opacity_plaquettes=$(opacity_plaquettes)")
+        # dictonary
+        println("- Plaquette colors based on dictonary:")
+        for k in keys(colorcode_plaquettes)
+            println("    - \"$(k)\" -> $(colorcode_plaquettes[k])")
+        end
+    end
+
+
+
+
+
+
+
+
+
+
+
+    ##########---------------------
+    # STEP 3 #  SVG FILE CREATION
+    ##########---------------------
+
+	# open the SVG file
+	file = open(filename_output, "w")
+
+	# write the headerstring
+	write(file, getSVGHeaderString(width, height))
+
+    # write all plaquettes
+    for (i,p) in enumerate(plaquettes)
+        # get the color
+        color_plaquette = color_hex(get(colorcode_plaquettes, plaquette_values[i], colorcode_plaquettes[0.0]))
+        # get the plaquette point list
+        points = Array{Float64,1}[]
+        for index in p
+            push!(points, POS(positions[p]))
+        end
+        # plot plaquette
+        write(file, getSVGStringPlaquette("plaq$(i)", points, color_plaquette, opacity=opacity_plaquettes))
+    end
+
+    # write all connections
+	for (i,c) in enumerate(connections)
+        # non periodic
+		if shallBePlotted(c) == 0
+			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
+			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
+        # periodic and wanted to be plotted
+        elseif shallBePlotted(c) == 1
+			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
+			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
+        end
+	end
+
+	# write all sites
+	for (i,s) in enumerate(positions)
+        # get the site color of the respective site
+        site_color_basic = get(colorcode_sites, indices_to_plot[i], colorcode_sites[0])
+		site_color = color_hex(site_color_basic)
+        # build up a labelcolor that is sufficiently different
+        label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
+        # write the string depending on the choice of label
+        if site_labels == "POSITION INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
+        elseif site_labels == "LATTICE INDEX"
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
+        else
+		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
+        end
+	end
+
+	# write the footerstring to close the svg file
+	write(file, getSVGFooterString())
+	# close the file
+	close(file)
+
+
+
+
+    ##########---------------------
+    # STEP 4 #  FILE FINISH
+    ##########---------------------
+
+	# convert to pdf
+    if inkscape_export_pdf
+	    run(`inkscape $(filename_output) --export-pdf $(filename_output[1:end-4]).pdf`)
+    end
+
+	# if file shall be opened
+	if openfile
+        if is_linux()
+		    run(`xdg-open $(filename_output)`)
         elseif is_windows()
             try
                 if export_pdf
