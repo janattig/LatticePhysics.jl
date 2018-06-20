@@ -18,7 +18,7 @@
 #       - TODO plot in 3D
 #       - TODO plot independent of dimension
 #
-#   3) TODO PLOTTING PLAQUETTES (only 2D)
+#   3) PLOTTING PLAQUETTES (only 2D)
 #
 ################################################################################
 
@@ -1804,6 +1804,9 @@ Additional options include the following:
     - `"POSITION INDEX"` indices given by the `positions_indices` field inside the `Lattice` object
     - `"LATTICE INDEX"` the indices with which the site can be adressed in the `Lattice` object
 
+- `colorcode_plaquettes::Dict` a dictonary in which every plaquette value (as float) is mapped to a color
+- `opacity_plaquettes` gives the opacity of the drawn plaquettes between `0` and `1` as a Float.
+
 - `openfile::Bool` determines if the image should be opened after creation (passes the filename to the operating system)
 - `inkscape_export_pdf::Bool` determines wheather a pdf version should be created by using Inkscape
 - `print_used_options::Bool` determines if the options that are chosen should be printed as well
@@ -1865,7 +1868,7 @@ function plotPlaquettes2D(
 
     # define the FILENAME of the output file if it is set to "AUTO"
     if filename_output=="AUTO"
-        filename_output = "$(lattice.filename[1:end-4])_plot.svg"
+        filename_output = "$(lattice.filename[1:end-4])_plaquette_plot.svg"
         filename_output = replace(filename_output, FOLDER_LATTICES, "")
         # maybe print
         if print_used_options

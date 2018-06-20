@@ -84,7 +84,53 @@ end;
     # get a test unitcell
     unitcell = getUnitcellHoneycomb(4)
     # get a lattice
-    lattice = getLattice(unitcell, [-10, -5])
+    lattice = getLatticeInBox(unitcell, [10.0, 5.0])
+    # get the plaquettes
+    plaquettes = getPlaquettesOfSite(lattice, 3, 6)
+    # get the plaquette values
+    plaquette_values = [rand()>0.5 ? 1.0 : -1.0 for p in plaquettes]
+
+    # PLOTTING RELATED (SAME AS 2D PLOTTING)
+
+    # Test naive plotting
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values)) == String
+    # Naive plotting and Inkscape pdf export
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, inkscape_export_pdf=true)) == String
+    # Naive plotting and printing options
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, print_used_options=true)) == String
+
+    # custom canvas border size and size
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, border_percentage=0.02, size_long_side=2000)) == String
+
+    # periodic connections
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, visualize_periodic=true)) == String
+    # certain bond thickness
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, bond_thickness=-0.2)) == String
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, bond_thickness=10.0)) == String
+    # certain bond colors
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, colorcode_bonds_automation="GREY")) == String
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, colorcode_bonds_automation="COLOR")) == String
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, colorcode_bonds=Dict("tx"=>[155,0,0], "ty"=>[0,155,0], "tz"=>[0,0,155]))) == String
+
+    # custom site colors
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, colorcode_sites=Dict(1=>[155,0,50], 2=>[0,155,50]))) == String
+    # custom site labels
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_labels="POSITION INDEX")) == String
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_labels="LATTICE INDEX")) == String
+    # custom site radius
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_radius=40.0)) == String
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_radius=-0.3)) == String
+    # cuistom site border
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, site_border_width_percentage=0.2)) == String
+
+
+    # PLAQUETTE RELATED
+
+    # cuistom colorcode
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, colorcode_plaquettes=Dict(-1.0=>[0,125,0], 1.0=>[255,0,125]))) == String
+    # cuistom opacity
+    @test typeof(plotPlaquettes2D(lattice, plaquettes, plaquette_values, opacity_plaquettes=0.1)) == String
+
 
 
 # end the testset here
