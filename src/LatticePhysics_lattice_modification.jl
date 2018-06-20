@@ -6,7 +6,7 @@
 #   STRUCTURE OF THE FILE
 #
 #   1) TODO CONNECTIONS
-#       - TODO Add a new connection
+#       - Add a new connection
 #       - TODO remove connections (based on indices)
 #       - TODO remove connections (based on strength)
 #       - TODO optimize connections
@@ -102,15 +102,15 @@ function addConnection!(unitcell::Unitcell, index_from::Int64, index_to::Int64, 
         end
         # only add if not added already
         if !found_c1
-            push!(unitcell.connections, connection_1)
+            push!(unitcell.connections, connection_1);
         end
         if !found_c2
-            push!(unitcell.connections, connection_2)
+            push!(unitcell.connections, connection_2);
         end
     # otherwise, just add the connections
     else
-        push!(unitcell.connections, connection_1)
-        push!(unitcell.connections, connection_2)
+        push!(unitcell.connections, connection_1);
+        push!(unitcell.connections, connection_2);
     end
 
 end
@@ -163,15 +163,15 @@ function addConnection!(lattice::Lattice, index_from::Int64, index_to::Int64, st
         end
         # only add if not added already
         if !found_c1
-            push!(lattice.connections, connection_1)
+            push!(lattice.connections, connection_1);
         end
         if !found_c2
-            push!(lattice.connections, connection_2)
+            push!(lattice.connections, connection_2);
         end
     # otherwise, just add the connections
     else
-        push!(lattice.connections, connection_1)
-        push!(lattice.connections, connection_2)
+        push!(lattice.connections, connection_1);
+        push!(lattice.connections, connection_2);
     end
 
 end
