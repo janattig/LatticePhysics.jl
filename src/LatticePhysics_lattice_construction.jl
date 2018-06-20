@@ -1,7 +1,6 @@
 ################################################################################
 #
 #   IMPLEMENTATIONS OF DIFFERENT LATTICE CONSTRUCTION RELATED STUFF
-#   AS WELL AS DIFFERNT LATTICE MODIFICATION STUFF
 #
 #   STRUCTURE OF THE FILE
 #

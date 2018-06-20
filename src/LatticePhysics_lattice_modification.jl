@@ -1,3 +1,212 @@
+################################################################################
+#
+#   IMPLEMENTATIONS OF DIFFERENT LATTICE MODIFICATION FUNCTIONS
+#   (MOST OF THEM ALSO WORK FOR UNITCELLS)
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) TODO CONNECTIONS
+#       - TODO Add a new connection
+#       - TODO remove connections (based on indices)
+#       - TODO remove connections (based on strength)
+#       - TODO optimize connections
+#
+#   2) TODO SITES
+#       - TODO add a new site
+#       - TODO remove a site (based on index)
+#
+################################################################################
+
+
+
+
+
+#-------------------------------------------------------------------------------
+#
+#  Add connection to given unitcell / lattice objects
+#
+#-------------------------------------------------------------------------------
+"""
+    addConnection!(unitcell::Unitcell, index_from::Int64, index_to::Int64, strength [, wrap=-1; overwrite::Bool=false])
+    addConnection!(lattice::Lattice,   index_from::Int64, index_to::Int64, strength [, wrap=-1; overwrite::Bool=false])
+
+Function to add a connection to either a `Unitcell` object or a `Lattice` object.
+Necessary parameters include the indices of sites between which the connection takes place as well as the strength of the connection.
+Additionally (in case of a unitcell or periodic boundaries), a wrap can be specified in terms of lattice vectors.
+If no wrap is specified, the wrap will be chosen automatically as without wrapping around periodic boundaries.
+
+The additional option `overwrite` specifies if one wants to simply add the connection
+or if one wants to first search if there is a connection that already satisfies the new connection (in which case nothing would be added).
+
+NOTE 1: This function always tries to add two connections, one going forward, one going backward.
+
+NOTE 2: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> addConnection!(unitcell, 1, 3, "tx", (0,1))
+
+
+julia> addConnection!(lattice, 31, 27, "tx")
+
+```
+"""
+function addConnection!(unitcell::Unitcell, index_from::Int64, index_to::Int64, strength, wrap=-1; overwrite::Bool=false)
+
+    # maybe default wrap
+    if wrap == -1
+        if length(unitcell.lattice_vectors) == 3
+            wrap = (0,0,0)
+        elseif length(unitcell.lattice_vectors) == 2
+            wrap = (0,0)
+        else
+            wrap = (0)
+        end
+    end
+
+    # construct the returning wrap
+    if length(wrap) == 3
+        wrap_return = (-wrap[1],-wrap[2],-wrap[3])
+    elseif length(wrap) == 2
+        wrap_return = (-wrap[1],-wrap[2])
+    else
+        wrap_return = (-wrap)
+    end
+    # construct the returning strength
+    if typeof(strength) == Complex
+        strength_return = copy(conj(strength))
+    else
+        strength_return = copy(strength)
+    end
+
+    # construct the connection as an array
+    connection_1 = Any[index_from; index_to; strength; wrap]
+    # construct the returning connection as an array
+    connection_2 = Any[index_to; index_from; strength_return; wrap_return]
+
+    # if not overwrite, check if the connection exists
+    if !overwrite
+        # report if found
+        found_c1 = false
+        found_c2 = false
+        # check in all connections
+        for c in unitcell.connections
+            if  Int(c[1]) == Int(connection_1[1]) && Int(c[2]) == Int(connection_1[2]) && c[3] == connection_1[3] && c[4] == connection_1[4]
+                found_c1 = true
+            end
+            if  Int(c[1]) == Int(connection_2[1]) && Int(c[2]) == Int(connection_2[2]) && c[3] == connection_2[3] && c[4] == connection_2[4]
+                found_c2 = true
+            end
+        end
+        # only add if not added already
+        if !found_c1
+            push!(unitcell.connections, connection_1)
+        end
+        if !found_c2
+            push!(unitcell.connections, connection_2)
+        end
+    # otherwise, just add the connections
+    else
+        push!(unitcell.connections, connection_1)
+        push!(unitcell.connections, connection_2)
+    end
+
+end
+function addConnection!(lattice::Lattice, index_from::Int64, index_to::Int64, strength, wrap=-1; overwrite::Bool=false)
+
+    # maybe default wrap
+    if wrap == -1
+        if length(lattice.lattice_vectors) == 3
+            wrap = (0,0,0)
+        elseif length(lattice.lattice_vectors) == 2
+            wrap = (0,0)
+        else
+            wrap = (0)
+        end
+    end
+
+    # construct the returning wrap
+    if length(wrap) == 3
+        wrap_return = (-wrap[1],-wrap[2],-wrap[3])
+    elseif length(wrap) == 2
+        wrap_return = (-wrap[1],-wrap[2])
+    else
+        wrap_return = (-wrap)
+    end
+    # construct the returning strength
+    if typeof(strength) == Complex
+        strength_return = copy(conj(strength))
+    else
+        strength_return = copy(strength)
+    end
+
+    # construct the connection as an array
+    connection_1 = Any[index_from; index_to; strength; wrap]
+    # construct the returning connection as an array
+    connection_2 = Any[index_to; index_from; strength_return; wrap_return]
+
+    # if not overwrite, check if the connection exists
+    if !overwrite
+        # report if found
+        found_c1 = false
+        found_c2 = false
+        # check in all connections
+        for c in lattice.connections
+            if  Int(c[1]) == Int(connection_1[1]) && Int(c[2]) == Int(connection_1[2]) && c[3] == connection_1[3] && c[4] == connection_1[4]
+                found_c1 = true
+            end
+            if  Int(c[1]) == Int(connection_2[1]) && Int(c[2]) == Int(connection_2[2]) && c[3] == connection_2[3] && c[4] == connection_2[4]
+                found_c2 = true
+            end
+        end
+        # only add if not added already
+        if !found_c1
+            push!(lattice.connections, connection_1)
+        end
+        if !found_c2
+            push!(lattice.connections, connection_2)
+        end
+    # otherwise, just add the connections
+    else
+        push!(lattice.connections, connection_1)
+        push!(lattice.connections, connection_2)
+    end
+
+end
+export addConnection!
+
+
+
+
+
+
+#-------------------------------------------------------------------------------
+#
+#   Remove interactions with given strengths of the unitcell / lattice
+#
+#-------------------------------------------------------------------------------
+function removeConnections!(lattice::Lattice, strengthToRemove=0.0)
+    connections_new = Array[]
+    for c in lattice.connections
+        if c[3] != strengthToRemove
+            push!(connections_new, c)
+        end
+    end
+    lattice.connections = connections_new;
+end
+function removeConnections!(unitcell::Unitcell, strengthToRemove=0.0)
+    connections_new = Array[]
+    for c in unitcell.connections
+        if c[3] != strengthToRemove
+            push!(connections_new, c)
+        end
+    end
+    unitcell.connections = connections_new;
+end
+
+export removeConnections!
 
 
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -202,33 +411,6 @@ end
 export mapInteractionStrengths!
 
 
-
-
-#-----------------------------------------------------------------------------------------------------------------------------
-#
-#   Remove interactions with given strengths of the unitcell / lattice
-#
-#-----------------------------------------------------------------------------------------------------------------------------
-function removeConnections!(lattice::Lattice, strengthToRemove=0.0)
-    connections_new = Array[]
-    for c in lattice.connections
-        if c[3] != strengthToRemove
-            push!(connections_new, c)
-        end
-    end
-    lattice.connections = connections_new;
-end
-function removeConnections!(unitcell::Unitcell, strengthToRemove=0.0)
-    connections_new = Array[]
-    for c in unitcell.connections
-        if c[3] != strengthToRemove
-            push!(connections_new, c)
-        end
-    end
-    unitcell.connections = connections_new;
-end
-
-export removeConnections!
 
 
 
