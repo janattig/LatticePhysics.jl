@@ -892,11 +892,11 @@ function plotLattice2D(
         # non periodic
 		if shallBePlotted(c) == 0
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
+			write(file, getSVGStringLine("bond$(i)_$(Int(c[1]))_to_$(Int(c[2]))", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
         # periodic and wanted to be plotted
         elseif shallBePlotted(c) == 1
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
+			write(file, getSVGStringLine("bond$(i)_$(Int(c[1]))_to_$(Int(c[2]))", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
         end
 	end
 
@@ -909,11 +909,11 @@ function plotLattice2D(
         label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
         # write the string depending on the choice of label
         if site_labels == "POSITION INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
         elseif site_labels == "LATTICE INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
         else
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
         end
 	end
 
@@ -2198,7 +2198,7 @@ function plotPlaquettes2D(
             push!(points, POS(positions[index]))
         end
         # plot plaquette
-        write(file, getSVGStringPlaquette("plaq$(i)", points, color_plaquette, opacity=opacity_plaquettes))
+        write(file, getSVGStringPlaquette("plaquette$(i)", points, color_plaquette, opacity=opacity_plaquettes))
     end
 
     # write all connections
@@ -2206,11 +2206,11 @@ function plotPlaquettes2D(
         # non periodic
 		if shallBePlotted(c) == 0
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
+			write(file, getSVGStringLine("bond$(i)_$(Int(c[1]))_to_$(Int(c[2]))", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness))
         # periodic and wanted to be plotted
         elseif shallBePlotted(c) == 1
 			connection_color = color_hex(get(colorcode_bonds, string(c[3]), colorcode_bonds["0"]))
-			write(file, getSVGStringLine("path$(i)", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
+			write(file, getSVGStringLine("bond$(i)_$(Int(c[1]))_to_$(Int(c[2]))", POS(positions[Int(c[1])]), POS(positions[Int(c[2])]), connection_color, bond_thickness, dashed=true))
         end
 	end
 
@@ -2223,11 +2223,11 @@ function plotPlaquettes2D(
         label_color = color_hex([colorelment < 100 ? 255 : 0 for colorelment in site_color_basic])
         # write the string depending on the choice of label
         if site_labels == "POSITION INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(indices_to_plot[i]), labelcolor=label_color))
         elseif site_labels == "LATTICE INDEX"
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width, label=string(i), labelcolor=label_color))
         else
-		    write(file, getSVGStringEllipseStroked("el$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
+		    write(file, getSVGStringEllipseStroked("site$(i)", X(s[1]), Y(s[2]), site_radius, site_color, site_border, site_border_width))
         end
 	end
 
