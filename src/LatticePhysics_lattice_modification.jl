@@ -234,3 +234,113 @@ export removeConnections!
 
 
 # TODO remove sites
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Add interactions along next-nearest neighbors
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function addNextNearestNeighborsToConnections!(lattice::Lattice; strengthNNN="AUTO", connectionsNN=["ALL"])
+    # get the connectivity matrix of the lattice
+    connectivity = getConnectionList(lattice)
+    # define a list of new connections
+    connections_new = Array[]
+    # iterate over all sites and check if they host a NNN connection
+    for i in 1:size(lattice.positions,1)
+        # check the neighbors of site i
+        for (i1,c1) in enumerate(connectivity[i])
+        for (i2,c2) in enumerate(connectivity[i])
+            # check if the connections are valid
+            if !(in("ALL",connectionsNN) || (in(c1[3],connectionsNN) && in(c2[3],connectionsNN)))
+                continue
+            end
+            # propose a connection c1+c2 if they are different
+            if i1 < i2
+                # build the offsets
+                if length(c1[4]) == 1
+                    off_1 = (c2[4] - c1[4])
+                    off_2 = (c1[4] - c2[4])
+                elseif length(c1[4]) == 2
+                    off_1 = (c2[4][1] - c1[4][1], c2[4][2] - c1[4][2])
+                    off_2 = (c1[4][1] - c2[4][1], c1[4][2] - c2[4][2])
+                elseif length(c1[4]) == 3
+                    off_1 = (c2[4][1] - c1[4][1], c2[4][2] - c1[4][2], c2[4][3] - c1[4][3])
+                    off_2 = (c1[4][1] - c2[4][1], c1[4][2] - c2[4][2], c1[4][3] - c2[4][3])
+                end
+                # build two new connections
+                if strengthNNN == "AUTO"
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); "NNN$(c1[2])to$(c2[2])"; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); "NNN$(c1[2])to$(c2[2])"; off_2]
+                elseif strengthNNN == "MULTIPLY"
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); "$(c1[3])*$(c2[3])"; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); "$(c1[3])*$(c2[3])"; off_2]
+                else
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); strengthNNN; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); strengthNNN; off_2]
+                end
+                # push them to the add list
+                push!(connections_new, connection_new_1)
+                push!(connections_new, connection_new_2)
+            end
+        end
+        end
+    end
+    # push all connections to the lattice
+    for c in connections_new
+        push!(lattice.connections, c)
+    end
+end
+function addNextNearestNeighborsToConnections!(unitcell::Unitcell; strengthNNN="AUTO", connectionsNN=["ALL"])
+    # get the connectivity matrix of the unitcell
+    connectivity = getConnectionList(unitcell)
+    # define a list of new connections
+    connections_new = Array[]
+    # iterate over all sites and check if they host a NNN connection
+    for i in 1:size(unitcell.basis,1)
+        # check the neighbors of site i
+        for (i1,c1) in enumerate(connectivity[i])
+        for (i2,c2) in enumerate(connectivity[i])
+            # check if the connections are valid
+            if !(in("ALL",connectionsNN) || (in(c1[3],connectionsNN) && in(c2[3],connectionsNN)))
+                continue
+            end
+            # propose a connection c1+c2 if they are different
+            if i1 < i2
+                # build the offsets
+                if length(c1[4]) == 1
+                    off_1 = (c2[4] - c1[4])
+                    off_2 = (c1[4] - c2[4])
+                elseif length(c1[4]) == 2
+                    off_1 = (c2[4][1] - c1[4][1], c2[4][2] - c1[4][2])
+                    off_2 = (c1[4][1] - c2[4][1], c1[4][2] - c2[4][2])
+                elseif length(c1[4]) == 3
+                    off_1 = (c2[4][1] - c1[4][1], c2[4][2] - c1[4][2], c2[4][3] - c1[4][3])
+                    off_2 = (c1[4][1] - c2[4][1], c1[4][2] - c2[4][2], c1[4][3] - c2[4][3])
+                end
+                # build two new connections
+                if strengthNNN == "AUTO"
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); "NNN$(c1[2])to$(c2[2])"; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); "NNN$(c1[2])to$(c2[2])"; off_2]
+                elseif strengthNNN == "MULTIPLY"
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); "$(c1[3])*$(c2[3])"; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); "$(c1[3])*$(c2[3])"; off_2]
+                else
+                    connection_new_1 = [Int(c1[2]); Int(c2[2]); strengthNNN; off_1]
+                    connection_new_2 = [Int(c2[2]); Int(c1[2]); strengthNNN; off_2]
+                end
+                # push them to the add list
+                push!(connections_new, connection_new_1)
+                push!(connections_new, connection_new_2)
+            end
+        end
+        end
+    end
+    # push all connections to the unitcell
+    for c in connections_new
+        push!(unitcell.connections, c)
+    end
+end
+
+export addNextNearestNeighborsToConnections!
