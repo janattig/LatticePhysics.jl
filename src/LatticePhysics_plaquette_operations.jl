@@ -30,9 +30,13 @@
 
 """
     getPlaquettesOfSite(lattice::Lattice, site::Int64, len::Int64)
+    getPlaquettesOfSite(lattice::Lattice, site::Int64)
 
 Function to find the plaquettes that loop through a given site with index `site`
 of a passed `Lattice` object and have length `len`.
+
+If no length is specified, but only a site, it is searched for the plaquettes with the
+shortest length.
 
 NOTE: Plaquettes cannot wrap around periodic boundaries correctly so far (in the sense that
 they cannot visit sites with the same label in different periodic copies of the lattice)
@@ -118,14 +122,32 @@ function getPlaquettesOfSite(lattice::Lattice, site::Int64, len::Int64)
     # return the array
     return plaquettes
 end
+function getPlaquettesOfSite(lattice::Lattice, site::Int64)
+    # start with length = 3
+    len = 3
+    # search for plaquettes
+    plaquettes = getPlaquettesOfSite(lattice, site, len)
+    # iterate while there are no plaquettes found
+    while length(plaquettes) == 0
+        # increment the length
+        len = len + 1
+        # research for plaquettes
+        plaquettes = getPlaquettesOfSite(lattice, site, len)
+    end
+    # return the plaquettes
+    return plaquettes
+end
 export getPlaquettesOfSite
 
 
 
 """
     getPlaquettesOfLattice(lattice::Lattice, len::Int64)
+    getPlaquettesOfLattice(lattice::Lattice)
 
 Function to find all plaquettes which have length `len` of a given `Lattice` object.
+
+If not length is specified, the plaquettes with shortest available length will be returned.
 
 NOTE: Plaquettes cannot wrap around periodic boundaries correctly so far (in the sense that
 they cannot visit sites with the same label in different periodic copies of the lattice)
@@ -172,6 +194,21 @@ function getPlaquettesOfLattice(lattice::Lattice, len::Int64)
         end
     end
     # return the list
+    return plaquettes
+end
+function getPlaquettesOfLattice(lattice::Lattice)
+    # start with length = 3
+    len = 3
+    # search for plaquettes
+    plaquettes = getPlaquettesOfLattice(lattice, len)
+    # iterate while there are no plaquettes found
+    while length(plaquettes) == 0
+        # increment the length
+        len = len + 1
+        # research for plaquettes
+        plaquettes = getPlaquettesOfLattice(lattice, len)
+    end
+    # return the plaquettes
     return plaquettes
 end
 export getPlaquettesOfLattice

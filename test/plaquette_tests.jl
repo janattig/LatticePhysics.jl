@@ -29,7 +29,10 @@ plaquette_testset = @testset "Plaquette tests" begin
         @testset "Finding plaquettes of one site" for testsite in [1,2,3]
             # does finding give the correct type
             @test typeof(getPlaquettesOfSite(lattice, testsite, 6)) == Array{Array{Int64, 1}, 1}
+            # does finding without length give the correct type
+            @test typeof(getPlaquettesOfSite(lattice, testsite)) == Array{Array{Int64, 1}, 1}
             # correct number of plaquettes found? 3 hexagons per site in honeycomb but nothing smaller or slightly bigger
+            @test length(getPlaquettesOfSite(lattice, testsite)) == 3
             @test length(getPlaquettesOfSite(lattice, testsite, 6)) == 3
             @test sum([length(getPlaquettesOfSite(lattice, testsite, l)) for l in [3,4,5,7,8,9]]) == 0
         end;
@@ -37,7 +40,10 @@ plaquette_testset = @testset "Plaquette tests" begin
         @testset "Finding plaquettes of complete lattice" begin
             # does finding give the correct type
             @test typeof(getPlaquettesOfLattice(lattice, 6)) == Array{Array{Int64, 1}, 1}
+            # does finding without length give the correct type
+            @test typeof(getPlaquettesOfLattice(lattice)) == Array{Array{Int64, 1}, 1}
             # correct number of plaquettes found? 3 hexagons per site in honeycomb but nothing smaller or slightly bigger
+            @test length(getPlaquettesOfLattice(lattice)) > 0
             @test length(getPlaquettesOfLattice(lattice, 6)) > 0
             @test sum([length(getPlaquettesOfLattice(lattice, l)) for l in [3,4,5,7,8,9]]) == 0
         end;
@@ -59,7 +65,10 @@ plaquette_testset = @testset "Plaquette tests" begin
         @testset "Finding plaquettes of one site" for testsite in [1,2,3]
             # does finding give the correct type
             @test typeof(getPlaquettesOfSite(lattice, testsite, 10)) == Array{Array{Int64, 1}, 1}
+            # does finding without length give the correct type
+            @test typeof(getPlaquettesOfSite(lattice, testsite)) == Array{Array{Int64, 1}, 1}
             # correct number of plaquettes found? 15 plaquettes of length 10 per site in hyperoctagon but nothing smaller or slightly bigger
+            @test length(getPlaquettesOfSite(lattice, testsite)) == 15
             @test length(getPlaquettesOfSite(lattice, testsite, 10)) == 15
             @test sum([length(getPlaquettesOfSite(lattice, testsite, l)) for l in [3,4,5,6,7,8,9,11,12]]) == 0
         end;
@@ -67,7 +76,10 @@ plaquette_testset = @testset "Plaquette tests" begin
         @testset "Finding plaquettes of complete lattice" begin
             # does finding give the correct type
             @test typeof(getPlaquettesOfLattice(lattice, 10)) == Array{Array{Int64, 1}, 1}
+            # does finding without length give the correct type
+            @test typeof(getPlaquettesOfLattice(lattice)) == Array{Array{Int64, 1}, 1}
             # correct number of plaquettes found? 3 hexagons per site in honeycomb but nothing smaller or slightly bigger
+            @test length(getPlaquettesOfLattice(lattice)) > 0
             @test length(getPlaquettesOfLattice(lattice, 10)) > 0
             @test sum([length(getPlaquettesOfLattice(lattice, l)) for l in [3,4,5,6,7,8,9,11,12]]) == 0
         end;
