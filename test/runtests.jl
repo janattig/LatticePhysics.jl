@@ -11,6 +11,9 @@ latticephysics_testset = @testset "All LatticePhysics.jl tests" begin
     # LATTICE STUFF
     include("lattice_tests.jl")
 
+    # MODIFICATION STUFF
+    include("modification_tests.jl")
+
     # PLAQUETTE STUFF
     include("plaquette_tests.jl")
 
