@@ -417,6 +417,7 @@ end
 #   3) CONNECTION STRENGTH MODIFICATION
 #       - all connections
 #       - mapping of strengths
+#       - evaluation of strengths (using parameters)
 #       - TODO optimize connections
 #
 ################################################################################
@@ -567,6 +568,47 @@ function mapInteractionStrengths!(lattice::Lattice,   mapping::Dict; replace_in_
     return nothing
 end
 export mapInteractionStrengths!
+
+
+
+
+
+
+"""
+    evaluateInteractionStrengths!(unitcell::Unitcell [, parameters::Dict])
+    evaluateInteractionStrengths!(lattice::Lattice   [, parameters::Dict])
+
+Function to evaluate connection strength values of either a `Unitcell` object or a `Lattice` object
+by first optionally replacing them along keys of a dictonary `parameters` and then calling `eval(parse(.))`.
+
+NOTE: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+Example parameters could read
+
+    parameters = Dict("tx"=>1.0, "ty"=>1.0, "tz"=>2.0)
+
+which modifies all `String` valued connection strengths `"tx"`, `"ty"` and `"tz"` to be `Float64` with values `1.0` and `2.0`
+
+```julia-repl
+julia> evaluateInteractionStrengths!(unitcell)
+
+julia> evaluateInteractionStrengths!(lattice, parameters)
+
+```
+"""
+function evaluateInteractionStrengths!(unitcell::Unitcell, parameters::Dict=Dict())
+    # just call the mapping functions
+    mapInteractionStrengths!(unitcell, parameters, replace_in_strings=true, evaluate=true)
+end
+function evaluateInteractionStrengths!(lattice::Lattice,   parameters::Dict=Dict())
+    # just call the mapping functions
+    mapInteractionStrengths!(lattice, parameters, replace_in_strings=true, evaluate=true)
+end
+export evaluateInteractionStrengths!
+
 
 
 
