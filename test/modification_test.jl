@@ -25,7 +25,7 @@ modification_testset = @testset "Modification tests" begin
 ################################################################################
 
 # begin the testset
-@testset "Connection adding & removing" begin
+@testset "Adding & removing connections" begin
 
     # First, Unitcell
     @testset "Adding and removing in Unitcells (honeycomb)" begin
@@ -209,7 +209,7 @@ modification_testset = @testset "Modification tests" begin
         end;
 
 
-    # end the Unitcell testset here
+    # end the Lattice testset here
     end;
 
 # end the testset here
@@ -226,6 +226,69 @@ end;
 #       - remove a site (based on index)
 #
 ################################################################################
+
+# begin the testset
+@testset "Adding & removing sites" begin
+
+    # First, Unitcell
+    @testset "Adding and removing in Unitcells (honeycomb)" begin
+
+        # get a test unitcell
+        unitcell = getUnitcellHoneycomb(4)
+
+        # First, try to add site
+        @testset "Adding sites" begin
+            # try adding a random connection and testing the unitcell afterwards
+            @test typeof(addSite!(unitcell, [1.0, 2.0])) == Int64
+            @test testUnitcell(unitcell, 2,2)
+        end;
+        # Then, try to remove site
+        @testset "Removing sites" begin
+            # try removing the last (newly added) site and testing the unitcell afterwards
+            @test removeSite!(unitcell, 3) == nothing
+            @test testUnitcell(unitcell, 2,2)
+            # try removing the first site and testing the unitcell afterwards
+            @test removeSite!(unitcell, 1) == nothing
+            @test testUnitcell(unitcell, 2,2)
+        end;
+
+    # end the Unitcell testset here
+    end;
+
+
+    # Then, Lattice
+    @testset "Adding and removing in Lattices (honeycomb 4x2 periodic)" begin
+
+        # get a test unitcell
+        unitcell = getUnitcellHoneycomb(4)
+        # get a test lattice
+        lattice = getLattice(unitcell, [-4, -2])
+
+        # First, try to add site
+        @testset "Adding sites" begin
+            # try adding a random connection and testing the unitcell afterwards
+            @test typeof(addSite!(lattice, [1.0, 2.0])) == Int64
+            @test testLattice(lattice, 2,2)
+        end;
+        # Then, try to remove site
+        @testset "Removing sites" begin
+            # try removing the last (newly added) site and testing the unitcell afterwards
+            @test removeSite!(lattice, 17) == nothing
+            @test testLattice(lattice, 2,2)
+            # try removing some intermediate site and testing the unitcell afterwards
+            @test removeSite!(lattice, 5) == nothing
+            @test testLattice(lattice, 2,2)
+        end;
+
+    # end the Lattice testset here
+    end;
+
+# end the testset here
+end;
+
+
+
+
 
 ################################################################################
 #
