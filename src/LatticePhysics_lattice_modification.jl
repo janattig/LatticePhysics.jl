@@ -341,6 +341,7 @@ function addSite!(unitcell::Unitcell, position::Array{Float64,1})
     # return the site index
     return length(unitcell.basis)
 end
+export addSite!
 
 
 """
@@ -397,7 +398,7 @@ function removeSite!(unitcell::Unitcell, index::Int64)
     # return nothing
     return nothing
 end
-
+export removeSite!
 
 
 
@@ -619,12 +620,30 @@ export evaluateInteractionStrengths!
 #   Optimize the lattice / unitcell by collapsing redundant connections into fewer connections and modify given object
 #
 #-----------------------------------------------------------------------------------------------------------------------------
+
+"""
+    optimizeConnections!(unitcell::Unitcell)
+    optimizeConnections!(lattice::Lattice)
+
+Function to optimize connections of either a `Unitcell` object or a `Lattice` object
+by checking which ones can be compressed and put together.
+
+NOTE: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> optimizeConnections!(unitcell)
+
+```
+"""
 function optimizeConnections!(lattice::Lattice)
     # build up new connections
-    connections_new = Array[]
-    # go through all old connections
+    connections_new = Array{Any,1}[]
+    # go through all old connections to check for redundant entries
     for c in lattice.connections
-        # check if the connection already is present in the list
+        # check if the connection already is present in the new list
         found = false
         for c_new in connections_new
             if c[1] == c_new[1] && c[2] == c_new[2] && c[4] == c_new[4]
@@ -646,7 +665,7 @@ function optimizeConnections!(lattice::Lattice)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array[]
+    connections_new_2 = Array{Any,1}[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
@@ -669,13 +688,15 @@ function optimizeConnections!(lattice::Lattice)
     end
     # overwrite the connections in the given lattice
     lattice.connections = connections_new_2
+    # return nothing
+    return nothing
 end
 function optimizeConnections!(unitcell::Unitcell)
     # build up new connections
-    connections_new = Array[]
-    # go through all old connections
+    connections_new = Array{Any,1}[]
+    # go through all old connections to check for redundant entries
     for c in unitcell.connections
-        # check if the connection already is present in the list
+        # check if the connection already is present in the new list
         found = false
         for c_new in connections_new
             if c[1] == c_new[1] && c[2] == c_new[2] && c[4] == c_new[4]
@@ -697,7 +718,7 @@ function optimizeConnections!(unitcell::Unitcell)
         end
     end
     # check if the connection strength is 0
-    connections_new_2 = Array[]
+    connections_new_2 = Array{Any,1}[]
     for c in connections_new
         # check if close to 0 connection strength
         if typeof(c[3]) == Float64 || typeof(c[3]) == Int64
@@ -720,6 +741,8 @@ function optimizeConnections!(unitcell::Unitcell)
     end
     # overwrite the connections in the given lattice
     unitcell.connections = connections_new_2
+    # return nothing
+    return nothing
 end
 export optimizeConnections!
 
@@ -834,4 +857,4 @@ function addNextNearestNeighborsToConnections!(unitcell::Unitcell; strengthNNN="
     end
 end
 
-export addNextNearestNeighborsToConnections!
+# export addNextNearestNeighborsToConnections!
