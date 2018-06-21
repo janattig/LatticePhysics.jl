@@ -103,9 +103,9 @@ function addConnection!(unitcell::Unitcell, index_from::Int64, index_to::Int64, 
     end
     # construct the returning strength
     if typeof(strength) == Complex
-        strength_return = copy(conj(strength))
+        strength_return = deepcopy(conj(strength))
     else
-        strength_return = copy(strength)
+        strength_return = deepcopy(strength)
     end
 
     # construct the connection as an array
@@ -166,9 +166,9 @@ function addConnection!(lattice::Lattice, index_from::Int64, index_to::Int64, st
     end
     # construct the returning strength
     if typeof(strength) == Complex
-        strength_return = copy(conj(strength))
+        strength_return = deepcopy(conj(strength))
     else
-        strength_return = copy(strength)
+        strength_return = deepcopy(strength)
     end
 
     # construct the connection as an array
