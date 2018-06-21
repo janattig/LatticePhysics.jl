@@ -296,16 +296,107 @@ export removeConnections!
 
 
 
+
+
 ################################################################################
 #
 #   2) TODO SITES ADDING REMOVING
-#       - TODO add a new site
-#       - TODO remove a site (based on index)
+#       - add a new site
+#       - remove a site (based on index)
 #
 ################################################################################
 
+"""
+    addSite!(unitcell::Unitcell, position::Array{Float64,1})
+    addSite!(lattice::Lattice,   position::Array{Float64,1})
+
+Function to add a site to either a `Unitcell` object or a `Lattice` object which is located at
+the real space position `position`. The function returns the index of the newly added site for further use.
 
 
+NOTE 1: The newly added site is not connected to any other sites yet.
+
+NOTE 2: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> addSite!(unitcell, Float64[0.0, 0.5])
+5
+
+julia> addSite!(lattice, Float64[0.0, 0.5, 1.0])
+187
+```
+"""
+function addSite!(lattice::Lattice, position::Array{Float64,1})
+    # push the site into the positions list
+    push!(lattice.positions, position)
+    # return the site index
+    return length(lattice.positions)
+end
+function addSite!(unitcell::Unitcell, position::Array{Float64,1})
+    # push the site into the positions list
+    push!(unitcell.basis, position)
+    # return the site index
+    return length(unitcell.basis)
+end
+
+
+"""
+    removeSite!(unitcell::Unitcell, index::Int64)
+    removeSite!(lattice::Lattice,   index::Int64)
+
+Function to remove a site from either a `Unitcell` object or a `Lattice` object with index `index`.
+The function furhtermore removes all connections that are connected to the site and relabels all
+other connections as well to account for the index shift introduced by the removal.
+
+NOTE: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> removeSite!(unitcell, 2)
+
+julia> removeSite!(lattice, 128)
+
+```
+"""
+function removeSite!(lattice::Lattice, index::Int64)
+    # delete the element from the positions list
+    deleteat!(lattice.positions, index)
+    # delete all connections that touch the removed site
+    deleteat!(lattice.connections, [c[1]==index || c[2]==index for c in lattice.connections])
+    # now shift all indices in the connections array by 1
+    for (i,c) in enumerate(lattice.connections)
+        if Int(c[1]) > index
+            c[1] = Int(c[1]) - 1
+        end
+        if Int(c[2]) > index
+            c[2] = Int(c[2]) - 1
+        end
+    end
+    # return nothing
+    return nothing
+end
+function removeSite!(unitcell::Unitcell, index::Int64)
+    # delete the element from the positions list
+    deleteat!(unitcell.basis, index)
+    # delete all connections that touch the removed site
+    deleteat!(unitcell.connections, [c[1]==index || c[2]==index for c in unitcell.connections])
+    # now shift all indices in the connections array by 1
+    for (i,c) in enumerate(unitcell.connections)
+        if Int(c[1]) > index
+            c[1] = Int(c[1]) - 1
+        end
+        if Int(c[2]) > index
+            c[2] = Int(c[2]) - 1
+        end
+    end
+    # return nothing
+    return nothing
+end
 
 
 
