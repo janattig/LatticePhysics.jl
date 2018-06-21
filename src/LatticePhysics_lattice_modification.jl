@@ -5,19 +5,45 @@
 #
 #   STRUCTURE OF THE FILE
 #
-#   1) TODO CONNECTIONS
+#   1) CONNECTIONS ADDING REMOVING
 #       - Add a new connection
-#       - TODO remove connections (based on indices)
-#       - TODO remove connections (based on strength)
-#       - TODO optimize connections
+#       - remove connections (based on indices)
+#       - remove connections (based on strength)
 #
-#   2) TODO SITES
+#   2) TODO SITES ADDING REMOVING
 #       - TODO add a new site
 #       - TODO remove a site (based on index)
+#
+#   3) CONNECTION STRENGTH MODIFICATION
+#       - TODO all connections
+#       - TODO mapping of strengths
+#       - TODO optimize connections
 #
 ################################################################################
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   1) CONNECTIONS ADDING REMOVING
+#       - Add a new connection
+#       - remove connections (based on indices)
+#       - remove connections (based on strength)
+#
+################################################################################
 
 
 
@@ -270,6 +296,129 @@ export removeConnections!
 
 
 
+################################################################################
+#
+#   2) TODO SITES ADDING REMOVING
+#       - TODO add a new site
+#       - TODO remove a site (based on index)
+#
+################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   3) CONNECTION STRENGTH MODIFICATION
+#       - all connections
+#       - mapping of strengths
+#       - TODO optimize connections
+#
+################################################################################
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#   Set / Map interaction strengths of the unitcell / lattice
+#
+#-----------------------------------------------------------------------------------------------------------------------------
+function setAllInteractionStrengths!(unitcell::Unitcell, strengthNew)
+    # go through all connections and modify their strength
+    for c in unitcell.connections
+        c[3] = strengthNew
+    end
+end
+function setAllInteractionStrengths!(lattice::Lattice, strengthNew)
+    # go through all connections and modify their strength
+    for c in lattice.connections
+        c[3] = strengthNew
+    end
+end
+export setAllInteractionStrengths!
+
+
+
+function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_strings=true, evaluate=false)
+    # get the old strengths
+    old_strengths = keys(mapping)
+    # iterate for replacement
+    for old_strength in old_strengths
+        # new strength is given by mapping
+        new_strength = mapping[old_strength]
+        # check all connections that are identical
+        for c in unitcell.connections
+            if c[3] == old_strength
+                c[3] = new_strength
+            end
+        end
+        # check for string replacement
+        if replace_in_strings
+        for c in unitcell.connections
+            if typeof(c[3]) == String && contains(c[3], old_strength)
+                c[3] = replace(c[3], old_strength, new_strength)
+            end
+        end
+        end
+    end
+    # maybe even evaluate
+    if evaluate
+        for c in unitcell.connections
+            if typeof(c[3]) == String
+                c[3] = eval(parse(c[3]))
+            end
+        end
+    end
+end
+function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=true, evaluate=false)
+    # get the old strengths
+    old_strengths = keys(mapping)
+    # iterate for replacement
+    for old_strength in old_strengths
+        # new strength is given by mapping
+        new_strength = mapping[old_strength]
+        # check all connections that are identical
+        for c in lattice.connections
+            if c[3] == old_strength
+                c[3] = new_strength
+            end
+        end
+        # check for string replacement
+        if replace_in_strings
+        for c in lattice.connections
+            if typeof(c[3]) == String && contains(c[3], old_strength)
+                c[3] = replace(c[3], old_strength, new_strength)
+            end
+        end
+        end
+    end
+    # maybe even evaluate
+    if evaluate
+        for c in lattice.connections
+            if typeof(c[3]) == String
+                c[3] = eval(parse(c[3]))
+            end
+        end
+    end
+end
+export mapInteractionStrengths!
+
 
 
 
@@ -385,102 +534,6 @@ export optimizeConnections!
 
 
 
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------------------------------------
-#
-#   Set / Map interaction strengths of the unitcell / lattice
-#
-#-----------------------------------------------------------------------------------------------------------------------------
-function setAllInteractionStrengths!(unitcell::Unitcell, strengthNew)
-    # go through all connections and modify their strength
-    for c in unitcell.connections
-        c[3] = strengthNew
-    end
-end
-function setAllInteractionStrengths!(lattice::Lattice, strengthNew)
-    # go through all connections and modify their strength
-    for c in lattice.connections
-        c[3] = strengthNew
-    end
-end
-export setAllInteractionStrengths!
-
-
-
-function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_strings=true, evaluate=false)
-    # get the old strengths
-    old_strengths = keys(mapping)
-    # iterate for replacement
-    for old_strength in old_strengths
-        # new strength is given by mapping
-        new_strength = mapping[old_strength]
-        # check all connections that are identical
-        for c in unitcell.connections
-            if c[3] == old_strength
-                c[3] = new_strength
-            end
-        end
-        # check for string replacement
-        if replace_in_strings
-        for c in unitcell.connections
-            if typeof(c[3]) == String && contains(c[3], old_strength)
-                c[3] = replace(c[3], old_strength, new_strength)
-            end
-        end
-        end
-    end
-    # maybe even evaluate
-    if evaluate
-        for c in unitcell.connections
-            if typeof(c[3]) == String
-                c[3] = eval(parse(c[3]))
-            end
-        end
-    end
-end
-function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=true, evaluate=false)
-    # get the old strengths
-    old_strengths = keys(mapping)
-    # iterate for replacement
-    for old_strength in old_strengths
-        # new strength is given by mapping
-        new_strength = mapping[old_strength]
-        # check all connections that are identical
-        for c in lattice.connections
-            if c[3] == old_strength
-                c[3] = new_strength
-            end
-        end
-        # check for string replacement
-        if replace_in_strings
-        for c in lattice.connections
-            if typeof(c[3]) == String && contains(c[3], old_strength)
-                c[3] = replace(c[3], old_strength, new_strength)
-            end
-        end
-        end
-    end
-    # maybe even evaluate
-    if evaluate
-        for c in lattice.connections
-            if typeof(c[3]) == String
-                c[3] = eval(parse(c[3]))
-            end
-        end
-    end
-end
-export mapInteractionStrengths!
-
-
-
-
-
-
-# TODO remove sites
 
 
 
