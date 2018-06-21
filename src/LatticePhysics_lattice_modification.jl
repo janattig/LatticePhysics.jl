@@ -10,9 +10,9 @@
 #       - remove connections (based on indices)
 #       - remove connections (based on strength)
 #
-#   2) TODO SITES ADDING REMOVING
-#       - TODO add a new site
-#       - TODO remove a site (based on index)
+#   2) SITES ADDING REMOVING
+#       - add a new site
+#       - remove a site (based on index)
 #
 #   3) CONNECTION STRENGTH MODIFICATION
 #       - TODO all connections
@@ -300,7 +300,7 @@ export removeConnections!
 
 ################################################################################
 #
-#   2) TODO SITES ADDING REMOVING
+#   2) SITES ADDING REMOVING
 #       - add a new site
 #       - remove a site (based on index)
 #
