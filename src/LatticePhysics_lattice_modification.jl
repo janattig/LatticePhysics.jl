@@ -430,23 +430,77 @@ end
 #   Set / Map interaction strengths of the unitcell / lattice
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function setAllInteractionStrengths!(unitcell::Unitcell, strengthNew)
+"""
+    setAllInteractionStrengths!(unitcell::Unitcell, strength)
+    setAllInteractionStrengths!(lattice::Lattice,   strength)
+
+Function to overwrite ALL connection strength values of either a `Unitcell` object or a `Lattice` object
+with the value `strength`.
+
+NOTE: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> setAllInteractionStrengths!(unitcell, "tx")
+
+julia> setAllInteractionStrengths!(lattice, 1.0)
+
+```
+"""
+function setAllInteractionStrengths!(unitcell::Unitcell, strength)
     # go through all connections and modify their strength
     for c in unitcell.connections
-        c[3] = strengthNew
+        c[3] = strength
     end
+    # return nothing
+    return nothing
 end
-function setAllInteractionStrengths!(lattice::Lattice, strengthNew)
+function setAllInteractionStrengths!(lattice::Lattice,   strength)
     # go through all connections and modify their strength
     for c in lattice.connections
-        c[3] = strengthNew
+        c[3] = strength
     end
+    # return nothing
+    return nothing
 end
 export setAllInteractionStrengths!
 
 
 
-function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_strings=true, evaluate=false)
+
+
+"""
+    mapInteractionStrengths!(unitcell::Unitcell, mapping::Dict [; replace_in_strings::Bool=false, evaluate::Bool=false])
+    mapInteractionStrengths!(lattice::Lattice,   mapping::Dict [; replace_in_strings::Bool=false, evaluate::Bool=false])
+
+Function to map connection strength values of either a `Unitcell` object or a `Lattice` object
+by replacing them along keys of a dictonary `mapping`.
+
+Furthermore, to be able to resolve strengths like `"tx*ty"` (`String` valued) to a `Float64` value one can use the following two steps:
+1) chosing `replace_in_strings=true` to also search for mapping keys in `String` connection strengths.
+2) chosing `evaluate=true` to evaluate every `String` connection strength by `eval(parse(.))` after all replacement has taken place.
+
+NOTE: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+Example mapping could read
+
+    mapping = Dict("tx"=>1.0, "ty"=>1.0, "tz"=>2.0)
+
+which modifies all `String` valued connection strengths `"tx"`, `"ty"` and `"tz"` to be `Float64` with values `1.0` and `2.0`
+
+```julia-repl
+julia> mapInteractionStrengths!(unitcell, mapping)
+
+julia> mapInteractionStrengths!(lattice, mapping, replace_in_strings=true)
+
+```
+"""
+function mapInteractionStrengths!(unitcell::Unitcell, mapping::Dict; replace_in_strings::Bool=false, evaluate::Bool=false)
     # get the old strengths
     old_strengths = keys(mapping)
     # iterate for replacement
@@ -461,11 +515,11 @@ function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_string
         end
         # check for string replacement
         if replace_in_strings
-        for c in unitcell.connections
-            if typeof(c[3]) == String && contains(c[3], old_strength)
-                c[3] = replace(c[3], old_strength, new_strength)
+            for c in unitcell.connections
+                if typeof(c[3]) == String && contains(c[3], old_strength)
+                    c[3] = replace(c[3], old_strength, new_strength)
+                end
             end
-        end
         end
     end
     # maybe even evaluate
@@ -476,8 +530,10 @@ function mapInteractionStrengths!(unitcell::Unitcell, mapping; replace_in_string
             end
         end
     end
+    # return nothing
+    return nothing
 end
-function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=true, evaluate=false)
+function mapInteractionStrengths!(lattice::Lattice,   mapping::Dict; replace_in_strings::Bool=false, evaluate::Bool=false)
     # get the old strengths
     old_strengths = keys(mapping)
     # iterate for replacement
@@ -492,11 +548,11 @@ function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=
         end
         # check for string replacement
         if replace_in_strings
-        for c in lattice.connections
-            if typeof(c[3]) == String && contains(c[3], old_strength)
-                c[3] = replace(c[3], old_strength, new_strength)
+            for c in lattice.connections
+                if typeof(c[3]) == String && contains(c[3], old_strength)
+                    c[3] = replace(c[3], old_strength, new_strength)
+                end
             end
-        end
         end
     end
     # maybe even evaluate
@@ -507,6 +563,8 @@ function mapInteractionStrengths!(lattice::Lattice, mapping; replace_in_strings=
             end
         end
     end
+    # return nothing
+    return nothing
 end
 export mapInteractionStrengths!
 
