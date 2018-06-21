@@ -268,8 +268,24 @@ include("LatticePhysics_lattice_construction.jl")
 ################################################################################
 #
 #   IMPLEMENTATIONS OF DIFFERENT LATTICE MODIFICATION FUNCTIONS
+#   (MOST OF THEM ALSO WORK FOR UNITCELLS)
 #
 #   STRUCTURE OF THE FILE
+#
+#   1) CONNECTIONS ADDING REMOVING
+#       - Add a new connection
+#       - remove connections (based on indices)
+#       - remove connections (based on strength)
+#
+#   2) SITES ADDING REMOVING
+#       - add a new site
+#       - remove a site (based on index)
+#
+#   3) CONNECTION STRENGTH MODIFICATION
+#       - all connections
+#       - mapping of strengths
+#       - evaluate strengths
+#       - optimize connections
 #
 ################################################################################
 
