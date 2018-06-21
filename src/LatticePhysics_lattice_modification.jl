@@ -113,6 +113,8 @@ function addConnection!(unitcell::Unitcell, index_from::Int64, index_to::Int64, 
         push!(unitcell.connections, connection_2);
     end
 
+    # return nothing
+    return nothing
 end
 function addConnection!(lattice::Lattice, index_from::Int64, index_to::Int64, strength, wrap=-1; overwrite::Bool=false)
 
@@ -174,6 +176,8 @@ function addConnection!(lattice::Lattice, index_from::Int64, index_to::Int64, st
         push!(lattice.connections, connection_2);
     end
 
+    # return nothing
+    return nothing
 end
 export addConnection!
 
@@ -187,26 +191,87 @@ export addConnection!
 #   Remove interactions with given strengths of the unitcell / lattice
 #
 #-------------------------------------------------------------------------------
-function removeConnections!(lattice::Lattice, strengthToRemove=0.0)
-    connections_new = Array[]
-    for c in lattice.connections
-        if c[3] != strengthToRemove
-            push!(connections_new, c)
-        end
-    end
-    lattice.connections = connections_new;
+"""
+    removeConnections!(unitcell::Unitcell, index_from::Int64, index_to::Int64 [, strength ])
+    removeConnections!(lattice::Lattice,   index_from::Int64, index_to::Int64 [, strength ])
+
+Function to remove connections from either a `Unitcell` object or a `Lattice` object based on the sites that they connect.
+Optionally, one can pass a connection strength to also filter based on this strength. If no strength is passed, all connnections
+between the two sites will be removed.
+
+    removeConnections!(unitcell::Unitcell  [, strength])
+    removeConnections!(lattice::Lattice    [, strength])
+
+Function to remove connections from either a `Unitcell` object or a `Lattice` object only based on the strength of connections.
+If no strength is passed, all connnections with Float64 strength `0.0` will be removed.
+
+NOTE 1: This function always tries to delte both connections, one going forward, one going backward.
+
+NOTE 2: This function modifies the given object and does not create a copy.
+
+
+# Examples
+
+```julia-repl
+julia> removeConnections!(unitcell, 1, 3, "tx")
+
+julia> removeConnections!(unitcell, 1, 3)
+
+julia> removeConnections!(lattice, 23, 73)
+
+julia> removeConnections!(lattice, "tx")
+
+```
+"""
+function removeConnections!(lattice::Lattice,   index_from::Int64, index_to::Int64, strength)
+    # use the julia filter function to filter out all elements which have the strength passed and the fitting indices
+    filter!(x->!(x[3]==strength && Int(x[1])==index_from && Int(x[2])==index_to) && !(x[3]==strength && Int(x[2])==index_from && Int(x[1])==index_to), lattice.connections)
+    # return nothing
+    return nothing
 end
-function removeConnections!(unitcell::Unitcell, strengthToRemove=0.0)
-    connections_new = Array[]
-    for c in unitcell.connections
-        if c[3] != strengthToRemove
-            push!(connections_new, c)
-        end
-    end
-    unitcell.connections = connections_new;
+function removeConnections!(unitcell::Unitcell, index_from::Int64, index_to::Int64, strength)
+    # use the julia filter function to filter out all elements which have the strength passed and the fitting indices
+    filter!(x->!(x[3]==strength && Int(x[1])==index_from && Int(x[2])==index_to) && !(x[3]==strength && Int(x[2])==index_from && Int(x[1])==index_to), unitcell.connections)
+    # return nothing
+    return nothing
+end
+function removeConnections!(lattice::Lattice,   index_from::Int64, index_to::Int64)
+    # use the julia filter function to filter out all elements which have the fitting indices
+    filter!(x->!(Int(x[1])==index_from && Int(x[2])==index_to) && !(Int(x[2])==index_from && Int(x[1])==index_to), lattice.connections)
+    # return nothing
+    return nothing
+end
+function removeConnections!(unitcell::Unitcell, index_from::Int64, index_to::Int64)
+    # use the julia filter function to filter out all elements which have the fitting indices
+    filter!(x->!(Int(x[1])==index_from && Int(x[2])==index_to) && !(Int(x[2])==index_from && Int(x[1])==index_to), unitcell.connections)
+    # return nothing
+    return nothing
+end
+function removeConnections!(lattice::Lattice,   strength=0.0)
+    # use the julia filter function to filter out all elements which have the strength passed
+    filter!(x->x[3]!=strength, lattice.connections)
+    # return nothing
+    return nothing
+end
+function removeConnections!(unitcell::Unitcell, strength=0.0)
+    # use the julia filter function to filter out all elements which have the strength passed
+    filter!(x->x[3]!=strength, unitcell.connections)
+    # return nothing
+    return nothing
 end
 
 export removeConnections!
+
+
+
+
+
+
+
+
+
+
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------------
