@@ -1,8 +1,15 @@
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
 #   METHODS FOR CONSTRUCTION INTERACTION MATRICES FOR LATTICES
 #
-#-----------------------------------------------------------------------------------------------------------------------------
+#   STRUCTURE OF THE FILE
+#
+#   1) INTERACTION MATRICES IN REAL SPACE
+#
+#   2) INTERACTION MATRICES IN MOMENTUM SPACE
+#
+################################################################################
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -14,45 +21,95 @@
 #   - enforce_hermitian (optional): if the matrix should be made hermitian by 0.5*(A + A_dagger)
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function getInteractionMatrixRealSpace(lattice::Lattice; enforce_hermitian=false)
+"""
+    getInteractionMatrixRealSpace(unitcell::Unitcell, [ enforce_hermitian::Bool=false ])
+    getInteractionMatrixRealSpace(lattice::Lattice,   [ enforce_hermitian::Bool=false ])
+
+Constructs the interaction matrix (in *position* space) of a given `Unitcell` or `Lattice` object.
+The matrix is a NxN matrix where N is the number of sites in the given object.
+Entries (i,j) contain the interactions between sites i and j.
+
+The matrix is of type `Array{Complex,2}`, i.e. it has complex entries to account for eventual complex hopping amplitudes.
+
+Furthermore, the matrix can be constructed hermitian by using `enforce_hermitian=true` in which case
+the interactions between i and j are not only added to element (i,j) of the matrix but also to element (j,i) as conjugated.
+
+
+
+# Examples
+
+```julia-repl
+julia> getInteractionMatrixRealSpace(lattice)
+2×2 Array{Complex,2}:
+...
+
+julia> getInteractionMatrixRealSpace(unitcell, enforce_hermitian=true)
+2×2 Array{Complex,2}:
+...
+
+```
+"""
+function getInteractionMatrixRealSpace(lattice::Lattice; enforce_hermitian::Bool=false)
     # generate a new matrix
-    matrix = zeros(size(lattice.positions,1),size(lattice.positions,1))
-    # iterate over all connections
-    for c in lattice.connections
-        # get the indices
-        index_from  = Int(c[1])
-        index_to    = Int(c[2])
-        strength    = c[3]
-        # just add to the matrix
-        matrix[index_from, index_to] += strength
-    end
-    # eventually ensure the hermitian nature of the matrix
+    matrix = zeros(Complex, length(lattice.positions),length(lattice.positions))
+    # decide if hermitian or not hermitian enforced
     if enforce_hermitian
-        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+        # iterate over all connections and add strength to two entries
+        for c in lattice.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            # add to the matrix twice
+            matrix[index_from, index_to] += 0.5 * strength
+            matrix[index_to, index_from] += 0.5 * conj(strength)
+        end
+    else
+        # iterate over all connections and add strength to one entry
+        for c in lattice.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            # add to the matrix once
+            matrix[index_from, index_to] += strength
+        end
     end
     # return the matrix
     return matrix
 end
-function getInteractionMatrixRealSpace(unitcell::Unitcell; enforce_hermitian=false)
+function getInteractionMatrixRealSpace(unitcell::Unitcell; enforce_hermitian::Bool=false)
     # generate a new matrix
-    matrix = zeros(size(unitcell.basis,1),size(unitcell.basis,1))
-    # iterate over all connections
-    for c in unitcell.connections
-        # get the indices
-        index_from  = Int(c[1])
-        index_to    = Int(c[2])
-        strength    = c[3]
-        # just add to the matrix
-        matrix[index_from, index_to] += strength
-    end
-    # eventually ensure the hermitian nature of the matrix
+    matrix = zeros(Complex, length(unitcell.basis),length(unitcell.basis))
+    # decide if hermitian or not hermitian enforced
     if enforce_hermitian
-        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+        # iterate over all connections and add strength to two entries
+        for c in unitcell.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            # add to the matrix twice
+            matrix[index_from, index_to] += 0.5 * strength
+            matrix[index_to, index_from] += 0.5 * conj(strength)
+        end
+    else
+        # iterate over all connections and add strength to one entry
+        for c in unitcell.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            # add to the matrix once
+            matrix[index_from, index_to] += strength
+        end
     end
     # return the matrix
     return matrix
 end
 export getInteractionMatrixRealSpace
+
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #
