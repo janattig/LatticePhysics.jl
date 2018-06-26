@@ -8,6 +8,10 @@
 #
 #   2) INTERACTION MATRICES IN MOMENTUM SPACE
 #
+#   NOTE: No Majorana fermions so far on the level of matrices, because of some
+#   problems with the various gauges that can be tuned. Want: sublattice
+#   idenfitication in bipartite systems.
+#
 ################################################################################
 
 

@@ -323,7 +323,24 @@ include("LatticePhysics_plaquette_operations.jl")
 
 
 
+################################################################################
+#
+#   METHODS FOR CONSTRUCTION INTERACTION MATRICES FOR LATTICES
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) INTERACTION MATRICES IN REAL SPACE
+#
+#   2) INTERACTION MATRICES IN MOMENTUM SPACE
+#
+#   NOTE: No Majorana fermions so far on the level of matrices, because of some
+#   problems with the various gauges that can be tuned. Want: sublattice
+#   idenfitication in bipartite systems.
+#
+################################################################################
 
+# included in subfile
+include("LatticePhysics_interaction_matrices.jl")
 
 
 
