@@ -22,8 +22,8 @@
 #
 #-----------------------------------------------------------------------------------------------------------------------------
 """
-    getInteractionMatrixRealSpace(unitcell::Unitcell, [ enforce_hermitian::Bool=false ])
-    getInteractionMatrixRealSpace(lattice::Lattice,   [ enforce_hermitian::Bool=false ])
+    getInteractionMatrixRealSpace(unitcell::Unitcell  [ ; enforce_hermitian::Bool=false ])
+    getInteractionMatrixRealSpace(lattice::Lattice    [ ; enforce_hermitian::Bool=false ])
 
 Constructs the interaction matrix (in *position* space) of a given `Unitcell` or `Lattice` object.
 The matrix is a NxN matrix where N is the number of sites in the given object.
@@ -121,70 +121,120 @@ export getInteractionMatrixRealSpace
 #   - enforce_hermitian (optional): if the matrix should be made hermitian by 0.5*(A + A_dagger)
 #
 #-----------------------------------------------------------------------------------------------------------------------------
-function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}; enforce_hermitian=false, majorana=false)
+"""
+    getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1} [ ; enforce_hermitian::Bool=false ])
+    getInteractionMatrixKSpace(lattice::Lattice,   k_vector::Array{Float64,1} [ ; enforce_hermitian::Bool=false ])
+
+Constructs the interaction matrix (in *momentum* space at point `k_vector`) of a given `Unitcell` or `Lattice` object.
+The matrix is a NxN matrix where N is the number of sites in the given object.
+Entries (i,j) contain the interactions between sites i and j as well as the phase factor exp(i k*delta).
+
+The matrix is of type `Array{Complex,2}`, i.e. it has complex entries to account for the phase factor.
+
+Furthermore, the matrix can be constructed hermitian by using `enforce_hermitian=true` in which case
+the interactions between i and j are not only added to element (i,j) of the matrix but also to element (j,i) as conjugated.
+
+
+
+# Examples
+
+```julia-repl
+julia> getInteractionMatrixKSpace(lattice, k)
+2×2 Array{Complex,2}:
+...
+
+julia> getInteractionMatrixKSpace(lattice, [pi/2.0, 0.0], enforce_hermitian=true)
+2×2 Array{Complex,2}:
+...
+
+```
+"""
+function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}; enforce_hermitian::Bool=false)
     # generate a new matrix
     matrix = zeros(Complex, size(lattice.positions,1),size(lattice.positions,1))
-    # iterate over all connections
-    for c in lattice.connections
-        # get the indices
-        index_from  = Int(c[1])
-        index_to    = Int(c[2])
-        strength    = c[3]
-        wrap        = c[4]
-        # get the difference vector
-        pos_delta   = lattice.positions[index_to] .- lattice.positions[index_from]
-        if size(lattice.lattice_vectors,1) > 0
-            for pair in zip(wrap, lattice.lattice_vectors)
-                pos_delta .+= pair[1].*pair[2]
-            end
-        end
-        # take majorana fermionic statistics into account
-        majorana_factor = 1
-        if majorana && index_from < index_to
-            majorana_factor = 1.0im
-        elseif majorana && index_from > index_to
-            majorana_factor = -1.0im
-        end
-        # just add to the matrix
-        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im) * majorana_factor
-    end
-    # eventually ensure the hermitian nature of the matrix
+    # decide if hermitian or not hermitian enforced
     if enforce_hermitian
-        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+        # iterate over all connections
+        for c in lattice.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            wrap        = c[4]
+            # get the difference vector
+            pos_delta   = lattice.positions[index_to] .- lattice.positions[index_from]
+            if size(lattice.lattice_vectors,1) > 0
+                for pair in zip(wrap, lattice.lattice_vectors)
+                    pos_delta .+= pair[1].*pair[2]
+                end
+            end
+            # add to the matrix twice
+            matrix[index_from, index_to] += 0.5 * strength       * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_to, index_from] += 0.5 * conj(strength) * exp(-im * sum(pos_delta .* k_vector))
+        end
+    else
+        # iterate over all connections
+        for c in lattice.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            wrap        = c[4]
+            # get the difference vector
+            pos_delta   = lattice.positions[index_to] .- lattice.positions[index_from]
+            if size(lattice.lattice_vectors,1) > 0
+                for pair in zip(wrap, lattice.lattice_vectors)
+                    pos_delta .+= pair[1].*pair[2]
+                end
+            end
+            # add to the matrix once
+            matrix[index_from, index_to] += strength * exp(-im * sum(pos_delta .* k_vector))
+        end
     end
     # return the matrix
     return matrix
 end
-function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}; enforce_hermitian=false, majorana=false)
+function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}; enforce_hermitian::Bool=false)
     # generate a new matrix
     matrix = zeros(Complex, size(unitcell.basis,1),size(unitcell.basis,1))
-    # iterate over all connections
-    for c in unitcell.connections
-        # get the indices
-        index_from  = Int(c[1])
-        index_to    = Int(c[2])
-        strength    = c[3]
-        wrap        = c[4]
-        # get the difference vector
-        pos_delta   = unitcell.basis[index_to] .- unitcell.basis[index_from]
-        if size(unitcell.lattice_vectors,1) > 0
-            for pair in zip(wrap, unitcell.lattice_vectors)
-                pos_delta .+= pair[1].*pair[2]
-            end
-        end
-        # take majorana fermionic statistics into account
-        majorana_factor = 1
-        if majorana && index_from < index_to
-            majorana_factor = 1.0im
-        elseif majorana && index_from > index_to
-            majorana_factor = -1.0im
-        end
-        # just add to the matrix
-        matrix[index_from, index_to] += strength * exp(-sum(pos_delta.*k_vector) * im) * majorana_factor
-    end
-    # eventually ensure the hermitian nature of the matrix
+    # decide if hermitian or not hermitian enforced
     if enforce_hermitian
-        matrix = 0.5*(matrix .+ transpose(conj(matrix)))
+        # iterate over all connections
+        for c in unitcell.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            wrap        = c[4]
+            # get the difference vector
+            pos_delta   = unitcell.basis[index_to] .- unitcell.basis[index_from]
+            if size(unitcell.lattice_vectors,1) > 0
+                for pair in zip(wrap, unitcell.lattice_vectors)
+                    pos_delta .+= pair[1].*pair[2]
+                end
+            end
+            # add to the matrix twice
+            matrix[index_from, index_to] += 0.5 * strength       * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_to, index_from] += 0.5 * conj(strength) * exp(-im * sum(pos_delta .* k_vector))
+        end
+    else
+        # iterate over all connections
+        for c in unitcell.connections
+            # get the indices
+            index_from  = Int(c[1])
+            index_to    = Int(c[2])
+            strength    = c[3]
+            wrap        = c[4]
+            # get the difference vector
+            pos_delta   = unitcell.basis[index_to] .- unitcell.basis[index_from]
+            if size(unitcell.lattice_vectors,1) > 0
+                for pair in zip(wrap, unitcell.lattice_vectors)
+                    pos_delta .+= pair[1].*pair[2]
+                end
+            end
+            # add to the matrix once
+            matrix[index_from, index_to] += strength * exp(-im * sum(pos_delta .* k_vector))
+        end
     end
     # return the matrix
     return matrix
