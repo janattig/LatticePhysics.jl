@@ -282,3 +282,29 @@ function plotBandstructure(
     # return the figure object
     return fig
 end
+
+function plotBandstructure(
+            unitcell::Unitcell,
+            path::Path;
+            resolution::Int64=-1,
+            enforce_hermitian::Bool=false,
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+    # calculate the bandstructure
+    bandstructure = getBandStructureAlongPath(unitcell, path, resolution=resolution, enforce_hermitian=enforce_hermitian)
+    # call the respective function
+    return plotBandstructure(
+                bandstructure;
+                limits_energy=limits_energy,
+                plot_title=plot_title,
+                plot_color=plot_color,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename
+            )
+end
