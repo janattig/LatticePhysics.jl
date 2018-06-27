@@ -11,7 +11,7 @@
 #   2) TODO CONSTRUCTION FUNCTIONS PATH
 #       - function to add points
 #       - TODO function to remove points
-#       - TODO function to set the total resolution
+#       - function to set the total resolution
 #
 #   3) TODO DEFAULT PATHS
 #
@@ -128,18 +128,18 @@ function printInfo(path::Path; detailed::Bool=false)
             println("   (no points defined)")
             return nothing
         elseif length(path.points) == 1
-            println("  ($(1)) $(path.point_names[1]) at $(path.points[1])  (only point in path)")
+            println("  ($(1)) \"$(path.point_names[1])\" at $(path.points[1])  (only point in path)")
             return nothing
         end
         # alternate between points and segments
         for i in 1:length(path.points)-1
             # print the point
-            println("  ($(i)) $(path.point_names[i]) at $(path.points[i])")
+            println("  ($(i)) \"$(path.point_names[i])\" at $(path.points[i])")
             # print the outgoing segment
             println("         |  (resolution: $(path.segment_resolution[i]))")
         end
         # print the last point
-        println("  ($(length(points))) $(path.point_names[length(points)]) at $(path.points[length(points)])")
+        println("  ($(length(path.points))) \"$(path.point_names[length(path.points)])\" at $(path.points[length(path.points)])")
     else
         # not detailed, just give the number of segments and the total resolution
         println("Path contains $(length(path.points)) points ($(length(path.segment_resolution)) segments) with a total resolution of $(sum(path.segment_resolution)).")
@@ -260,6 +260,40 @@ export setTotalResolution!
 #   DEFAULT PATHS
 #
 ################################################################################
+
+
+
+# Triangular
+function getDefaultPathTriangular( ; resolution::Int64=900)
+    # create a new path object
+    path = Path()
+    # insert points
+    addPointToPath!(path, [0.0, 0.0], "Gamma")
+    addPointToPath!(path, [2*pi/sqrt(3.0), 2*pi/3], "K")
+    addPointToPath!(path, [2*pi/sqrt(3.0), 0], "M")
+    addPointToPath!(path, [0.0, 0.0], "Gamma")
+    # set the total resolution
+    setTotalResolution!(path, resolution)
+    # return the path
+    return path
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # SOME DEFAULT PATHS
 DEFAULT_PATH_FCC = Array[
