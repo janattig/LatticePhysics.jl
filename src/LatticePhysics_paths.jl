@@ -145,6 +145,7 @@ function printInfo(path::Path; detailed::Bool=false)
     else
         # not detailed, just give the number of segments and the total resolution
         println("Path contains $(length(path.points)) points ($(length(path.segment_resolution)) segments) with a total resolution of $(sum(path.segment_resolution)).")
+        println("($(getPathString(path)))")
     end
 end
 
@@ -153,7 +154,45 @@ export printInfo
 
 
 
+"""
+    getPathString(path::Path)
 
+compiles a string that represents the given path by chaining together all point names.
+
+
+# Examples
+
+```julia-repl
+julia> getPathString(path)
+"X--Gamma--K--M--X"
+
+```
+"""
+function getPathString(path::Path)
+    # create a new string
+    path_string = ""
+    # distinguish by point number
+    if length(path.points) == 0
+        # no points in path
+        path_string = "(no points defined)"
+    elseif length(path.points) == 1
+        # one point in path
+        path_string = "$(path.point_names[1])"
+    else
+        # alternate between points and segments
+        for i in 1:length(path.points)-1
+            # add the point and a segment
+            path_string = "$(path_string)$(path.point_names[i])--"
+        end
+        # add the last point
+        path_string = "$(path_string)$(path.point_names[end])"
+    end
+    # return the string
+    return path_string
+end
+
+# export the function
+export getPathString
 
 
 ################################################################################

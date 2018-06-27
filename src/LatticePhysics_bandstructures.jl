@@ -133,3 +133,87 @@ function getBandStructureAlongPath(
     # return the band structure
     return bandstructure
 end
+
+
+
+
+
+
+################################################################################
+#
+#   BAND STRUCTURE PLOTTING
+#
+################################################################################
+
+# uses PyPlot
+using PyPlot
+
+
+function plotBandstructure(
+            bandstructure::Bandstructure;
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true
+        )
+
+    # configure plot environment
+    rc("font", family="serif")
+
+    # create a new figure
+    fig = figure(figsize=figsize)
+
+    # set the title
+    if plot_title == "AUTO"
+        # set the title to an automatically generated title
+        title("energy spectrum along path $(getPathString())")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        # set the title to the given title
+        title(plot_title)
+    end
+    for l in hlines[1:end-1]
+    axvline(l,color=[0.6, 0.6, 0.6], linestyle="--")
+    end
+    xlabel("momentum")
+    ylabel("energy")
+    for b in bandstructure
+    plot(collect(1:resolution_actual), b, "-$(plot_color)")
+    end
+    ax = gca()
+    axx = ax[:get_xaxis]()
+    xtpos = []
+    push!(xtpos, 0)
+    for h in hlines
+    push!(xtpos, h)
+    end
+    xtlabs = [p[1] for p in path]
+    xticks(xtpos, xtlabs)
+    #axx[:set_ticks]([])
+    axx[:set_tick_params](which="both", direction="out")
+    axx[:set_tick_params](which="top", color="none")
+    axy = ax[:get_yaxis]()
+    axy[:set_tick_params](which="both", direction="out")
+    # check if specific boundaries are desired
+    if !(limits_energy == "AUTO")
+    ylim(limits_energy[1], limits_energy[2])
+    end
+    # tighten the layout
+    tight_layout()
+    # save the plot
+    figurename = split(lattice.filename, FOLDER_SPECTRA[end])[end]
+    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    #buildFolderSpectra()
+    savefig(figurename1)
+    savefig(figurename2)
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return fig
+end
