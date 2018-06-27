@@ -9,7 +9,7 @@ function getFermiSurface2D(
             slowdown_factor::Float64=0.75,
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
-            refold_to_first_BZ::Bool=false
+            refold_to_first_BZ::Bool=true
         )
 
     # list of k values that contribute to the BZ
@@ -66,6 +66,37 @@ function getFermiSurface2D(
             k -= dk
             # calculate a new energy
             e0 = energy(k)
+        end
+    end
+
+    # if refolding is enabled, refold all points
+    if refold_to_first_BZ
+        # get the lattice vectors
+        a1 = unitcell.lattice_vectors[1]
+        a2 = unitcell.lattice_vectors[2]
+        # get the reciprocal lattice vectors
+        b1 = [a2[2], -a2[1]]
+        b2 = [a1[2], -a1[1]]
+        # normalize the vectors
+        b1 .*= 2*pi/sum(b1.*a1)
+        b2 .*= 2*pi/sum(b2.*a2)
+
+        # iterate over all k points
+        for index in 1:N_points
+            # assumend to be refolded to begin with
+            refolded = true
+            # iterate while still refolding possible
+            while refolded
+                # new iteration, not refolded
+                refolded = false
+                # try all possible refoldings
+                for r in [b1, b2, -b1, -b2, b1+b2, -b2-b1, b1-b2, -b2+b1]
+                    if sum((k_values[index,:].-r).*(k_values[index,:].-r)) < sum((k_values[index,:]).*(k_values[index,:]))
+                        k_values[index,:] .-= r
+                        refolded=true
+                    end
+                end
+            end
         end
     end
 
