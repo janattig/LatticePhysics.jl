@@ -23,13 +23,44 @@
 #   The type Path
 #
 ################################################################################
-mutable struct Path
+"""
+    mutable struct Path
 
-    # Array of Point names
-    point_names::Array{String, 1}
+The type that contains information on a path (in momentum space). Fields are
+
+    points             :: Array{Array{Float64, 1}, 1}
+    point_names        :: Array{String, 1}
+    segment_resolution :: Array{Int64, 1}
+
+Note that the length of the `segment_resolution` array should be smaller than
+the length of the `points` array by exactly 1.
+
+
+New `Path` objects can be created with
+
+    Path(points::Array{Array{Float64,1},1}, point_names::Array{String,1}, segment_resolution::Array{Int64,1})
+    Path(points::Array{Array{Float64,1},1}, point_names::Array{String,1})
+    Path()
+
+or by one of the several default functions to create a default path.
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> path = Path()
+```
+"""
+mutable struct Path
 
     # Array of Point coordinates
     points::Array{Array{Float64,1}, 1}
+
+    # Array of Point names
+    point_names::Array{String, 1}
 
     # Array of resolutions (for later calculations)
     segment_resolution::Array{Int64, 1}
@@ -39,18 +70,18 @@ mutable struct Path
 
 
     # The Default constructor
-    function Path(point_names::Array{String,1}, points::Array{Array{Float64,1},1}, segment_resolution::Array{Int64,1})
-        return new(point_names, points, segment_resolution)
+    function Path(points::Array{Array{Float64,1},1}, point_names::Array{String,1}, segment_resolution::Array{Int64,1})
+        return new(points, point_names, segment_resolution)
     end
 
     # The constructor for a new path without segment resolution information
-    function Path(point_names::Array{String,1}, points::Array{Array{Float64,1},1})
-        return new(point_names, points, ones(Int64, length(point_names)-1).*100)
+    function Path(points::Array{Array{Float64,1},1}, point_names::Array{String,1})
+        return new(points, point_names, ones(Int64, length(point_names)-1).*100)
     end
 
     # The constructor for a new path without information
     function Path()
-        return new(String[], Array{Float64,1}[], Int64[])
+        return new(Array{Float64,1}[], String[], Int64[])
     end
 
 end
@@ -100,6 +131,19 @@ end
 #
 ################################################################################
 
+
+# Add a point
+function addPointToPath!(path::Path, point::Array{Float64,1}, point_name::String, resolution::Int64=100)
+    # push the values into the lists
+    push!(path.points, point)
+    push!(path.point_names, point_name)
+    # maybe push resolution, if there were already some points
+    if length(path.points) > 1
+        push!(path.segment_resolution, resolution)
+    end
+    # return nothing
+    return nothing
+end
 
 
 
