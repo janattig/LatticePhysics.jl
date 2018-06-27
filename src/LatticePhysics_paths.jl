@@ -8,12 +8,14 @@
 #       - type definition
 #       - printInfo function
 #
-#   2) TODO CONSTRUCTION FUNCTIONS PATH
+#   2) CONSTRUCTION FUNCTIONS PATH
 #       - function to add points
 #       - TODO function to remove points
 #       - function to set the total resolution
 #
-#   3) TODO DEFAULT PATHS
+#   3) DEFAULT PATHS
+#
+#   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
 ################################################################################
 
