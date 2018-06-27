@@ -206,8 +206,7 @@ function calculateBandStructureAlongPath(
         plot_title="",
         plot_color="b",
         figsize=(6,4),
-        showPlot=true,
-        majorana=false
+        showPlot=true
             )
 
     # check if to reduce the lattice
@@ -259,7 +258,7 @@ function calculateBandStructureAlongPath(
             #    push!(LT_k, k)
             #end
             # get the interaction matrix for this k
-            matrix = getInteractionMatrixKSpace(lattice, k, enforce_hermitian=enforce_hermitian, majorana=majorana)
+            matrix = getInteractionMatrixKSpace(lattice, k, enforce_hermitian=enforce_hermitian)
             # diagonalize the matrix
             eigenvalues = eigvals(matrix)
             # save all the eigenvalues
@@ -300,11 +299,7 @@ function calculateBandStructureAlongPath(
     rc("font", family="serif")
     fig = figure(figsize=figsize)
     if plot_title == "AUTO"
-        if majorana
-            title("majorana energy spectrum along path of lattice \"$(lattice.filename)\"")
-        else
-            title("energy spectrum along path of lattice \"$(lattice.filename)\"")
-        end
+        title("energy spectrum along path of lattice \"$(lattice.filename)\"")
     elseif plot_title == ""
         # do nothing title related
     else
@@ -340,14 +335,9 @@ function calculateBandStructureAlongPath(
     tight_layout()
     # save the plot
     figurename = split(lattice.filename, FOLDER_SPECTRA[end])[end]
-    if majorana
-        figurename1 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).pdf"
-        figurename2 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).png"
-    else
-        figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
-        figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
-    end
-    buildFolderSpectra()
+    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
+    #buildFolderSpectra()
     savefig(figurename1)
     savefig(figurename2)
     if showPlot
@@ -367,8 +357,7 @@ function calculateBandStructureAlongPath(
         plot_title="",
         plot_color="b",
         figsize=(6,4),
-        showPlot=true,
-        majorana=false
+        showPlot=true
             )
 
     # make a lattice from the unitcell
@@ -386,8 +375,7 @@ function calculateBandStructureAlongPath(
         plot_title=plot_title,
         plot_color=plot_color,
         figsize=figsize,
-        showPlot=showPlot,
-        majorana=majorana
+        showPlot=showPlot
             )
 end
 export calculateBandStructureAlongPath
@@ -459,8 +447,7 @@ function calculateBandStructure2D(
         plot_title="",
         plot_color="b",
         figsize=(6,4),
-        showPlot=true,
-        majorana=false
+        showPlot=true
             )
 
 
@@ -479,7 +466,7 @@ function calculateBandStructure2D(
         kx_vals[i,j] = k[1]
         ky_vals[i,j] = k[2]
         # get the interaction matrix for this k
-        matrix = getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=enforce_hermitian, majorana=majorana)
+        matrix = getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=enforce_hermitian)
         # diagonalize the matrix
         eigenvalues = eigvals(matrix)
         # save all the eigenvalues
@@ -508,7 +495,6 @@ function calculateBandStructure2D(
     # plot the eigenvalues
     rc("font", family="serif")
     fig = figure(figsize=figsize)
-    ax = fig[:add_subplot](111, projection="3d")
     if plot_title == "AUTO"
         if majorana
             title("majorana energy spectrum along path of unitcell \"$(unitcell.filename)\"")
@@ -524,24 +510,14 @@ function calculateBandStructure2D(
     ylabel("momentum ky")
     zlabel("energy")
     for b in bandstructure
-        ax[:plot_surface](kx_vals,ky_vals,b, rstride=1, cstride=1, cmap="coolwarm", linewidth=0)
-    end
-    axx = ax[:get_xaxis]()
-    # check if specific boundaries are desired
-    if !(limits_energy == "AUTO")
-        ylim(limits_energy[1], limits_energy[2])
+        plot_surface(kx_vals,ky_vals,b, rstride=1, cstride=1, cmap="coolwarm", linewidth=0)
     end
     # tighten the layout
     tight_layout()
     # save the plot
     figurename = split(unitcell.filename, FOLDER_SPECTRA[end])[end]
-    if majorana
-        figurename1 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).pdf"
-        figurename2 = "$(FOLDER_SPECTRA)majorana_bandstructure_path_$(figurename[1:end-4]).png"
-    else
-        figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
-        figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
-    end
+    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
+    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
     buildFolderSpectra()
     savefig(figurename1)
     savefig(figurename2)
