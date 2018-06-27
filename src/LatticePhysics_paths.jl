@@ -5,10 +5,15 @@
 #   STRUCTURE OF THE FILE
 #
 #   1) TYPE PATH
+#       - type definition
+#       - printInfo function
 #
-#   2) CONSTRUCTION FUNCTIONS PATH
+#   2) TODO CONSTRUCTION FUNCTIONS PATH
+#       - TODO function to add points
+#       - TODO function to remove points
+#       - TODO function to set the total resolution
 #
-#   3) DEFAULT PATHS
+#   3) TODO DEFAULT PATHS
 #
 ################################################################################
 
@@ -58,7 +63,7 @@ end
 
 ################################################################################
 #
-#   Some functions to aid in the control and construction of paths
+#   Some functions to print information on the path
 #
 ################################################################################
 
@@ -89,10 +94,20 @@ end
 
 
 
+################################################################################
+#
+#   CONSTRUCTION OF PATHS
+#
+################################################################################
 
 
 
 
+################################################################################
+#
+#   DEFAULT PATHS
+#
+################################################################################
 
 # SOME DEFAULT PATHS
 DEFAULT_PATH_FCC = Array[
