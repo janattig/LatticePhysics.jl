@@ -51,8 +51,8 @@ module LatticePhysics
 using JLD
 
 # PyPlot is used for all plotting of band structures (plotting of lattices is done via SVG file creation)
-#using PyCall
-#using PyPlot
+using PyCall
+using PyPlot
 
 # Optim is used for minimizing the band structure to find the ground state energy of the system
 #using Optim
@@ -402,7 +402,26 @@ include("LatticePhysics_SVG_plotting.jl")
 
 
 
+################################################################################
+#
+#   METHODS FOR CONSTRUCTION OF BANDSTRUCTURES (ALONG PATHS)
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) TYPE BANDSTRUCTURE
+#       - type definition
+#       - TODO printInfo function
+#
+#   2) CALCULATION OF BAND STRUCTURES OF UNTICELL OBJECTS
+#
+#   3) PLOTTING OF BAND STRUCTURES
+#       - plotting of Bandstructure objects
+#       - plotting of bandstructures of unitcells along paths
+#
+################################################################################
 
+# included in subfile
+include("LatticePhysics_bandstructures.jl")
 
 
 

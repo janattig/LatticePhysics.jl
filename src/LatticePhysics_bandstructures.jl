@@ -147,8 +147,6 @@ export getBandStructureAlongPath
 #
 ################################################################################
 
-# uses PyPlot
-using PyPlot
 
 """
     plotBandstructure(
