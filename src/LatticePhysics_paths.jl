@@ -162,6 +162,23 @@ export printInfo
 
 
 # Add a point
+"""
+    addPointToPath!(path::Path, point::Array{Float64,1}, point_name::String [, resolution::Int64=100])
+
+adds a new point to an existing `Path` object. The new point has to be specified by a name and a location.
+Optionally, a resolution of the segment to the preceeding point can be given as well.
+Note, that only a resolution will be added if there are already points in the path.
+In this function, the path object will be changed and no new object will be created.
+
+
+# Examples
+
+```julia-repl
+julia> addPointToPath!(path, [0.0, 0.0], "Gamma")
+
+julia> addPointToPath!(path, [0.0, pi], "M", 150)
+```
+"""
 function addPointToPath!(path::Path, point::Array{Float64,1}, point_name::String, resolution::Int64=100)
     # push the values into the lists
     push!(path.points, point)
@@ -184,6 +201,19 @@ export addPointToPath!
 
 
 # scale the resolution by some factor
+"""
+    scaleResolution!(path::Path, factor::Float64)
+
+scales all segment resolutions of the path by a factor and converts them back to `Int64`.
+The path object will be changed and no new object will be created.
+
+
+# Examples
+
+```julia-repl
+julia> scaleResolution!(path, 1.5)
+```
+"""
 function scaleResolution!(path::Path, factor::Float64)
     # multiply all segments
     for s in 1:length(path.segment_resolution)
@@ -196,6 +226,20 @@ export scaleResolution!
 
 
 # set the total resolution
+"""
+    setTotalResolution!(path::Path, resolution::Int64)
+
+scales all segment resolutions of the path by a factor to match the total resolution `resolution`
+and converts them back to `Int64`. The new sum over all segments will give approximately `resolution` (up to float/int conversion).
+The path object will be changed and no new object will be created.
+
+
+# Examples
+
+```julia-repl
+julia> setTotalResolution!(path, 1500)
+```
+"""
 function setTotalResolution!(path::Path, resolution::Int64)
     # determine the factor
     factor = resolution / sum(path.segment_resolution)
