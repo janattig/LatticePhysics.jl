@@ -9,7 +9,7 @@
 #       - printInfo function
 #
 #   2) TODO CONSTRUCTION FUNCTIONS PATH
-#       - TODO function to add points
+#       - function to add points
 #       - TODO function to remove points
 #       - TODO function to set the total resolution
 #
@@ -87,6 +87,9 @@ mutable struct Path
 end
 
 
+# export the type
+export Path
+
 
 
 
@@ -143,6 +146,8 @@ function printInfo(path::Path; detailed::Bool=false)
     end
 end
 
+# export the function
+export printInfo
 
 
 
@@ -168,6 +173,41 @@ function addPointToPath!(path::Path, point::Array{Float64,1}, point_name::String
     # return nothing
     return nothing
 end
+
+# export the function
+export addPointToPath!
+
+
+
+
+
+
+
+# scale the resolution by some factor
+function scaleResolution!(path::Path, factor::Float64)
+    # multiply all segments
+    for s in 1:length(path.segment_resolution)
+        path.segment_resolution[s] = round(Int64, path.segment_resolution[s]*factor)
+    end
+end
+
+# export the function
+export scaleResolution!
+
+
+# set the total resolution
+function setTotalResolution!(path::Path, resolution::Int64)
+    # determine the factor
+    factor = resolution / sum(path.segment_resolution)
+    # apply the factor
+    scaleResolution!(path, factor)
+end
+
+# export the function
+export setTotalResolution!
+
+
+
 
 
 
