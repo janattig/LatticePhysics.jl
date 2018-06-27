@@ -390,6 +390,53 @@ function getDefaultPathSquare(version::Int64=1; resolution::Int64=1000)
     return path
 end
 
+# export the function
+export getDefaultPathSquare
+
+
+
+
+
+
+
+
+"""
+    getDefaultPathSquareOctagon( [; resolution::Int64=900])
+
+creates the default path for the square octagon lattice (version 2). Points in this path are
+
+    [ 0.0,  0.0]                                 (Gamma)
+    [ 2.0,  0.0] * (pi / (1.0 + 1.0/sqrt(2.0)))  (K)
+    [-1.0, -1.0] * (pi / (1.0 + 1.0/sqrt(2.0)))  (M)
+    [ 0.0,  0.0]                                 (Gamma)
+
+Additionally, a resolution can be set so that the entire path in total has this resolution.
+
+# Examples
+```julia-repl
+julia> path = getDefaultPathSquareOctagon()
+LatticePhysics.Path(...)
+
+julia> path = getDefaultPathSquareOctagon(resolution=1200)
+LatticePhysics.Path(...)
+```
+"""
+function getDefaultPathSquareOctagon( ; resolution::Int64=900)
+    # create a new path object
+    path = Path()
+    # insert points
+    addPointToPath!(path, [0.0, 0.0], "Gamma")
+    addPointToPath!(path, [2,  0].*(pi / (1.0 + 1.0/sqrt(2.0))), "K")
+    addPointToPath!(path, [1, -1].*(pi / (1.0 + 1.0/sqrt(2.0))), "M")
+    addPointToPath!(path, [0.0, 0.0], "Gamma")
+    # set the total resolution
+    setTotalResolution!(path, resolution)
+    # return the path
+    return path
+end
+
+# export the function
+export getDefaultPathSquareOctagon
 
 
 
@@ -406,24 +453,46 @@ end
 
 
 
+"""
+    getDefaultPathFCC( [; resolution::Int64=1200])
 
-# SOME DEFAULT PATHS
-DEFAULT_PATH_FCC = Array[
-    ["gamma"; [0,0,0]],
-    ["X"; [2*pi, 0, 0]],
-    ["W"; [2*pi, pi, 0]],
-    ["L"; [pi, pi, pi]],
-    ["gamma"; [0,0,0]],
-    ["K"; [3*pi/2, 3*pi/2, 0]],
-    ["X"; [2*pi, 0, 0]]
-]
-export DEFAULT_PATH_FCC
+creates the default path for the FCC lattice (3D). Points in this path are
 
+    [   0.0,    0.0,  0.0]   (Gamma)
+    [  2*pi,    0.0,  0.0]   (X)
+    [  2*pi,     pi,  0.0]   (W)
+    [    pi,     pi,   pi]   (L)
+    [   0.0,    0.0,  0.0]   (Gamma)
+    [3*pi/2, 3*pi/2,  0.0]   (K)
+    [  2*pi,    0.0,  0.0]   (X)
 
-DEFAULT_PATH_SQUAREOCTAGON_2 = Array[
-    ["gamma"; [0,0]],
-    ["K"; [2,  0].*(pi / (1.0 + 1.0/sqrt(2.0)))],
-    ["M"; [1, -1].*(pi / (1.0 + 1.0/sqrt(2.0)))],
-    ["gamma"; [0,0]]
-]
-export DEFAULT_PATH_SQUAREOCTAGON_2
+Additionally, a resolution can be set so that the entire path in total has this resolution.
+
+# Examples
+```julia-repl
+julia> path = getDefaultPathFCC()
+LatticePhysics.Path(...)
+
+julia> path = getDefaultPathFCC(resolution=600)
+LatticePhysics.Path(...)
+```
+"""
+function getDefaultPathFCC( ; resolution::Int64=1200)
+    # create a new path object
+    path = Path()
+    # insert points
+    addPointToPath!(path, [   0.0,    0.0,  0.0], "Gamma")
+    addPointToPath!(path, [  2*pi,    0.0,  0.0], "X")
+    addPointToPath!(path, [  2*pi,     pi,  0.0], "W")
+    addPointToPath!(path, [    pi,     pi,   pi], "L")
+    addPointToPath!(path, [   0.0,    0.0,  0.0], "Gamma")
+    addPointToPath!(path, [3*pi/2, 3*pi/2,  0.0], "K")
+    addPointToPath!(path, [  2*pi,    0.0,  0.0], "X")
+    # set the total resolution
+    setTotalResolution!(path, resolution)
+    # return the path
+    return path
+end
+
+# export the function
+export getDefaultPathFCC
