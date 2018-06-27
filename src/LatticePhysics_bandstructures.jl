@@ -10,6 +10,10 @@
 #
 #   2) CALCULATION OF BAND STRUCTURES OF UNTICELL OBJECTS
 #
+#   3) PLOTTING OF BAND STRUCTURES
+#       - plotting of Bandstructure objects
+#       - plotting of bandstructures of unitcells along paths
+#
 ################################################################################
 
 
@@ -51,6 +55,28 @@ end
 #   BAND STRUCTURE CALCULATION
 #
 ################################################################################
+"""
+    getBandStructureAlongPath(
+                unitcell::Unitcell,
+                path::Path
+             [; resolution::Int64=-1,
+                enforce_hermitian::Bool=false ]
+            )
+
+Calculates the band struture of a `Unitcell` object along some path given by a `Path` object
+and returns a `Bandstructure` object.
+
+
+# Examples
+
+```julia-repl
+julia> bandstructure = getBandStructureAlongPath(unitcell, path)
+LatticePhysics.Bandstructure(...)
+
+julia> bandstructure = getBandStructureAlongPath(unitcell, path, resolution=1000)
+LatticePhysics.Bandstructure(...)
+```
+"""
 function getBandStructureAlongPath(
                 unitcell::Unitcell,
                 path::Path;
