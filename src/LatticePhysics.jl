@@ -428,6 +428,35 @@ include("LatticePhysics_bandstructures.jl")
 
 
 
+################################################################################
+#
+#   METHODS FOR CONSTRUCTION OF FERMI SURFACES
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) CALCULATION OF FERMI SURFACE
+#
+#   2) PLOTTING OF FERMI SURFACE
+#       - plotting from points
+#       - plotting from unitcell
+#
+#   NOTE: So far all of this code is for 2D only!
+#
+################################################################################
+
+# included in subfile
+include("LatticePhysics_fermi_surfaces.jl")
+
+
+
+
+
+
+
+
+
+
+
 
 
 # MODULE END
