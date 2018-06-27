@@ -155,8 +155,16 @@ function plotBandstructure(
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,4),
-            showPlot::Bool=true
+            showPlot::Bool=true,
+            save_filename::String="NONE"
         )
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+    # get the path from the bandstructure
+    path = bandstructure.path
 
     # configure plot environment
     rc("font", family="serif")
@@ -164,51 +172,108 @@ function plotBandstructure(
     # create a new figure
     fig = figure(figsize=figsize)
 
+
+
+
+    ###########################
+    #   PLOT BANDS
+    ###########################
+
+    # plot the band structure
+    for s in 1:length(bandstructure.bands)
+        # plot the segment
+        for b in bandstructure.bands[s]
+            # plot the band
+            plot(
+                collect(1:path.segment_resolution[s]) .+ sum(path.segment_resolution[1:s-1]), # xvalues
+                b,
+                "-$(plot_color)"
+            )
+        end
+    end
+
+
+
+    ###########################
+    #   SET ALL TICKS (POINTS)
+    ###########################
+
+    # get the current axis
+    ax = gca()
+    axx = ax[:get_xaxis]()
+    # compile tick positions and labels
+    point_pos = Int64[]
+    push!(point_pos, 1)
+    for l in 1:length(path.segment_resolution)
+        push!(point_pos, sum(path.segment_resolution[1:l]))
+    end
+    point_labels = String[path.point_names[i] for i in 1:length(path.points)]
+    # configure tick labels
+    xticks(point_pos, point_labels)
+    # configure ticks
+    axx[:set_tick_params](which="both", direction="out")
+    axx[:set_tick_params](which="top", color="none")
+    axy = ax[:get_yaxis]()
+    axy[:set_tick_params](which="both", direction="out")
+
+    # plot vertical lines for each point
+    for p in point_pos
+        axvline(p,color=[0.6, 0.6, 0.6], linestyle="--")
+    end
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # label the axis
+    xlabel("momentum")
+    ylabel("energy")
+
+    # energy limits
+    # check if specific boundaries are desired
+    if !(limits_energy == "AUTO")
+        ylim(limits_energy[1], limits_energy[2])
+    end
+
+    # momentum limits (x axis)
+    xlim(0, maximum(point_pos)+1)
+
     # set the title
     if plot_title == "AUTO"
         # set the title to an automatically generated title
-        title("energy spectrum along path $(getPathString())")
+        title("energy spectrum along path $(getPathString(path))")
     elseif plot_title == ""
         # do nothing title related
     else
         # set the title to the given title
         title(plot_title)
     end
-    for l in hlines[1:end-1]
-    axvline(l,color=[0.6, 0.6, 0.6], linestyle="--")
-    end
-    xlabel("momentum")
-    ylabel("energy")
-    for b in bandstructure
-    plot(collect(1:resolution_actual), b, "-$(plot_color)")
-    end
-    ax = gca()
-    axx = ax[:get_xaxis]()
-    xtpos = []
-    push!(xtpos, 0)
-    for h in hlines
-    push!(xtpos, h)
-    end
-    xtlabs = [p[1] for p in path]
-    xticks(xtpos, xtlabs)
-    #axx[:set_ticks]([])
-    axx[:set_tick_params](which="both", direction="out")
-    axx[:set_tick_params](which="top", color="none")
-    axy = ax[:get_yaxis]()
-    axy[:set_tick_params](which="both", direction="out")
-    # check if specific boundaries are desired
-    if !(limits_energy == "AUTO")
-    ylim(limits_energy[1], limits_energy[2])
-    end
+
+
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
     # tighten the layout
     tight_layout()
+
     # save the plot
-    figurename = split(lattice.filename, FOLDER_SPECTRA[end])[end]
-    figurename1 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).pdf"
-    figurename2 = "$(FOLDER_SPECTRA)bandstructure_path_$(figurename[1:end-4]).png"
-    #buildFolderSpectra()
-    savefig(figurename1)
-    savefig(figurename2)
+    if save_filename != "NONE"
+        # make sure the directory exists
+        if contains(save_filename, "/")
+    		# get the containing folder
+    		folder = save_filename[1:findlast(save_filename, '/')]
+    		# build the path to that folder
+    		mkpath(folder)
+    	end
+        # save the plot
+        savefig(save_filename)
+    end
+
     # maybe show the plot
     if showPlot
         show()
