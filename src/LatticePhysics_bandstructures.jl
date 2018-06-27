@@ -41,6 +41,8 @@ struct Bandstructure
 
 end
 
+# export the type
+export Bandstructure
 
 
 
@@ -133,7 +135,7 @@ function getBandStructureAlongPath(
     # return the band structure
     return bandstructure
 end
-
+export getBandStructureAlongPath
 
 
 
@@ -148,7 +150,47 @@ end
 # uses PyPlot
 using PyPlot
 
+"""
+    plotBandstructure(
+            bandstructure::Bandstructure
+         [; limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE" ]
+            )
 
+    plotBandstructure(
+            unitcell::Unitcell,
+            path::Path
+         [; resolution::Int64=-1,
+            enforce_hermitian::Bool=false,
+            ... ]
+        )
+
+Plots the band struture of a passed `Bandstructure` object along some its path and returns the plot as a `PyPlot.Figure` object.
+Alternatively, one can pass a `Unitcell` and `Path` to calculate the band structure which is plotted.
+
+Additional options include setting plotting related options of `PyPlot` as well as determining if the plot is saved or shown.
+
+
+# Examples
+
+```julia-repl
+julia> plotBandstructure(unitcell, path)
+PyPlot.Figure(...)
+
+julia> plotBandstructure(unitcell, path, showPlot=false)
+PyPlot.Figure(...)
+
+julia> plotBandstructure(unitcell, save_filename="myplot.pdf")
+PyPlot.Figure(...)
+
+julia> plotBandstructure(bandstructure)
+PyPlot.Figure(...)
+```
+"""
 function plotBandstructure(
             bandstructure::Bandstructure;
             limits_energy="AUTO",
@@ -282,7 +324,6 @@ function plotBandstructure(
     # return the figure object
     return fig
 end
-
 function plotBandstructure(
             unitcell::Unitcell,
             path::Path;
@@ -308,3 +349,4 @@ function plotBandstructure(
                 save_filename=save_filename
             )
 end
+export plotBandstructure
