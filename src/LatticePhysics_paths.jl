@@ -280,10 +280,10 @@ export setTotalResolution!
 
 creates the default path for the triangular lattice. Points in this path are
 
-    [0.0, 0.0]               ("Gamma")
-    [2*pi/sqrt(3.0), 2*pi/3] ("K")
-    [2*pi/sqrt(3.0), 0.0]    ("M")
-    [0.0, 0.0]               ("Gamma")
+    [0.0, 0.0]               (Gamma)
+    [2*pi/sqrt(3.0), 2*pi/3] (K)
+    [2*pi/sqrt(3.0), 0.0]    (M)
+    [0.0, 0.0]               (Gamma)
 
 Additionally, a resolution can be set so that the entire path in total has this resolution.
 
@@ -331,20 +331,23 @@ Additionally, a resolution can be set so that the entire path in total has this 
 
 Points are given by
 
-    [0.0, 0.0]  ("Gamma")
-    [ pi, 0.0]  ("M")
-    [ pi,  pi]  ("K")
-    [0.0, 0.0]  ("Gamma")
+    [0.0, 0.0]  (Gamma)
+    [ pi, 0.0]  (M)
+    [ pi,  pi]  (K)
+    [0.0, 0.0]  (Gamma)
 
 
 #### Version 2 - long / extended
 
 Points are given by
 
-    [0.0, 0.0]  ("Gamma")
-    [ pi, 0.0]  ("M")
-    [ pi,  pi]  ("K")
-    [0.0, 0.0]  ("Gamma")
+    [ pi, 0.0]  (M)
+    [0.0, 0.0]  (Gamma)
+    [ pi, -pi]  (K')
+    [ pi, 0.0]  (M)
+    [0.0,  pi]  (M')
+    [ pi,  pi]  (K)
+    [0.0, 0.0]  (Gamma)
 
 
 # Examples
