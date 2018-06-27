@@ -54,6 +54,32 @@ end
 
 
 
+# Function to print some information on a path
+function printInfo(path::Path, detailed::Bool=false)
+    # distinguish detailed vs. non-detailed
+    if detailed
+        # print the complete path
+        println("Path overview:")
+        # alternate between points and segments
+        for i in 1:length(path.points)-1
+            # print the point
+            println("  ($(i)) $(path.point_names[i]) at $(path.points[i])")
+            # print the outgoing segment
+            println("         |  (resolution: $(path.segment_resolution[i]))")
+        end
+        # print the last point
+        println("  ($(length(points))) $(path.point_names[length(points)]) at $(path.points[length(points)])")
+    else
+        # not detailed, just give the number of segments and the total resolution
+        println("Path contains $(length(path.points)) points ($(length(path.segment_resolution)) segments) with a total resolution of $(sum(path.segment_resolution)).")
+    end
+end
+
+
+
+
+
+
 
 
 
