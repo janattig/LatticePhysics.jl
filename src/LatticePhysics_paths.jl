@@ -99,11 +99,35 @@ end
 ################################################################################
 
 # Function to print some information on a path
-function printInfo(path::Path, detailed::Bool=false)
+"""
+    printInfo(path::Path [; detailed::Bool])
+
+prints (detailed) information on a `Path` object `path`. If detailed output is desired, the complete path will be printed.
+
+
+# Examples
+
+```julia-repl
+julia> printInfo(path)
+...
+
+julia> printInfo(path, detailed=true)
+...
+```
+"""
+function printInfo(path::Path; detailed::Bool=false)
     # distinguish detailed vs. non-detailed
     if detailed
         # print the complete path
         println("Path overview:")
+        # maybe already abort if no points or only one point in path
+        if length(path.points) == 0
+            println("   (no points defined)")
+            return nothing
+        elseif length(path.points) == 1
+            println("  ($(1)) $(path.point_names[1]) at $(path.points[1])  (only point in path)")
+            return nothing
+        end
         # alternate between points and segments
         for i in 1:length(path.points)-1
             # print the point
