@@ -190,6 +190,18 @@ function addPointToPath!(path::Path, point::Array{Float64,1}, point_name::String
     # return nothing
     return nothing
 end
+# Function for when points including pi are added (not of type Float64)
+function addPointToPath!(path::Path, point::Array, point_name::String, resolution::Int64=100)
+    # push the values into the lists
+    push!(path.points, point)
+    push!(path.point_names, point_name)
+    # maybe push resolution, if there were already some points
+    if length(path.points) > 1
+        push!(path.segment_resolution, resolution)
+    end
+    # return nothing
+    return nothing
+end
 
 # export the function
 export addPointToPath!
@@ -263,15 +275,112 @@ export setTotalResolution!
 
 
 
-# Triangular
+"""
+    getDefaultPathTriangular( [; resolution::Int64=900])
+
+creates the default path for the triangular lattice. Points in this path are
+
+    [0.0, 0.0]               ("Gamma")
+    [2*pi/sqrt(3.0), 2*pi/3] ("K")
+    [2*pi/sqrt(3.0), 0.0]    ("M")
+    [0.0, 0.0]               ("Gamma")
+
+Additionally, a resolution can be set so that the entire path in total has this resolution.
+
+# Examples
+```julia-repl
+julia> path = getDefaultPathTriangular()
+LatticePhysics.Path(...)
+
+julia> path = getDefaultPathTriangular(resolution=1200)
+LatticePhysics.Path(...)
+```
+"""
 function getDefaultPathTriangular( ; resolution::Int64=900)
     # create a new path object
     path = Path()
     # insert points
     addPointToPath!(path, [0.0, 0.0], "Gamma")
     addPointToPath!(path, [2*pi/sqrt(3.0), 2*pi/3], "K")
-    addPointToPath!(path, [2*pi/sqrt(3.0), 0], "M")
+    addPointToPath!(path, [2*pi/sqrt(3.0), 0.0], "M")
     addPointToPath!(path, [0.0, 0.0], "Gamma")
+    # set the total resolution
+    setTotalResolution!(path, resolution)
+    # return the path
+    return path
+end
+
+# export the function
+export getDefaultPathTriangular
+
+
+
+
+"""
+    getDefaultPathSquare(version::Int64=1 [; resolution::Int64])
+
+creates the default path for the square lattice. Points in this path are dependent on the version.
+
+Additionally, a resolution can be set so that the entire path in total has this resolution.
+
+
+
+# Versions
+
+#### Version 1 (DEFAULT) - short
+
+Points are given by
+
+    [0.0, 0.0]  ("Gamma")
+    [ pi, 0.0]  ("M")
+    [ pi,  pi]  ("K")
+    [0.0, 0.0]  ("Gamma")
+
+
+#### Version 2 - long / extended
+
+Points are given by
+
+    [0.0, 0.0]  ("Gamma")
+    [ pi, 0.0]  ("M")
+    [ pi,  pi]  ("K")
+    [0.0, 0.0]  ("Gamma")
+
+
+# Examples
+```julia-repl
+julia> path = getDefaultPathSquare()
+LatticePhysics.Path(...)
+
+julia> path = getDefaultPathSquare(2)
+LatticePhysics.Path(...)
+
+julia> path = getDefaultPathSquare(resolution=1200)
+LatticePhysics.Path(...)
+```
+"""
+function getDefaultPathSquare(version::Int64=1; resolution::Int64=1000)
+    # create a new path object
+    path = Path()
+    # distinguish between version
+    if version == 1
+        # insert points
+        addPointToPath!(path, [0.0, 0.0], "Gamma")
+        addPointToPath!(path, [ pi, 0.0], "M")
+        addPointToPath!(path, [ pi,  pi], "K")
+        addPointToPath!(path, [0.0, 0.0], "Gamma")
+    elseif version == 2
+        # insert points
+        addPointToPath!(path, [ pi, 0.0], "M")
+        addPointToPath!(path, [0.0, 0.0], "Gamma")
+        addPointToPath!(path, [ pi, -pi], "K'")
+        addPointToPath!(path, [ pi, 0.0], "M")
+        addPointToPath!(path, [0.0,  pi], "M'")
+        addPointToPath!(path, [ pi,  pi], "K")
+        addPointToPath!(path, [0.0, 0.0], "Gamma")
+    else
+        println("version $(version) unknown")
+    end
     # set the total resolution
     setTotalResolution!(path, resolution)
     # return the path
@@ -307,13 +416,6 @@ DEFAULT_PATH_FCC = Array[
 ]
 export DEFAULT_PATH_FCC
 
-DEFAULT_PATH_TRIANGULAR = Array[
-    ["gamma"; [0,0]],
-    ["K"; [2*pi/sqrt(3.0), 2*pi/3]],
-    ["M"; [2*pi/sqrt(3.0), 0]],
-    ["gamma"; [0,0]]
-]
-export DEFAULT_PATH_TRIANGULAR
 
 DEFAULT_PATH_SQUAREOCTAGON_2 = Array[
     ["gamma"; [0,0]],
@@ -322,26 +424,3 @@ DEFAULT_PATH_SQUAREOCTAGON_2 = Array[
     ["gamma"; [0,0]]
 ]
 export DEFAULT_PATH_SQUAREOCTAGON_2
-
-
-DEFAULT_PATH_SQUARE_LONG = Array[
-    ["M";     [pi,   0.0]],
-    ["Gamma"; [0.0,  0.0]],
-    ["K'";    [pi,   -pi]],
-    ["M";     [pi,   0.0]],
-    ["M'";    [0.0,   pi]],
-    ["K";     [pi,    pi]],
-    ["Gamma"; [0.0,  0.0]]
-]
-export DEFAULT_PATH_SQUARE_LONG
-
-DEFAULT_PATH_SQUARE_SHORT = Array[
-    ["Gamma"; [0.0,  0.0]],
-    ["M";     [pi,   0.0]],
-    ["K";     [pi,    pi]],
-    ["Gamma"; [0.0,  0.0]]
-]
-export DEFAULT_PATH_SQUARE_SHORT
-
-DEFAULT_PATH_SQUARE = DEFAULT_PATH_SQUARE_SHORT
-export DEFAULT_PATH_SQUARE
