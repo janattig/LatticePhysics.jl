@@ -173,8 +173,8 @@ function getInteractionMatrixKSpace(lattice::Lattice, k_vector::Array{Float64,1}
                 end
             end
             # add to the matrix twice
-            matrix[index_from, index_to] += 0.5 * strength       * exp(-im * sum(pos_delta .* k_vector))
-            matrix[index_to, index_from] += 0.5 * conj(strength) * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_from, index_to] += 0.5 * strength      * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_to, index_from] += 0.5 * conj(strength * exp(-im * sum(pos_delta .* k_vector)))
         end
     else
         # iterate over all connections
@@ -218,8 +218,8 @@ function getInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,
                 end
             end
             # add to the matrix twice
-            matrix[index_from, index_to] += 0.5 * strength       * exp(-im * sum(pos_delta .* k_vector))
-            matrix[index_to, index_from] += 0.5 * conj(strength) * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_from, index_to] += 0.5 * strength      * exp(-im * sum(pos_delta .* k_vector))
+            matrix[index_to, index_from] += 0.5 * conj(strength * exp(-im * sum(pos_delta .* k_vector)))
         end
     else
         # iterate over all connections
