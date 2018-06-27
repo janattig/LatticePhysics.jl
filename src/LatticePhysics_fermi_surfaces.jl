@@ -25,7 +25,7 @@ function getFermiSurface2D(
     # the current search index
     index = 1
     # search until there are enough points
-    while index < N_points
+    while index <= N_points
 
         # find a suitable starting point for the Newton algorithm
         k = Float64[rand(), rand()]
@@ -37,15 +37,18 @@ function getFermiSurface2D(
         e0 = energy(k)
         # iterate i over 100 newton steps (maximum)
         for i in 1:100
-            # if the energy is already converged, just save the k vector and break the newton loop
+            # check if the energy is already converged
             if e0 < epsilon
+                # save the k vector
                 k_values[index,:] = k
+                # increment the index
+                index = index+1
                 # break the newton loop
                 break
             end
             # the current energy
             H_0 = e0
-            # the gradient of the enrgy
+            # the gradient of the energy
             H_eps =
             [
                 energy(k .+ [epsilon_k, 0]),
