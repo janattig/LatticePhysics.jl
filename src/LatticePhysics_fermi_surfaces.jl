@@ -1,76 +1,70 @@
+# obtain Fermi surface
+function getFermiSurface2D(
+            unitcell::Unitcell,
+            N_points::Int64;
+            fermi_energy::Float64=0.0,
+            enforce_hermitian::Bool=false,
+            epsilon::Float64=1e-10,
+            epsilon_k::Float64=1e-10,
+            slowdown_factor::Float64=0.75,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+            refold_to_first_BZ::Bool=false
+        )
 
-function getKPointsForZeroEnergy(lattice::Lattice, n::Int64; enforce_hermitian=false, epsilon=1e-10, epsilon_k=1e-10, slowdown_factor=0.75, bounds_lower=-2*pi.*ones(4), bounds_upper=2*pi.*ones(4), dumpEvery=-1, dumpFilename="NONE")
+    # list of k values that contribute to the BZ
+    k_values = zeros(Float64, N_points, 2)
 
-    # obtain the dimension
-    dimension = size(lattice.positions[1],1)
-    # list of k values
-    k_values = Array[]
     # funtion of energy
-    if enforce_hermitian
-        function energy(kvector)
-            evals = calculateEnergySingleKHermitian(lattice, kvector)
-            evals = evals .* evals
-            return minimum(evals)
-        end
-    else
-        function energy(kvector)
-            evals = calculateEnergySingleK(lattice, kvector)
-            evals = evals .* evals
-            return minimum(evals)
-        end
+    function energy(kvector)
+        eigenvalues = eigvals(getInteractionMatrixKSpace(unitcell, kvector, enforce_hermitian=enforce_hermitian)) .- fermi_energy
+        eigenvalues = eigenvalues .* eigenvalues
+        return minimum(eigenvalues)
     end
 
-    # print the start
-    #println("starting the calculation of $(n) points")
-
+    # the current search index
+    index = 1
     # search until there are enough points
-    while size(k_values,1) < n
-        # maybe dump
-        if dumpEvery>0 && size(k_values,1)%dumpEvery == 0 && dumpFilename!="NONE"
-            dumpKPointListToFolder(lattice, k_values, "", dumpFilename)
-        end
-        # find a suitable starting point
-        k = zeros(dimension)
+    while index < N_points
+
+        # find a suitable starting point for the Newton algorithm
+        k = Float64[rand(), rand()]
         for j in 1:length(k)
-            gamma = rand()
-            k[j] = gamma * bounds_lower[j] + (1-gamma) * bounds_upper[j]
+            k[j] = k[j] * bounds_lower[j] + (1-k[j]) * bounds_upper[j]
         end
-        # small increment and derivatives
+
+        # start with the initial energy
         e0 = energy(k)
-        # iterate
+        # iterate i over 100 newton steps (maximum)
         for i in 1:100
+            # if the energy is already converged, just save the k vector and break the newton loop
             if e0 < epsilon
-                push!(k_values, k)
+                k_values[index,:] = k
                 # break the newton loop
                 break
             end
+            # the current energy
             H_0 = e0
-            if dimension == 3
-                H_eps =
-                [
-                    energy(k .+ [epsilon_k, 0, 0]),
-                    energy(k .+ [0, epsilon_k, 0]),
-                    energy(k .+ [0, 0, epsilon_k])
-                ]
-            elseif dimension == 2
-                H_eps =
-                [
-                    energy(k .+ [epsilon_k, 0]),
-                    energy(k .+ [0, epsilon_k])
-                ]
-            end
+            # the gradient of the enrgy
+            H_eps =
+            [
+                energy(k .+ [epsilon_k, 0]),
+                energy(k .+ [0, epsilon_k])
+            ]
             dH = (H_eps - H_0) ./ epsilon_k
+            # absolute value of the gradient
             dHdH = dot(dH, dH)
+            # break the Newton loop if the gradient diverges or is flattened too much
             if abs(dHdH) < 1e-20 || abs(dHdH) > 1e20
                 break
             end
+            # increment k
             dk = dH * (H_0 / dHdH)
             k -= dk
+            # calculate a new energy
             e0 = energy(k)
         end
     end
-
-    #println("finished the calculation of $(n) points")
 
     # return the list
     return k_values
