@@ -1,4 +1,49 @@
 # obtain Fermi surface
+"""
+    getFermiSurface2D(
+                unitcell::Unitcell,
+                N_points::Int64
+             [; fermi_energy::Float64=0.0,
+                enforce_hermitian::Bool=false,
+                epsilon::Float64=1e-10,
+                epsilon_k::Float64=1e-10,
+                bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+                bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+                refold_to_first_BZ::Bool=true ]
+            )
+
+calculates `N_points` points which belong to the Fermi surface of the tight-binding model given by
+the `Unitcell` object `unitcell`. The Fermi energy can be adjusted by using `fermi_energy=...`.
+
+The points are located using Newton's method with random starting positions. The procedure can be
+modified by using some of the optional keywords:
+- `enforce_hermitian` determines if the matrix used for energy calculation is made hermitian by construction
+- `epsilon` energy threshold for values to be considered close to the Fermi energy
+- `epsilon_k` small k increment that is used for calculation of derivatives
+- `bounds_upper` / `bounds_lower` the bounds between which the random starting location for the Newton method is searched
+
+After the search has been completed, the values will optionally be refolded into the first brillouin zone by choosing `refold_to_first_BZ=true`.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> fermi_surace = getFermiSurface2D(unitcell, 100)
+100x2 Array{Float64}
+...
+
+julia> fermi_surace = getFermiSurface2D(unitcell, 100, fermi_energy=1.0)
+100x2 Array{Float64}
+...
+
+julia> fermi_surace = getFermiSurface2D(unitcell, 100, refold_to_first_BZ=false)
+100x2 Array{Float64}
+...
+
+```
+"""
 function getFermiSurface2D(
             unitcell::Unitcell,
             N_points::Int64;
@@ -6,7 +51,6 @@ function getFermiSurface2D(
             enforce_hermitian::Bool=false,
             epsilon::Float64=1e-10,
             epsilon_k::Float64=1e-10,
-            slowdown_factor::Float64=0.75,
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true
@@ -104,3 +148,186 @@ function getFermiSurface2D(
     return k_values
 
 end
+export getFermiSurface2D
+
+
+
+
+
+# plot the Fermi surface
+"""
+    plotFermiSurface2D(
+                unitcell::Unitcell,
+                N_points::Int64
+             [; fermi_energy::Float64=0.0,
+                enforce_hermitian::Bool=false,
+                epsilon::Float64=1e-10,
+                epsilon_k::Float64=1e-10,
+                bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+                bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+                refold_to_first_BZ::Bool=true,
+                brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+                plot_title::String="",
+                plot_color="b",
+                figsize::Tuple=(6,6),
+                showPlot::Bool=true,
+                save_filename::String="NONE" ]
+            )
+
+calculates `N_points` points which belong to the Fermi surface of the tight-binding model given by
+the `Unitcell` object `unitcell` and plots them using `PyPlot`. The Fermi energy can be adjusted by using `fermi_energy=...`.
+
+The points are located using Newton's method with random starting positions. The procedure can be
+modified by using some of the optional keywords:
+- `enforce_hermitian` determines if the matrix used for energy calculation is made hermitian by construction
+- `epsilon` energy threshold for values to be considered close to the Fermi energy
+- `epsilon_k` small k increment that is used for calculation of derivatives
+- `bounds_upper` / `bounds_lower` the bounds between which the random starting location for the Newton method is searched
+
+After the search has been completed, the values will optionally be refolded into the first brillouin zone by choosing `refold_to_first_BZ=true`.
+
+For plotting, several more options can be used.
+
+
+
+# Examples
+
+```julia-repl
+julia> plotFermiSurface2D(unitcell, 100)
+PyPlot.Figure(...)
+
+julia> plotFermiSurface2D(unitcell, 100, fermi_energy=1.0, showPlot=false)
+PyPlot.Figure(...)
+
+```
+"""
+function plotFermiSurface2D(
+            k_values::Array{Float64, 2};
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+    # configure plot environment
+    rc("font", family="serif")
+
+    # create a new figure
+    fig = figure(figsize=figsize)
+
+
+
+    ###########################
+    #   PLOT FERMI SURFACE
+    ###########################
+
+    # scatter the points
+    scatter(k_values[:,1], k_values[:,2], color=plot_color)
+
+    # if brillouin zone not empty, plot it as well
+    if length(brillouin_zone) > 1
+        plot([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], "-k")
+    end
+
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # set the title
+    if plot_title == "AUTO"
+        # set the title to an automatically generated title
+        title("Fermi surface")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        # set the title to the given title
+        title(plot_title)
+    end
+
+    # equal axis
+    gca()[:set_aspect]("equal")
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # save the plot
+    if save_filename != "NONE"
+        # make sure the directory exists
+        if contains(save_filename, "/")
+    		# get the containing folder
+    		folder = save_filename[1:findlast(save_filename, '/')]
+    		# build the path to that folder
+    		mkpath(folder)
+    	end
+        # save the plot
+        savefig(save_filename)
+    end
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return fig
+
+end
+function plotFermiSurface2D(
+            unitcell::Unitcell,
+            N_points::Int64;
+            fermi_energy::Float64=0.0,
+            enforce_hermitian::Bool=false,
+            epsilon::Float64=1e-10,
+            epsilon_k::Float64=1e-10,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+            refold_to_first_BZ::Bool=true,
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+
+    # calculate the Fermi surface first
+    fermi_surface = getFermiSurface2D(
+            unitcell,
+            N_points,
+            fermi_energy=fermi_energy,
+            enforce_hermitian=enforce_hermitian,
+            epsilon=epsilon,
+            epsilon_k=epsilon_k,
+            bounds_lower=bounds_lower,
+            bounds_upper=bounds_upper,
+            refold_to_first_BZ=refold_to_first_BZ
+        )
+
+    # plot the fermi surface
+    plotFermiSurface2D(
+            fermi_surface,
+            brillouin_zone=brillouin_zone,
+            plot_title=plot_title,
+            plot_color=plot_color,
+            figsize=figsize,
+            showPlot=showPlot,
+            save_filename=save_filename
+        )
+
+end
+export plotFermiSurface2D
