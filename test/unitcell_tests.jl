@@ -5,7 +5,7 @@ using LatticePhysics
 using Base.Test
 
 # begin the Unitcell testblock
-unitcell_testset = @testset "Unitcell tests" begin
+unitcell_testset = @testset "Unitcells" begin
 
 
 ################################################################################

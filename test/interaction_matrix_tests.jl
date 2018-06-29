@@ -5,7 +5,7 @@ using LatticePhysics
 using Base.Test
 
 # begin the Modification testblock
-path_testset = @testset "Paths (in momentum space)" begin
+path_testset = @testset "Interaction Matrices" begin
 
 ################################################################################
 #

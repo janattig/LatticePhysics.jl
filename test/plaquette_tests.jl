@@ -5,7 +5,7 @@ using LatticePhysics
 using Base.Test
 
 # begin the Unitcell testblock
-plaquette_testset = @testset "Plaquette tests" begin
+plaquette_testset = @testset "Plaquettes of lattices" begin
 
 
 ################################################################################

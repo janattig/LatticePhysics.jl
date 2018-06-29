@@ -5,7 +5,7 @@ using LatticePhysics
 using Base.Test
 
 # begin the Unitcell testblock
-SVG_plotting_testset = @testset "SVG Plotting tests" begin
+SVG_plotting_testset = @testset "SVG Plotting of lattices" begin
 
 
 

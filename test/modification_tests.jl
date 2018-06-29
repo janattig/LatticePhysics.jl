@@ -5,7 +5,7 @@ using LatticePhysics
 using Base.Test
 
 # begin the Modification testblock
-modification_testset = @testset "Modification tests" begin
+modification_testset = @testset "Modifications of lattices and unitcells" begin
 
 
 ################################################################################
