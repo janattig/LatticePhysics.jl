@@ -26,4 +26,8 @@ latticephysics_testset = @testset "All LatticePhysics.jl tests" begin
     # SVG PLOTTING STUFF
     include("SVG_plotting_tests.jl")
 
+    # BAND STRUCTURE STUFF
+
+    # FERMI SURFACE STUFF
+
 end;
