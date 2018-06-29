@@ -9,85 +9,80 @@ path_testset = @testset "Interaction Matrices" begin
 
 ################################################################################
 #
-#   METHODS FOR CONSTRUCTION OF PATHS INSIDE THE BZ OF A UNITCELL
+#   METHODS FOR CONSTRUCTION INTERACTION MATRICES FOR LATTICES
 #
 ################################################################################
 
 ################################################################################
 #
-#   1) TYPE PATH
-#       - type definition
-#       - printInfo function
-#       - path String function (e.g. X-G-M-X)
+#   1) INTERACTION MATRICES IN REAL SPACE
 #
 ################################################################################
 
 # begin the testset
-@testset "Type definition and information functions" begin
+@testset "Interaction matrices in real space" begin
 
-    # Constructors - how to construct a path
-    @testset "Constructors" begin
+    # begin the testset
+    @testset "2D (honeycomb)" begin
 
-        # construct some points
-        points = Array{Float64,1}[
-            [0.0, 0.0],
-            [1.0, 1.0],
-            [-pi, 0.0],
-            [ pi,  pi]
-        ]
-        # construct some point names
-        point_names = String[
-            "A",
-            "B",
-            "A'",
-            "something"
-        ]
-        # construct segment resolution
-        segments = Int64[
-            100,
-            200,
-            1200
-        ]
+        # get a unitcell
+        unitcell = getUnitcellHoneycomb()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2])
 
-        # Test the three possible constructors
-        @test typeof(Path(points, point_names, segments)) == Path
-        @test typeof(Path(points, point_names)) == Path
-        @test typeof(Path()) == Path
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixRealSpace(unitcell)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(unitcell, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(unitcell)) == (2,2)
+
+        # test the function for lattice
+        @test typeof(getInteractionMatrixRealSpace(lattice)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(lattice, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(lattice)) == (16,16)
 
     # end the testset here
     end;
 
-    # Information functions printInfo and String
-    @testset "Information functions" begin
 
-        # construct some points
-        points = Array{Float64,1}[
-            [0.0, 0.0],
-            [1.0, 1.0],
-            [-pi, 0.0],
-            [ pi,  pi]
-        ]
-        # construct some point names
-        point_names = String[
-            "A",
-            "B",
-            "A'",
-            "something"
-        ]
-        # construct segment resolution
-        segments = Int64[
-            100,
-            200,
-            1200
-        ]
-        # construct the path
-        path = Path(points, point_names, segments)
+    # begin the testset
+    @testset "2D (square)" begin
 
-        # Test the path string
-        @test typeof(getPathString(path)) == String
-        # Test the printInfo function
-        @test printInfo(path) == nothing
-        @test printInfo(path, detailed=true) == nothing
+        # get a unitcell
+        unitcell = getUnitcellSquare()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2])
+
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixRealSpace(unitcell)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(unitcell, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(unitcell)) == (1,1)
+
+        # test the function for lattice
+        @test typeof(getInteractionMatrixRealSpace(lattice)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(lattice, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(lattice)) == (8,8)
+
+    # end the testset here
+    end;
+
+
+    # begin the testset
+    @testset "3D (diamond)" begin
+
+        # get a unitcell
+        unitcell = getUnitcellDiamond()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2,-2])
+
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixRealSpace(unitcell)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(unitcell, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(unitcell)) == (2,2)
+
+        # test the function for lattice
+        @test typeof(getInteractionMatrixRealSpace(lattice)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixRealSpace(lattice, enforce_hermitian=true))
+        @test size(getInteractionMatrixRealSpace(lattice)) == (32,32)
 
     # end the testset here
     end;
@@ -96,124 +91,87 @@ path_testset = @testset "Interaction Matrices" begin
 end;
 
 
-
 ################################################################################
 #
-#   2) CONSTRUCTION FUNCTIONS PATH
-#       - function to add points
-#       - TODO function to remove points
-#       - function to scale the total resolution
-#       - function to set the total resolution
+#   2) INTERACTION MATRICES IN MOMENTUM SPACE
 #
 ################################################################################
 
 # begin the testset
-@testset "Construction functions for paths" begin
+@testset "Interaction matrices in momentum space" begin
 
-    # How to add points to a path
-    @testset "Adding points" begin
+    # begin the testset
+    @testset "2D (honeycomb)" begin
 
-        # construct an empty path
-        path = Path()
+        # get a unitcell
+        unitcell = getUnitcellHoneycomb()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2])
 
-        # Test three point addings
-        @test addPointToPath!(path, [0.0, 0.0], "Gamma") == nothing
-        @test addPointToPath!(path, [ pi,  pi], "K") == nothing
-        @test addPointToPath!(path, [-pi, 1.0], "A", 200) == nothing
+        # k vector (random)
+        k = [0.1, 0.151235]
 
-    # end the testset here
-    end;
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixKSpace(unitcell, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(unitcell, k)) == (2,2)
 
-    # Modifying the segment resolution
-    @testset "Changing resolution" begin
-
-        # construct some points
-        points = Array{Float64,1}[
-            [0.0, 0.0],
-            [1.0, 1.0],
-            [-pi, 0.0],
-            [ pi,  pi]
-        ]
-        # construct some point names
-        point_names = String[
-            "A",
-            "B",
-            "A'",
-            "something"
-        ]
-        # construct the path (resolution up to hear: 300)
-        path = Path(points, point_names)
-
-        # Test to scale the total resolution by 2
-        @test scaleResolution!(path, 2.0) == nothing
-        @test sum(path.segment_resolution) == 600
-
-        # Test to scale the total resolution by 0.25
-        @test scaleResolution!(path, 0.25) == nothing
-        @test sum(path.segment_resolution) == 150
-
-
-        # construct the path again (resolution now: 300)
-        path = Path(points, point_names)
-
-        # Test to set the total resolution to 900
-        @test setTotalResolution!(path, 900) == nothing
-        @test sum(path.segment_resolution) == 900
-
-        # Test to set the total resolution to 450
-        @test setTotalResolution!(path, 450) == nothing
-        @test sum(path.segment_resolution) == 450
+        # test the function for lattice
+        @test typeof(getInteractionMatrixKSpace(lattice, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(lattice, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(lattice, k)) == (16,16)
 
     # end the testset here
     end;
 
-# end the testset here
-end;
 
+    # begin the testset
+    @testset "2D (square)" begin
 
+        # get a unitcell
+        unitcell = getUnitcellSquare()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2])
 
-################################################################################
-#
-#   3) DEFAULT PATHS
-#       - getDefaultPathTriangular
-#       - getDefaultPathSquare
-#       - getDefaultPathSquareOctagon
-#       - getDefaultPathFCC
-#
-################################################################################
+        # k vector (random)
+        k = [0.1, 0.151235]
 
-# begin the testset
-@testset "Default Paths" begin
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixKSpace(unitcell, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(unitcell, k)) == (1,1)
 
-    @testset "Triangular" begin
-        # just get the path and test it
-        @test typeof(getDefaultPathTriangular()) == Path
-        # just get the path with a fixed resolution and test it
-        @test typeof(getDefaultPathTriangular(resolution=1000)) == Path
+        # test the function for lattice
+        @test typeof(getInteractionMatrixKSpace(lattice, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(lattice, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(lattice, k)) == (8,8)
+
+    # end the testset here
     end;
 
-    @testset "Square" begin
-        # just get the path and test it
-        @test typeof(getDefaultPathSquare()) == Path
-        # get different versions of the path and test them
-        @test typeof(getDefaultPathSquare(1)) == Path
-        @test typeof(getDefaultPathSquare(2)) == Path
-        # just get the path with a fixed resolution and test it
-        @test typeof(getDefaultPathSquare(resolution=1000)) == Path
-    end;
 
-    @testset "Square Octagon" begin
-        # just get the path and test it
-        @test typeof(getDefaultPathSquareOctagon()) == Path
-        # just get the path with a fixed resolution and test it
-        @test typeof(getDefaultPathSquareOctagon(resolution=1000)) == Path
-    end;
+    # begin the testset
+    @testset "3D (diamond)" begin
 
-    @testset "FCC" begin
-        # just get the path and test it
-        @test typeof(getDefaultPathFCC()) == Path
-        # just get the path with a fixed resolution and test it
-        @test typeof(getDefaultPathFCC(resolution=1000)) == Path
+        # get a unitcell
+        unitcell = getUnitcellDiamond()
+        # get a lattice
+        lattice = getLattice(unitcell, [-4,-2,-2])
+
+        # k vector (random)
+        k = [0.1, 0.151235, -0.21]
+
+        # test the function for unitcell
+        @test typeof(getInteractionMatrixKSpace(unitcell, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(unitcell, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(unitcell, k)) == (2,2)
+
+        # test the function for lattice
+        @test typeof(getInteractionMatrixKSpace(lattice, k)) == Array{Complex, 2}
+        @test ishermitian(getInteractionMatrixKSpace(lattice, k, enforce_hermitian=true))
+        @test size(getInteractionMatrixKSpace(lattice, k)) == (32,32)
+
+    # end the testset here
     end;
 
 # end the testset here
