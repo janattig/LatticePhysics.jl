@@ -7,13 +7,19 @@
 #   1) TYPE PATH
 #       - type definition
 #       - printInfo function
+#       - path String function (e.g. X-G-M-X)
 #
 #   2) CONSTRUCTION FUNCTIONS PATH
 #       - function to add points
 #       - TODO function to remove points
+#       - function to scale the total resolution
 #       - function to set the total resolution
 #
 #   3) DEFAULT PATHS
+#       - getDefaultPathTriangular
+#       - getDefaultPathSquare
+#       - getDefaultPathSquareOctagon
+#       - getDefaultPathFCC
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
@@ -302,6 +308,17 @@ end
 
 # export the function
 export setTotalResolution!
+
+
+
+
+
+
+
+
+
+
+
 
 
 

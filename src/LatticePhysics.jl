@@ -343,6 +343,9 @@ include("LatticePhysics_plaquette_operations.jl")
 include("LatticePhysics_interaction_matrices.jl")
 
 
+
+
+
 ################################################################################
 #
 #   METHODS FOR CONSTRUCTION OF PATHS INSIDE THE BZ OF A UNITCELL
@@ -352,13 +355,19 @@ include("LatticePhysics_interaction_matrices.jl")
 #   1) TYPE PATH
 #       - type definition
 #       - printInfo function
+#       - path String function (e.g. X-G-M-X)
 #
 #   2) CONSTRUCTION FUNCTIONS PATH
 #       - function to add points
 #       - TODO function to remove points
+#       - function to scale the total resolution
 #       - function to set the total resolution
 #
 #   3) DEFAULT PATHS
+#       - getDefaultPathTriangular
+#       - getDefaultPathSquare
+#       - getDefaultPathSquareOctagon
+#       - getDefaultPathFCC
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
@@ -366,7 +375,6 @@ include("LatticePhysics_interaction_matrices.jl")
 
 # included in subfile
 include("LatticePhysics_paths.jl")
-
 
 
 

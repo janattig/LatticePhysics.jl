@@ -17,6 +17,9 @@ latticephysics_testset = @testset "All LatticePhysics.jl tests" begin
     # PLAQUETTE STUFF
     include("plaquette_tests.jl")
 
+    # PATH STUFF
+    include("path_tests.jl")
+
 
     # SVG PLOTTING STUFF
     include("SVG_plotting_tests.jl")
