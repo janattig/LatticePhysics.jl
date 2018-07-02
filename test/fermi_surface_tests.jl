@@ -16,41 +16,59 @@ fermi_surface_testset = @testset "Fermi surfaces" begin
 
 ################################################################################
 #
-#   1) TYPE BANDSTRUCTURE
-#       - type definition
-#       - TODO printInfo function
+#   1) CALCULATION OF FERMI SURFACE
+#
+#   2) PLOTTING OF FERMI SURFACE
+#       - plotting from points
+#       - plotting from unitcell
 #
 ################################################################################
-
-################################################################################
-#
-#   2) CALCULATION OF BAND STRUCTURES OF UNTICELL OBJECTS
-#
-################################################################################
-
 
 # begin the testset
 @testset "2D" begin
 
-    # begin the testset
-    @testset "honeycomb" begin
+    # begin the testset only for calculations
+    @testset "honeycomb (calculations)" begin
 
         # get a unitcell
         unitcell = getUnitcellHoneycomb()
-        # get a path
-        path = getDefaultPathTriangular(resolution=30)
 
-        # test the calculations (bare)
-        @test typeof(getBandStructureAlongPath(unitcell, path)) == Bandstructure
+        # test the type of the Fermi surface calculations (bare)
+        @test typeof(getFermiSurface2D(unitcell, 20)) == Array{Float64,2}
+        @test size(getFermiSurface2D(unitcell, 20)) == (20,2)
 
-        # test the calculations (resolution set)
-        @test typeof(getBandStructureAlongPath(unitcell, path, resolution=60)) == Bandstructure
+        # test if modifying the fermi energy is possible
+        @test typeof(getFermiSurface2D(unitcell, 20, fermi_energy=1.0)) == Array{Float64,2}
 
-        # test the calculations (hermitian)
-        @test typeof(getBandStructureAlongPath(unitcell, path, enforce_hermitian=true)) == Bandstructure
+        # test more options
+        @test typeof(getFermiSurface2D(unitcell, 20, enforce_hermitian=true)) == Array{Float64,2}
+        @test typeof(getFermiSurface2D(unitcell, 20, refold_to_first_BZ=false)) == Array{Float64,2}
 
     # end the testset here
     end;
+
+    # begin the testset for plotting
+    @testset "honeycomb (plotting)" begin
+
+        # get a unitcell
+        unitcell = getUnitcellHoneycomb()
+
+        # get the fermi surface
+        fermi_surface = getFermiSurface2D(unitcell, 20)
+
+        # test if modifying the fermi energy is possible
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, plot_title="myplot", showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, plot_color="r", showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, figsize=(10,8), showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, save_filename="$(FOLDER_SPECTRA)testplot.pdf", showPlot=false))
+
+        # test calculation at the same time
+        @test_nowarn close(plotFermiSurface2D(unitcell, 20, showPlot=false))
+
+    # end the testset here
+    end;
+
 
 
     # begin the testset
@@ -58,17 +76,32 @@ fermi_surface_testset = @testset "Fermi surfaces" begin
 
         # get a unitcell
         unitcell = getUnitcellSquare()
-        # get a path
-        path = getDefaultPathSquare(resolution=30)
 
-        # test the calculations (bare)
-        @test typeof(getBandStructureAlongPath(unitcell, path)) == Bandstructure
+        # test the type of the Fermi surface calculations (bare)
+        @test typeof(getFermiSurface2D(unitcell, 20)) == Array{Float64,2}
+        @test size(getFermiSurface2D(unitcell, 20)) == (20,2)
 
-        # test the calculations (resolution set)
-        @test typeof(getBandStructureAlongPath(unitcell, path, resolution=60)) == Bandstructure
+    # end the testset here
+    end;
 
-        # test the calculations (hermitian)
-        @test typeof(getBandStructureAlongPath(unitcell, path, enforce_hermitian=true)) == Bandstructure
+    # begin the testset for plotting
+    @testset "square (plotting)" begin
+
+        # get a unitcell
+        unitcell = getUnitcellSquare()
+
+        # get the fermi surface
+        fermi_surface = getFermiSurface2D(unitcell, 20)
+
+        # test if modifying the fermi energy is possible
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, plot_title="myplot", showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, plot_color="r", showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, figsize=(10,8), showPlot=false))
+        @test_nowarn close(plotFermiSurface2D(fermi_surface, save_filename="$(FOLDER_SPECTRA)testplot.pdf", showPlot=false))
+
+        # test calculation at the same time
+        @test_nowarn close(plotFermiSurface2D(unitcell, 20, showPlot=false))
 
     # end the testset here
     end;
@@ -79,6 +112,20 @@ end;
 
 
 
+
+
+
+
+
+
+
+
+
+# begin the testset
+@testset "3D" begin
+    # NOTHING SO FAR
+# end the testset here
+end;
 
 
 # end the testset here
