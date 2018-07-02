@@ -30,5 +30,6 @@ latticephysics_testset = @testset "All LatticePhysics.jl tests" begin
     include("bandstructure_tests.jl")
 
     # FERMI SURFACE STUFF
+    include("fermi_surface_tests.jl")
 
 end;
