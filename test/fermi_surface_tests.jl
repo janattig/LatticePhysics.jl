@@ -6,7 +6,7 @@ using PyPlot
 using Base.Test
 
 # begin the Modification testblock
-bandstructure_testset = @testset "Bandstructures" begin
+fermi_surface_testset = @testset "Fermi surfaces" begin
 
 ################################################################################
 #
@@ -30,10 +30,10 @@ bandstructure_testset = @testset "Bandstructures" begin
 
 
 # begin the testset
-@testset "Calculation of bandstructures" begin
+@testset "2D" begin
 
     # begin the testset
-    @testset "2D (honeycomb)" begin
+    @testset "honeycomb" begin
 
         # get a unitcell
         unitcell = getUnitcellHoneycomb()
@@ -54,7 +54,7 @@ bandstructure_testset = @testset "Bandstructures" begin
 
 
     # begin the testset
-    @testset "2D (square)" begin
+    @testset "square" begin
 
         # get a unitcell
         unitcell = getUnitcellSquare()
@@ -73,111 +73,11 @@ bandstructure_testset = @testset "Bandstructures" begin
     # end the testset here
     end;
 
-    # begin the testset
-    @testset "3D (diamond)" begin
-
-        # get a unitcell
-        unitcell = getUnitcellDiamond()
-        # get a path
-        path = getDefaultPathFCC(resolution=60)
-
-        # test the calculations (bare)
-        @test typeof(getBandStructureAlongPath(unitcell, path)) == Bandstructure
-
-        # test the calculations (resolution set)
-        @test typeof(getBandStructureAlongPath(unitcell, path, resolution=120)) == Bandstructure
-
-        # test the calculations (hermitian)
-        @test typeof(getBandStructureAlongPath(unitcell, path, enforce_hermitian=true)) == Bandstructure
-
-    # end the testset here
-    end;
-
 # end the testset here
 end;
 
 
 
-
-################################################################################
-#
-#   3) PLOTTING OF BAND STRUCTURES
-#       - plotting of Bandstructure objects
-#       - plotting of bandstructures of unitcells along paths
-#
-################################################################################
-
-
-# begin the testset
-@testset "Plotting of bandstructures" begin
-
-    # begin the testset
-    @testset "2D (honeycomb)" begin
-
-        # get a unitcell
-        unitcell = getUnitcellHoneycomb()
-        # get a path
-        path = getDefaultPathTriangular(resolution=30)
-
-        # get the bandstructure (bare)
-        bandstructure = getBandStructureAlongPath(unitcell, path)
-
-        # test the plotting
-        @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))
-        @test_nowarn close(plotBandstructure(bandstructure, limits_energy=[-1, 2.0], showPlot=false))
-        @test_nowarn close(plotBandstructure(bandstructure, plot_title="myplot", showPlot=false))
-        @test_nowarn close(plotBandstructure(bandstructure, plot_color="r", showPlot=false))
-        @test_nowarn close(plotBandstructure(bandstructure, figsize=(10,8), showPlot=false))
-        @test_nowarn close(plotBandstructure(bandstructure, save_filename="$(FOLDER_SPECTRA)testplot.pdf", showPlot=false))
-
-        # test calculation and plotting
-        @test_nowarn close(plotBandstructure(unitcell, path, showPlot=false))
-        @test_nowarn close(plotBandstructure(unitcell, path, limits_energy=[-1, 2.0], showPlot=false))
-        @test_nowarn close(plotBandstructure(unitcell, path, plot_title="myplot", showPlot=false))
-        @test_nowarn close(plotBandstructure(unitcell, path, plot_color="r", showPlot=false))
-        @test_nowarn close(plotBandstructure(unitcell, path, figsize=(10,8), showPlot=false))
-        @test_nowarn close(plotBandstructure(unitcell, path, save_filename="$(FOLDER_SPECTRA)testplot.pdf", showPlot=false))
-
-    # end the testset here
-    end;
-
-
-    # begin the testset
-    @testset "2D (square)" begin
-
-        # get a unitcell
-        unitcell = getUnitcellSquare()
-        # get a path
-        path = getDefaultPathSquare(resolution=30)
-
-        # get the bandstructure (bare)
-        bandstructure = getBandStructureAlongPath(unitcell, path)
-
-        # test the plotting
-        @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))
-
-    # end the testset here
-    end;
-
-    # begin the testset
-    @testset "3D (diamond)" begin
-
-        # get a unitcell
-        unitcell = getUnitcellDiamond()
-        # get a path
-        path = getDefaultPathFCC(resolution=60)
-
-        # get the bandstructure (bare)
-        bandstructure = getBandStructureAlongPath(unitcell, path)
-
-        # test the plotting
-        @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))
-
-    # end the testset here
-    end;
-
-# end the testset here
-end;
 
 
 
