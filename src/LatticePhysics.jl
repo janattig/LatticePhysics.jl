@@ -1,35 +1,54 @@
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
 #   The unified Module for all different sorts of lattices
-#   Includes the following structure:
+#   and lattice based calculations.
 #
-#   -   Definition of UNITCELL TYPE
-#       -   saving / loading Unitcell
-#   -   Definition of LATTICE TYPE
-#       -   saving / loading Lattice
-#       -   information on Lattice
-#       -   connectivities of Lattice
+#   Module structure (mostly included in subfiles):
 #
-#   -   Functions to generate Unitcell objects for 2D lattices
-#   -   Functions to generate Unitcell objects for 3D lattices
-#   -   Function to generate Unitcell object from collection of points
-#   -   Function to print generating code for a given Unitcell object
+#   1) TYPE DEFINITION
+#       - Definition of UNITCELL TYPE
+#       - Definition of LATTICE TYPE
+#       - saving / loading types
+#       - information on types
+#       - connectivity of tpyes
 #
-#   -   Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells for 2D unitcells
-#   -   Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells for 3D unitcells
-#   -   Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells for any unitcell
-#   -   Building Lattices by bond distance to an origin site
-#   -   Building Lattices in a shape around an origin site
+#   2) PRE-IMPLEMENTED UNITCELLS (various 2D and 3D stuff)
 #
-#   -   Modifying Lattices and Interaction Strengths
+#   3) CONSTRUCTION OF UNITCELLS FROM SITES / CONSTRUCTION HELPER
 #
-#   -   TODO SVG help methods
-#   -   Plotting Lattices as SVG files
-#   -   TODO Calculating dispersions for 1D and 2D fields of k values
-#   -   TODO Calculation of Fermi surfaces or surfaces of some energy value
+#   4) CONSTRUCTION OF LATTICES
+#       - Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells
+#       - Building Lattices by bond distance to an origin site
+#       - Building Lattices in a shape around an origin site
 #
-#-----------------------------------------------------------------------------------------------------------------------------
-
+#   5) MODIFICATION OF LATTICES
+#       - Adding / Removing Connections
+#       - Adding / Removing sites
+#       - Interaction Strengths
+#
+#   6) PLAQUETTE RELATED FUNCTIONS
+#       - obtaining plaquettes of lattice
+#       - printing plaquette statistics
+#
+#   7) INTERACTION MATRICES (REAL AND MOMENTUM SPACE)
+#
+#   8) PATH BUILDING (MOMENTUM SPACE)
+#       - type definition
+#       - modification of paths
+#       - pre-implemented paths
+#
+#   9) SVG PLOTTING
+#       - 2D lattices
+#       - TODO 3D lattices
+#       - 2D plaquettes
+#
+#  10) BANDSTRUCTURES (CALCULATION AND PLOTTING)
+#
+#  11) FERMI SURFACES (CALCULATION AND PLOTTING)
+#       - 2D lattices
+#       - TODO 3D lattices
+#
+################################################################################
 
 # Start of module
 module LatticePhysics
@@ -41,11 +60,11 @@ module LatticePhysics
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
-#   DEPENDENCIES AND USED LIBRARIES
+#   IMPORTED LIBRARIES THAT ARE USED IN LATTICEPHYSICS.JL
 #
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 
 # JLD is used for all save / load applications
 using JLD
@@ -62,12 +81,12 @@ using PyPlot
 
 
 
+################################################################################
+#
+#   DEFAULT FILENAMES FOR FOLDERS AND OBJECTS
+#
+################################################################################
 
-#-----------------------------------------------------------------------------------------------------------------------------
-#
-#   SOME FILENAMES AND DEFAULT PATHS
-#
-#-----------------------------------------------------------------------------------------------------------------------------
 
 # THE FOLDER FOR UNITCELLS
 FOLDER_UNITCELLS = "unitcells/"
@@ -98,11 +117,11 @@ export FOLDER_SPECTRA
 
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 #
-#   FUNCTIONS TO ENSURE DEFAULT PATHS EXIST
+#   FUNCTIONS TO BUILD DEFAULT FOLDERS
 #
-#-----------------------------------------------------------------------------------------------------------------------------
+################################################################################
 function buildFolderUnitcells()
     mkpath(FOLDER_UNITCELLS)
 end
@@ -468,6 +487,6 @@ include("LatticePhysics_fermi_surfaces.jl")
 
 
 # MODULE END
-# total lines: 473 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 352
-# = 12960 lines
+# total lines: 492 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 352
+# = 12979 lines
 end
