@@ -373,7 +373,7 @@ include("LatticePhysics_interaction_matrices.jl")
 #
 ################################################################################
 
-# included in subfile (556 lines)
+# included in subfile (555 lines)
 include("LatticePhysics_paths.jl")
 
 
@@ -468,6 +468,6 @@ include("LatticePhysics_fermi_surfaces.jl")
 
 
 # MODULE END
-# total lines: 473 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 556 + 2094 + 350 + 352
-# = 12961 lines
+# total lines: 473 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 352
+# = 12960 lines
 end

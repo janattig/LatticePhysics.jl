@@ -76,7 +76,6 @@ mutable struct Path
 
 
 
-
     # The Default constructor
     function Path(points::Array{Array{Float64,1},1}, point_names::Array{String,1}, segment_resolution::Array{Int64,1})
         return new(points, point_names, segment_resolution)
