@@ -12,8 +12,6 @@ main_file_folder = main_file_filename[1:findlast(main_file_filename, '/')]
 
 # get all files within that folder
 all_files = readdir(main_file_folder)
-# build the absolute filename
-#all_files = String["$(main_file_folder)$(f)" for f in all_files]
 
 # open the main file
 main_file = open(main_file_filename, "r")
