@@ -160,7 +160,7 @@ export buildFolders
 #
 ################################################################################
 
-# included in subfile (1154 lines)
+# included in subfile (1153 lines)
 include("LatticePhysics_type_definitions.jl")
 
 
@@ -209,7 +209,7 @@ include("LatticePhysics_type_definitions.jl")
 #
 ################################################################################
 
-# included in subfile (4024 lines)
+# included in subfile (4023 lines)
 include("LatticePhysics_unitcell_implementations.jl")
 
 
@@ -230,7 +230,7 @@ include("LatticePhysics_unitcell_implementations.jl")
 #
 ################################################################################
 
-# included in subfile (555 lines)
+# included in subfile (554 lines)
 include("LatticePhysics_unitcell_construction.jl")
 
 
@@ -260,7 +260,7 @@ include("LatticePhysics_unitcell_construction.jl")
 #
 ################################################################################
 
-# included in subfile (2080 lines)
+# included in subfile (2079 lines)
 include("LatticePhysics_lattice_construction.jl")
 
 
@@ -289,7 +289,7 @@ include("LatticePhysics_lattice_construction.jl")
 #
 ################################################################################
 
-# included in subfile (749 lines)
+# included in subfile (748 lines)
 include("LatticePhysics_lattice_modification.jl")
 
 
@@ -318,7 +318,7 @@ include("LatticePhysics_lattice_modification.jl")
 #
 ################################################################################
 
-# included in subfile (334 lines)
+# included in subfile (333 lines)
 include("LatticePhysics_plaquette_operations.jl")
 
 
@@ -339,7 +339,7 @@ include("LatticePhysics_plaquette_operations.jl")
 #
 ################################################################################
 
-# included in subfile (247 lines)
+# included in subfile (246 lines)
 include("LatticePhysics_interaction_matrices.jl")
 
 
@@ -373,7 +373,7 @@ include("LatticePhysics_interaction_matrices.jl")
 #
 ################################################################################
 
-# included in subfile (557 lines)
+# included in subfile (556 lines)
 include("LatticePhysics_paths.jl")
 
 
@@ -405,7 +405,7 @@ include("LatticePhysics_paths.jl")
 #
 ################################################################################
 
-# included in subfile (2095 lines)
+# included in subfile (2094 lines)
 include("LatticePhysics_SVG_plotting.jl")
 
 
@@ -428,7 +428,7 @@ include("LatticePhysics_SVG_plotting.jl")
 #
 ################################################################################
 
-# included in subfile (351 lines)
+# included in subfile (350 lines)
 include("LatticePhysics_bandstructures.jl")
 
 
@@ -452,7 +452,7 @@ include("LatticePhysics_bandstructures.jl")
 #
 ################################################################################
 
-# included in subfile (353 lines)
+# included in subfile (352 lines)
 include("LatticePhysics_fermi_surfaces.jl")
 
 
@@ -468,6 +468,6 @@ include("LatticePhysics_fermi_surfaces.jl")
 
 
 # MODULE END
-# total lines: 474 + 1154 + 4024 + 555 + 2080 + 749 + 334 + 247 + 557 + 2095 + 351 + 353
-# = 12.973 lines
+# total lines: 473 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 556 + 2094 + 350 + 352
+# = 12961 lines
 end
