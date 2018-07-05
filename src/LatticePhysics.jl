@@ -469,7 +469,7 @@ include("LatticePhysics_bandstructures.jl")
 #
 ################################################################################
 
-# included in subfile (774 lines)
+# included in subfile (772 lines)
 include("LatticePhysics_fermi_surfaces.jl")
 
 
@@ -485,6 +485,6 @@ include("LatticePhysics_fermi_surfaces.jl")
 
 
 # MODULE END
-# total lines: 492 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 774
-# = 13401 lines
+# total lines: 490 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 772
+# = 13397 lines
 end
