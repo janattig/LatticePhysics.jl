@@ -45,8 +45,8 @@
 #  10) BANDSTRUCTURES (CALCULATION AND PLOTTING)
 #
 #  11) FERMI SURFACES (CALCULATION AND PLOTTING)
-#       - 2D lattices
-#       - TODO 3D lattices
+#       - 2D unitcells
+#       - 3D unitcells
 #
 ################################################################################
 
@@ -457,7 +457,7 @@ include("LatticePhysics_bandstructures.jl")
 
 ################################################################################
 #
-#   METHODS FOR CONSTRUCTION OF FERMI SURFACES
+#   METHODS FOR CONSTRUCTION OF FERMI SURFACES (2D & 3D)
 #
 #   STRUCTURE OF THE FILE
 #
@@ -466,8 +466,6 @@ include("LatticePhysics_bandstructures.jl")
 #   2) PLOTTING OF FERMI SURFACE
 #       - plotting from points
 #       - plotting from unitcell
-#
-#   NOTE: So far all of this code is for 2D only!
 #
 ################################################################################
 

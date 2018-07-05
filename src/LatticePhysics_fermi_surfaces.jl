@@ -1,6 +1,6 @@
 ################################################################################
 #
-#   METHODS FOR CONSTRUCTION OF FERMI SURFACES
+#   METHODS FOR CONSTRUCTION OF FERMI SURFACES (2D & 3D)
 #
 #   STRUCTURE OF THE FILE
 #
@@ -9,8 +9,6 @@
 #   2) PLOTTING OF FERMI SURFACE
 #       - plotting from points
 #       - plotting from unitcell
-#
-#   NOTE: So far all of this code is for 2D only!
 #
 ################################################################################
 
