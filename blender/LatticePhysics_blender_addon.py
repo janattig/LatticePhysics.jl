@@ -197,7 +197,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         print('File extension:', extension)
 
         # add lattice into blender
-        addLatticeDump(self.filepath)
+        loadLatticeDump(self.filepath)
 
         # return
         return {'FINISHED'}
