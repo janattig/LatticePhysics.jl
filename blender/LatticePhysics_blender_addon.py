@@ -1,8 +1,34 @@
 # imports
 import bpy
+import os
+
+from bpy.props import StringProperty, BoolProperty
+from bpy_extras.io_utils import ImportHelper
+from bpy.types import Operator
+
 import math
 import mathutils
 
+
+# BLENDER ADDON INFORMATION
+bl_info = {
+    "name": "LatticePhysics Support",
+    "author": "Jan Attig",
+    "version": (1, 0, 0),
+    "blender": (2, 76, 0),
+    "location": "Import-Export",
+    "description": "Loading LatticePhysics dumps of lattices",
+    "category": "Import-Export",
+}
+
+
+
+
+
+
+##########---------------------------------
+# STEP 1 #  FUNCTIONS FOR ADDING PARTS
+##########---------------------------------
 
 
 # DEFINE A FUNCTION TO ADD A MATERIAL
@@ -102,40 +128,91 @@ def addTube(bond_index, x_from,y_from,z_from, x_to,y_to,z_to, radius, color):
 
 
 
+##########---------------------------------
+# STEP 2 #  FUNCTION FOR LOADING LATTICE
+##########---------------------------------
+def loadLatticeDump(filename):
 
-# file
-filename = "/home/jattig/PackageDevelopement/LatticePhysics.jl/test_2.txt"
+    # read in file
+    with open(filename) as f:
+        lines = f.readlines()
 
-# read in file
-with open(filename) as f:
-    lines = f.readlines()
+    # remove whitespace characters like `\n` at the end of each line
+    lines = [x.strip() for x in lines]
 
-# remove whitespace characters like `\n` at the end of each line
-lines = [x.strip() for x in lines]
+    # set the render engine
+    bpy.context.scene.render.engine = "CYCLES"
+
+    # go through all lines and check if a site or bond has to be added
+    for l in lines:
+        # line specifying a material
+        if l.startswith("material:\t"):
+            # Get material properties
+            name=l.split("\t")[1]
+            color = [float(x)/255.0 for x in l.split("\t")[2].split(", ")]
+            # add material
+            addMaterial(name, color)
+        # line specifying a site
+        if l.startswith("site:\t"):
+            # get the data from the line
+            sphere_data = [float(x) for x in l.split("\t")[1].split(", ")]
+            # add the site
+            addSphere(int(sphere_data[0]),sphere_data[1],sphere_data[2],sphere_data[3],sphere_data[4],l.split("\t")[2])
+        # line specifying a bond
+        if l.startswith("bond:\t"):
+            # get the data from the line
+            bond_data = [float(x) for x in l.split("\t")[1].split(", ")]
+            # add the bond
+            addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
 
 
 
-# set the render engine
-bpy.context.scene.render.engine = "CYCLES"
 
-# go through all lines and check if a site or bond has to be added
-for l in lines:
-    # line specifying a material
-    if l.startswith("material:\t"):
-        # Get material properties
-        name=l.split("\t")[1]
-        color = [float(x)/255.0 for x in l.split("\t")[2].split(", ")]
-        # add material
-        addMaterial(name, color)
-    # line specifying a site
-    if l.startswith("site:\t"):
-        # get the data from the line
-        sphere_data = [float(x) for x in l.split("\t")[1].split(", ")]
-        # add the site
-        addSphere(int(sphere_data[0]),sphere_data[1],sphere_data[2],sphere_data[3],sphere_data[4],l.split("\t")[2])
-    # line specifying a bond
-    if l.startswith("bond:\t"):
-        # get the data from the line
-        bond_data = [float(x) for x in l.split("\t")[1].split(", ")]
-        # add the bond
-        addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
+
+##########---------------------------------
+# STEP 3 #  BLENDER ADDON DEFINITION
+##########---------------------------------
+class LatticePhysicsBlenderAddon(Operator, ImportHelper):
+
+    # id and label
+    bl_idname = "latticephysics.open_filebrowser"
+    bl_label = "Import LatticePhysics dump file"
+
+    # global filter options
+    filter_glob = StringProperty(
+        default='*.lpbd;*.txt',
+        options={'HIDDEN'}
+    )
+
+    # EXECUTE THE ADDON
+    def execute(self, context):
+        """Import selected LatticePhysics lattice file into Blender"""
+
+        # get filename and extension
+        filename, extension = os.path.splitext(self.filepath)
+
+        # print the selected results
+        print('Selected file:', self.filepath)
+        print('File name:', filename)
+        print('File extension:', extension)
+
+        # add lattice into blender
+        addLatticeDump(self.filepath)
+
+        # return
+        return {'FINISHED'}
+
+
+# REGISTER FUNCTION (to register addon)
+def register():
+    bpy.utils.register_class(LatticePhysicsBlenderAddon)
+
+
+# UNREGISTER FUNCTION (to unregister addon)
+def unregister():
+    bpy.utils.unregister_class(LatticePhysicsBlenderAddon)
+
+
+# Call register function if the file is executed
+if __name__ == "__main__":
+    register()
