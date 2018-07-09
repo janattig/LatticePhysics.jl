@@ -5,6 +5,18 @@ import mathutils
 
 
 
+# DEFINE A FUNCTION TO ADD A MATERIAL
+def addMaterial(name, color):
+    # get the material
+    material = bpy.data.materials.get(name)
+    if material is None:
+        # create material
+        material = bpy.data.materials.new(name=name)
+    # set the color
+    material.diffuse_color = (color[0], color[1], color[2])
+
+
+
 # DEFINE A FUNCTION TO ADD A SPHERE
 def addSphere(site_index, x,y,z, radius, color):
     # set the correct position
@@ -21,8 +33,17 @@ def addSphere(site_index, x,y,z, radius, color):
     obj.modifiers.new("subd", "SUBSURF")
     obj.modifiers["subd"].levels = 2
     obj.modifiers["subd"].render_levels = 3
+    # set the material (color)
+    material = bpy.data.materials.get(color)
+    if obj.data.materials:
+        obj.data.materials[0] = material
+    else:
+        obj.data.materials.append(material)
     # set smooth shading
     bpy.ops.object.shade_smooth()
+
+
+
 
 # DEFINE A FUNCTION TO ADD A TUBE
 def addTube(bond_index, x_from,y_from,z_from, x_to,y_to,z_to, radius, color):
@@ -50,6 +71,12 @@ def addTube(bond_index, x_from,y_from,z_from, x_to,y_to,z_to, radius, color):
     obj = bpy.context.active_object
     # set the name
     obj.name = "bond_{0}".format(bond_index)
+    # set the material (color)
+    material = bpy.data.materials.get(color)
+    if obj.data.materials:
+        obj.data.materials[0] = material
+    else:
+        obj.data.materials.append(material)
     # set smooth shading
     bpy.ops.object.shade_smooth()
 
@@ -67,17 +94,28 @@ with open(filename) as f:
 lines = [x.strip() for x in lines]
 
 
+
+# set the render engine
+bpy.context.scene.render.engine = "CYCLES"
+
 # go through all lines and check if a site or bond has to be added
 for l in lines:
+    # line specifying a material
+    if l.startswith("material:\t"):
+        # Get material properties
+        name=l.split("\t")[1]
+        color = [float(x)/255.0 for x in l.split("\t")[2].split(", ")]
+        # add material
+        addMaterial(name, color)
     # line specifying a site
     if l.startswith("site:\t"):
         # get the data from the line
         sphere_data = [float(x) for x in l.split("\t")[1].split(", ")]
         # add the site
-        addSphere(int(sphere_data[0]),sphere_data[1],sphere_data[2],sphere_data[3],sphere_data[4],[int(sphere_data[5]),int(sphere_data[6]),int(sphere_data[7])])
+        addSphere(int(sphere_data[0]),sphere_data[1],sphere_data[2],sphere_data[3],sphere_data[4],l.split("\t")[2])
     # line specifying a bond
     if l.startswith("bond:\t"):
         # get the data from the line
         bond_data = [float(x) for x in l.split("\t")[1].split(", ")]
         # add the bond
-        addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],[int(bond_data[8]),int(bond_data[9]),int(bond_data[10])])
+        addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])

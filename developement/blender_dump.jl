@@ -7,8 +7,8 @@ function dumpBlenderFile(
             bond_thickness::Float64=-0.1,
             print_used_options::Bool=false,
             site_labels::String="OFF",
-    		colorcode_sites::Dict = Dict(0 => [255,255,255], 1 => [255,255,255]),
-    		colorcode_bonds::Dict = Dict("0" => [0,0,0], "1.0" => [0,0,0]),
+    		colorcode_sites::Dict = Dict(0 => [255,255,255]),
+    		colorcode_bonds::Dict = Dict("0" => [0,0,0]),
             colorcode_bonds_automation::String = "OFF"
         )
 
@@ -242,6 +242,30 @@ function dumpBlenderFile(
     # open the file in write mode
     f = open(filename_output, "w")
 
+    # write all materials (bond / site color directories)
+    for k in keys(colorcode_sites)
+        # write start of the line
+        write(f, "material:\t")
+        # write the name
+        write(f, "site_material_$(k)\t")
+        # write the color
+        site_color = colorcode_sites[k]
+        write(f, "$(site_color[1]), $(site_color[2]), $(site_color[3])")
+        # write line break
+        write(f, "\n")
+    end
+    for k in keys(colorcode_bonds)
+        # write start of the line
+        write(f, "material:\t")
+        # write the name
+        write(f, "bond_material_$(k)\t")
+        # write the color
+        connection_color = colorcode_bonds[k]
+        write(f, "$(connection_color[1]), $(connection_color[2]), $(connection_color[3])")
+        # write line break
+        write(f, "\n")
+    end
+
     # write all sites
     for (i,p) in enumerate(positions)
         # write start of the line
@@ -257,8 +281,11 @@ function dumpBlenderFile(
         # write the radius
         write(f, ", $(site_radius)")
         # write the color
-        site_color = get(colorcode_sites, indices_to_plot[i], colorcode_sites[0])
-        write(f, ", $(site_color[1]), $(site_color[2]), $(site_color[3])")
+        if indices_to_plot[i] in keys(colorcode_sites)
+            write(f, "\tsite_material_$(indices_to_plot[i])")
+        else
+            write(f, "\tsite_material_$(0)")
+        end
         # write line break
         write(f, "\n")
     end
@@ -290,8 +317,11 @@ function dumpBlenderFile(
             # write the thickness
             write(f, ", $(bond_thickness)")
             # write the color
-			connection_color = get(colorcode_bonds, string(c[3]), colorcode_bonds["0"])
-            write(f, ", $(connection_color[1]), $(connection_color[2]), $(connection_color[3])")
+            if string(c[3]) in keys(colorcode_bonds)
+                write(f, "\tbond_material_$(string(c[3]))")
+            else
+                write(f, "\tbond_material_0")
+            end
             # write line break
             write(f, "\n")
         end
