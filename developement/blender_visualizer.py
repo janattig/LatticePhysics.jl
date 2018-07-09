@@ -13,8 +13,30 @@ def addMaterial(name, color):
         # create material
         material = bpy.data.materials.new(name=name)
     # set the color
-    material.diffuse_color = (color[0], color[1], color[2])
-
+    material.diffuse_color = color
+    # use nodes for rendering
+    material.use_nodes = True
+    # clear the default nodes
+    material.node_tree.nodes.clear()
+    # add the necessary nodes
+    diffuse = material.node_tree.nodes.new(type = 'ShaderNodeBsdfDiffuse')
+    glossy  = material.node_tree.nodes.new(type = 'ShaderNodeBsdfGlossy')
+    output  = material.node_tree.nodes.new(type = 'ShaderNodeOutputMaterial')
+    mixer   = material.node_tree.nodes.new(type = 'ShaderNodeMixShader')
+    # link the nodes
+    material.node_tree.links.new(diffuse.outputs['BSDF'],   mixer.inputs[1])
+    material.node_tree.links.new( glossy.outputs['BSDF'],   mixer.inputs[2])
+    material.node_tree.links.new(  mixer.outputs['Shader'], output.inputs['Surface'])
+    # set some default values
+    mixer.inputs[0].default_value             = 0.15  # mixing between diffuse and glossy
+    diffuse.inputs[0].default_value           = (color[0],color[1],color[2],1.0)  # color of the material
+    diffuse.inputs['Roughness'].default_value = 0.015 # Roughness of the diffuse part of material
+    glossy.inputs['Roughness'].default_value  = 0.005 # Roughness of the glossy part of material
+    glossy.inputs[0].default_value            = (1.0,1.0,1.0, 1.0)  # color of the gloss
+    # fix location of nodes
+    output.location = (200, 0)
+    diffuse.location = (-200, 100)
+    glossy.location = (-200, -100)
 
 
 # DEFINE A FUNCTION TO ADD A SPHERE
@@ -41,8 +63,6 @@ def addSphere(site_index, x,y,z, radius, color):
         obj.data.materials.append(material)
     # set smooth shading
     bpy.ops.object.shade_smooth()
-
-
 
 
 # DEFINE A FUNCTION TO ADD A TUBE
