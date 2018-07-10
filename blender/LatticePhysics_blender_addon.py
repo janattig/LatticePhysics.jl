@@ -49,20 +49,23 @@ def addMaterial(name, color):
     glossy  = material.node_tree.nodes.new(type = 'ShaderNodeBsdfGlossy')
     output  = material.node_tree.nodes.new(type = 'ShaderNodeOutputMaterial')
     mixer   = material.node_tree.nodes.new(type = 'ShaderNodeMixShader')
+    fresnel = material.node_tree.nodes.new(type = 'ShaderNodeFresnel')
     # link the nodes
+    material.node_tree.links.new(fresnel.outputs['Fac'],    mixer.inputs['Fac'])
     material.node_tree.links.new(diffuse.outputs['BSDF'],   mixer.inputs[1])
     material.node_tree.links.new( glossy.outputs['BSDF'],   mixer.inputs[2])
     material.node_tree.links.new(  mixer.outputs['Shader'], output.inputs['Surface'])
+    material.node_tree.links.new(  mixer.outputs['Shader'], output.inputs['Surface'])
     # set some default values
-    mixer.inputs[0].default_value             = 0.15  # mixing between diffuse and glossy
     diffuse.inputs[0].default_value           = (color[0],color[1],color[2],1.0)  # color of the material
-    diffuse.inputs['Roughness'].default_value = 0.015 # Roughness of the diffuse part of material
-    glossy.inputs['Roughness'].default_value  = 0.005 # Roughness of the glossy part of material
+    diffuse.inputs['Roughness'].default_value = 0.75  # Roughness of the diffuse part of material
+    glossy.inputs['Roughness'].default_value  = 0.05  # Roughness of the glossy part of material
     glossy.inputs[0].default_value            = (1.0,1.0,1.0, 1.0)  # color of the gloss
     # fix location of nodes
-    output.location = (200, 0)
-    diffuse.location = (-200, 100)
-    glossy.location = (-200, -100)
+    output.location  = ( 200, 0)
+    fresnel.location = (-200, 150)
+    diffuse.location = (-200, 0)
+    glossy.location  = (-200, -150)
 
 
 # DEFINE A FUNCTION TO ADD A SPHERE
