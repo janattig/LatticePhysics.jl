@@ -405,7 +405,7 @@ function plotBandstructure(
             save_filename::String="NONE"
         )
     # calculate the bandstructure
-    bandstructure = getBandStructureAlongPath(unitcell, path, resolution=resolution, enforce_hermitian=enforce_hermitian)
+    bandstructure = getBandStructure(unitcell, path, resolution=resolution, enforce_hermitian=enforce_hermitian)
     # call the respective function
     return plotBandstructure(
                 bandstructure;
@@ -429,7 +429,7 @@ function plotBandstructure(
             save_filename::String="NONE"
         )
     # calculate the bandstructure
-    bandstructure = getBandStructureAlongPath(matrixFunction, path, resolution=resolution)
+    bandstructure = getBandStructure(matrixFunction, path, resolution=resolution)
     # call the respective function
     return plotBandstructure(
                 bandstructure;
