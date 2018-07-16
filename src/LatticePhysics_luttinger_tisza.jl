@@ -1,4 +1,26 @@
-
+################################################################################
+#
+#   METHODS FOR LUTTINGER TISZA CALCULATION
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) TYPE LTBANDSTRUCTURE
+#       - type definition
+#       - TODO printInfo function
+#
+#   2) TODO CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
+#
+#   3) TODO PLOTTING OF LT BAND STRUCTURES
+#       - TODO plotting of Bandstructure objects
+#       - TODO plotting of bandstructures of unitcells along paths
+#
+#   4) TODO CALCULATION OF LT GROUND STATES (k space)
+#
+#   5) TODO PLOTTING OF LT GROUND STATES (k space)
+#       - TODO plotting from points
+#       - TODO plotting from unitcell
+#
+################################################################################
 
 
 
