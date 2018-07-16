@@ -58,14 +58,14 @@ export Bandstructure
 #
 ################################################################################
 """
-    getBandStructureAlongPath(
+    getBandStructure(
                 unitcell::Unitcell,
                 path::Path
              [; resolution::Int64=-1,
                 enforce_hermitian::Bool=false ]
             )
 
-    getBandStructureAlongPath(
+    getBandStructure(
                 matrixFunction::Function,
                 path::Path
              [; resolution::Int64=-1 ]
@@ -78,14 +78,14 @@ along some path given by a `Path` object and returns a `Bandstructure` object.
 # Examples
 
 ```julia-repl
-julia> bandstructure = getBandStructureAlongPath(unitcell, path)
+julia> bandstructure = getBandStructure(unitcell, path)
 LatticePhysics.Bandstructure(...)
 
-julia> bandstructure = getBandStructureAlongPath(unitcell, path, resolution=1000)
+julia> bandstructure = getBandStructure(unitcell, path, resolution=1000)
 LatticePhysics.Bandstructure(...)
 ```
 """
-function getBandStructureAlongPath(
+function getBandStructure(
                 unitcell::Unitcell,
                 path::Path;
                 resolution::Int64=-1,
@@ -141,7 +141,7 @@ function getBandStructureAlongPath(
     # return the band structure
     return bandstructure
 end
-function getBandStructureAlongPath(
+function getBandStructure(
                 matrixFunction::Function,
                 path::Path;
                 resolution::Int64=-1
@@ -186,7 +186,7 @@ function getBandStructureAlongPath(
             # diagonalize the matrix
             eigenvalues = eigvals(matrix)
             # save all the eigenvalues to their lists
-            for b in 1:length(unitcell.basis)
+            for b in 1:length(eigenvalues)
                 segments_total[s][b][i] = eigenvalues[b]
             end
         end
@@ -198,7 +198,7 @@ function getBandStructureAlongPath(
     # return the band structure
     return bandstructure
 end
-export getBandStructureAlongPath
+export getBandStructure
 
 
 
@@ -230,8 +230,15 @@ export getBandStructureAlongPath
             ... ]
         )
 
+    plotBandstructure(
+            matrixFunction::Function,
+            path::Path
+         [; resolution::Int64=-1,
+            ... ]
+        )
+
 Plots the band struture of a passed `Bandstructure` object along some its path and returns the plot as a `PyPlot.Figure` object.
-Alternatively, one can pass a `Unitcell` and `Path` to calculate the band structure which is plotted.
+Alternatively, one can pass a `Unitcell` (or a matrix function) and `Path` to calculate the band structure which is plotted.
 
 Additional options include setting plotting related options of `PyPlot` as well as determining if the plot is saved or shown.
 
@@ -399,6 +406,30 @@ function plotBandstructure(
         )
     # calculate the bandstructure
     bandstructure = getBandStructureAlongPath(unitcell, path, resolution=resolution, enforce_hermitian=enforce_hermitian)
+    # call the respective function
+    return plotBandstructure(
+                bandstructure;
+                limits_energy=limits_energy,
+                plot_title=plot_title,
+                plot_color=plot_color,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename
+            )
+end
+function plotBandstructure(
+            matrixFunction::Function,
+            path::Path;
+            resolution::Int64=-1,
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+    # calculate the bandstructure
+    bandstructure = getBandStructureAlongPath(matrixFunction, path, resolution=resolution)
     # call the respective function
     return plotBandstructure(
                 bandstructure;
