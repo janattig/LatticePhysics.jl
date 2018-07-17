@@ -74,7 +74,7 @@ using PyCall
 using PyPlot
 
 # Optim is used for minimizing the band structure to find the ground state energy of the system
-#using Optim
+using Optim
 
 
 

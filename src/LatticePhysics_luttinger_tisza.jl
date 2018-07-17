@@ -63,6 +63,38 @@ export LTBandstructure
 
 
 
+# function to calculate the deviation from best result
+function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64, alpha::Array{Float64,1})
+    # build up the global spin vector
+    spin_vector = zeros(length(spin_eigenvectors[1]))
+    for s in 1:length(spin_eigenvectors)
+        spin_vector = spin_vector .+ alpha[s].*spin_eigenvectors[s]
+    end
+    # find out the individual lengths of spins
+    spin_lengths = spin_vector .* conj.(spin_vector)
+    spin_lengths = [sum(spin_lengths[s:s+spin_dimension-1]) for s in 1:spin_dimension:length(spin_lengths)]
+    # find out the deviation from unity
+    dl = sum(abs.((spin_lengths .- 1)))
+    return dl
+end
+
+
+
+# Definition of constraint
+function getLTConstraint(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64)
+    # detrmine what to do based on the number of eigenvectors
+    if length(spin_eigenvectors) == 1
+        # optimize the function
+        return Optim.minimum(Optim.optimize(x -> deviation(spin_eigenvectors, spin_dimension, x), ones(length(spin_eigenvectors)), Optim.GradientDescent()))
+    else
+        # optimize the function
+        return Optim.minimum(Optim.optimize(x -> deviation(spin_eigenvectors, spin_dimension, x), ones(length(spin_eigenvectors))))
+    end
+end
+
+
+
+
 
 # Function to create a bond strength matrix
 function getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
@@ -101,7 +133,7 @@ function getSpinInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Floa
     # get the spin dimension
     spin_dimension = size(bondInteractionMatrix(unitcell.connections[1]), 1)
     # create a new matrix
-    matrix = zeros(Complex, 3*length(unitcell.basis), 3*length(unitcell.basis))
+    matrix = zeros(Complex, spin_dimension*length(unitcell.basis), spin_dimension*length(unitcell.basis))
     # iterate over all connections
     for c in unitcell.connections
         # get the indices
@@ -170,7 +202,8 @@ function getLTBandStructure(
                 path::Path,
                 bondInteractionMatrix::Function = getBondInteractionMatrixHeisenbergKitaev;
                 resolution::Int64=-1,
-                enforce_hermitian::Bool=false
+                enforce_hermitian::Bool=false,
+                epsilon_degenerate::Float64=1e-8
             )
 
     # maybe modify the path resolution
@@ -215,10 +248,45 @@ function getLTBandStructure(
             # get the interaction matrix for this k
             matrix = getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix)
             # diagonalize the matrix
-            eigenvalues = eigvals(matrix)
+            eigenfactorization = eigfact(matrix)
+            eigenvalues  = eigenfactorization[:values]
+            eigenvectors = eigenfactorization[:vectors]
             # save all the eigenvalues to their lists
             for b in 1:length(eigenvalues)
                 segments_total[s][b][i] = eigenvalues[b]
+            end
+            # compute the constraint, first find out what bands are degenerate
+            # list of bands they are degenerate with
+            degenerate = zeros(Int64,   length(eigenvalues)) .- 1
+            treat      = zeros(Int64,   length(eigenvalues))
+            for b in 2:length(eigenvalues)
+                # treat the current band
+                treat[b] = 1
+                # check if degenerate
+                if eigenvalues[b] - epsilon_degenerate <= eigenvalues[b-1]
+                    # band b is degenerate with band b-1
+                    degenerate[b-1] = b
+                    # dont treat the band as it is treated before
+                    treat[b] = 0
+                end
+            end
+            # iterate over all bands
+            for b in 1:length(eigenvalues)
+                # if not treated, continue
+                if treat[b] == 0
+                    continue
+                end
+                # if treated, compile list of all bands
+                degenerate_bands = Int64[b]
+                while degenerate[degenerate_bands[end]] != -1
+                    push!(degenerate_bands, degenerate[degenerate_bands[end]])
+                end
+                # get the LT constraint
+                LT_constraint = getLTConstraint([eigenvectors[:,j] for j in degenerate_bands], spin_dimension)
+                # save the constraint
+                for d in degenerate_bands
+                    constraints_total[s][d][i] = LT_constraint
+                end
             end
         end
     end
