@@ -48,7 +48,7 @@ the several functions to calculate band structures.
 # Examples
 
 ```julia-repl
-julia> path = Bandstructure(path, bands)
+julia> bandstructure = Bandstructure(path, bands)
 LatticePhysics.Bandstructure(...)
 ```
 """
