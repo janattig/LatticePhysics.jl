@@ -17,7 +17,7 @@
 #       - plotting of Bandstructure objects
 #       - plotting of bandstructures of unitcells along paths
 #
-#   4) TODO CALCULATION OF LT GROUND STATES (k space manifold)
+#   4) CALCULATION OF LT GROUND STATES (k space manifold)
 #
 #   5) TODO PLOTTING OF LT GROUND STATES (k space manifold)
 #       - TODO plotting from points
