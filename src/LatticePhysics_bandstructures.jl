@@ -84,14 +84,14 @@ export Bandstructure
 #
 ################################################################################
 """
-    getBandStructure(
+    getBandstructure(
                 unitcell::Unitcell,
                 path::Path
              [; resolution::Int64=-1,
                 enforce_hermitian::Bool=false ]
             )
 
-    getBandStructure(
+    getBandstructure(
                 matrixFunction::Function,
                 path::Path
              [; resolution::Int64=-1 ]
@@ -104,14 +104,14 @@ along some path given by a `Path` object and returns a `Bandstructure` object.
 # Examples
 
 ```julia-repl
-julia> bandstructure = getBandStructure(unitcell, path)
+julia> bandstructure = getBandstructure(unitcell, path)
 LatticePhysics.Bandstructure(...)
 
-julia> bandstructure = getBandStructure(unitcell, path, resolution=1000)
+julia> bandstructure = getBandstructure(unitcell, path, resolution=1000)
 LatticePhysics.Bandstructure(...)
 ```
 """
-function getBandStructure(
+function getBandstructure(
                 unitcell::Unitcell,
                 path::Path;
                 resolution::Int64=-1,
@@ -167,7 +167,7 @@ function getBandStructure(
     # return the band structure
     return bandstructure
 end
-function getBandStructure(
+function getBandstructure(
                 matrixFunction::Function,
                 path::Path;
                 resolution::Int64=-1
@@ -224,7 +224,7 @@ function getBandStructure(
     # return the band structure
     return bandstructure
 end
-export getBandStructure
+export getBandstructure
 
 
 

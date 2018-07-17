@@ -409,7 +409,7 @@ export getSpinInteractionMatrixKSpace
 #
 ################################################################################
 """
-    getLTBandStructure(
+    getLTBandstructure(
                 unitcell::Unitcell,
                 path::Path,
                 bondInteractionMatrix::Function
@@ -433,14 +433,14 @@ Note 2: The bond interaction matrix specifies the dimension of interacting spins
 # Examples
 
 ```julia-repl
-julia> bandstructure = getLTBandStructure(unitcell, path)
+julia> bandstructure = getLTBandstructure(unitcell, path)
 LatticePhysics.LTBandstructure(...)
 
-julia> bandstructure = getLTBandStructure(unitcell, path, resolution=1000)
+julia> bandstructure = getLTBandstructure(unitcell, path, resolution=1000)
 LatticePhysics.LTBandstructure(...)
 ```
 """
-function getLTBandStructure(
+function getLTBandstructure(
                 unitcell::Unitcell,
                 path::Path,
                 bondInteractionMatrix::Function = getBondInteractionMatrixHeisenberg;
@@ -540,3 +540,233 @@ function getLTBandStructure(
     # return the LT band structure
     return bandstructure
 end
+export getLTBandstructure
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+#
+#   BAND STRUCTURE PLOTTING
+#
+################################################################################
+
+
+"""
+    plotLTBandstructure(
+            bandstructure::LTBandstructure
+         [; constraint::Float64=1e-6
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE" ]
+            )
+
+    plotBandstructure(
+            unitcell::Unitcell,
+            path::Path,
+         [  bondInteractionMatrix::Function
+          ; resolution::Int64=-1,
+            enforce_hermitian::Bool=false,
+            ... ]
+        )
+
+
+Plots the Luttinger Tisza band struture of a passed `LTBandstructure` object along some its path
+and returns the plot as a `PyPlot.Figure` object.
+Alternatively, one can pass a `Unitcell` and `Path` (and optionally a bond matrix function)
+to calculate the Luttinger Tisza band structure which is plotted.
+
+Additional options include setting the LT constraint,
+plotting related options of `PyPlot` as well as determining if the plot is saved or shown.
+
+
+# Examples
+
+```julia-repl
+julia> plotBandstructure(unitcell, path)
+PyPlot.Figure(...)
+
+julia> plotBandstructure(unitcell, path, showPlot=false)
+PyPlot.Figure(...)
+
+julia> plotBandstructure(unitcell, save_filename="myplot.pdf")
+PyPlot.Figure(...)
+
+julia> plotBandstructure(bandstructure)
+PyPlot.Figure(...)
+```
+"""
+function plotLTBandstructure(
+            bandstructure::Bandstructure;
+            constraint::Float64=1e-6,
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+    # get the path from the bandstructure
+    path = bandstructure.path
+
+    # configure plot environment
+    rc("font", family="serif")
+
+    # create a new figure
+    fig = figure(figsize=figsize)
+
+
+
+
+    ###########################
+    #   PLOT BANDS
+    ###########################
+
+    # plot the band structure
+    for s in 1:length(bandstructure.bands)
+        # plot the segment
+        for b in bandstructure.bands[s]
+            # plot the band
+            plot(
+                collect(1:path.segment_resolution[s]) .+ sum(path.segment_resolution[1:s-1]), # xvalues
+                b,
+                "-$(plot_color)"
+            )
+        end
+    end
+
+
+
+    ###########################
+    #   SET ALL TICKS (POINTS)
+    ###########################
+
+    # get the current axis
+    ax = gca()
+    axx = ax[:get_xaxis]()
+    # compile tick positions and labels
+    point_pos = Int64[]
+    push!(point_pos, 1)
+    for l in 1:length(path.segment_resolution)
+        push!(point_pos, sum(path.segment_resolution[1:l]))
+    end
+    point_labels = String[path.point_names[i] for i in 1:length(path.points)]
+    # configure tick labels
+    xticks(point_pos, point_labels)
+    # configure ticks
+    axx[:set_tick_params](which="both", direction="out")
+    axx[:set_tick_params](which="top", color="none")
+    axy = ax[:get_yaxis]()
+    axy[:set_tick_params](which="both", direction="out")
+
+    # plot vertical lines for each point
+    for p in point_pos
+        axvline(p,color=[0.6, 0.6, 0.6], linestyle="--")
+    end
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # label the axis
+    xlabel("momentum")
+    ylabel("energy")
+
+    # energy limits
+    # check if specific boundaries are desired
+    if !(limits_energy == "AUTO")
+        ylim(limits_energy[1], limits_energy[2])
+    end
+
+    # momentum limits (x axis)
+    xlim(0, maximum(point_pos)+1)
+
+    # set the title
+    if plot_title == "AUTO"
+        # set the title to an automatically generated title
+        title("Luttinger Tisza spectrum along $(getPathString(path)), constraint $(constraint)")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        # set the title to the given title
+        title(plot_title)
+    end
+
+
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # save the plot
+    if save_filename != "NONE"
+        # make sure the directory exists
+        if contains(save_filename, "/")
+    		# get the containing folder
+    		folder = save_filename[1:findlast(save_filename, '/')]
+    		# build the path to that folder
+    		mkpath(folder)
+    	end
+        # save the plot
+        savefig(save_filename)
+    end
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return fig
+end
+function plotLTBandstructure(
+            unitcell::Unitcell,
+            path::Path,
+            bondInteractionMatrix::Function = getBondInteractionMatrixHeisenberg;
+            constraint::Float64=1e-6,
+            resolution::Int64=-1,
+            enforce_hermitian::Bool=false,
+            limits_energy="AUTO",
+            plot_title::String="",
+            plot_color="b",
+            figsize::Tuple=(6,4),
+            showPlot::Bool=true,
+            save_filename::String="NONE"
+        )
+    # calculate the bandstructure
+    bandstructure = getLTBandStructure(unitcell, path, bondInteractionMatrix, resolution=resolution, enforce_hermitian=enforce_hermitian)
+    # call the respective function
+    return plotLTBandstructure(
+                bandstructure;
+                constraint=constraint,
+                limits_energy=limits_energy,
+                plot_title=plot_title,
+                plot_color=plot_color,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename
+            )
+end
+export plotBandstructure
