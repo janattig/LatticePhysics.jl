@@ -9,7 +9,7 @@
 #       - printInfo function
 #
 #   2) CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
-#       - LT constraint and deviation functions
+#      (- LT constraint and deviation functions (NOT EXPORTED) )
 #       - spin interaction matrices
 #       - calculation of band structures
 #
@@ -107,6 +107,7 @@ end
 
 
 # INTERNAL FUNCTIONS CONCERNING THE CONSTRAINT IN THE LT CALCULATION
+# (not exported)
 
 # function to calculate the deviation from best result
 function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64, alpha::Array{Float64,1})
@@ -202,6 +203,50 @@ export getBondInteractionMatrixHeisenberg
 export getBondInteractionMatrixHeisenbergKitaev
 
 # Function to produce interaction matrices
+"""
+    getSpinInteractionMatrixKSpace(
+        unitcell::Unitcell,
+        k_vector::Array{Float64,1},
+     [  bondInteractionMatrix::Function
+      ; enforce_hermitian::Bool=false ]
+    )
+
+Constructs the spin interaction matrix (in *momentum* space at point `k_vector`)
+for use in a Luttinger Tisza calculation of a given `Unitcell` object.
+The matrix is a sNxsN matrix where N is the number of sites in the given object and s is the spin dimension.
+Entries (i+s,j+s') contain the interactions between sites i and j and spin components s and s' as well as the phase factor exp(i k*delta).
+
+The matrix is of type `Array{Complex,2}`, i.e. it has complex entries to account for the phase factor.
+
+The precise form of the spin interaction along a bond is given by the function `bondInteractionMatrix`
+(which has the default of giving 1x1 matrices with strength = c[3] for connections c).
+This function can be customised along the format f(connection) = matrix.
+
+Note that it is a possibility to add custom parameters by distinguishing different bond types based on
+their `String` valued strength but then returning a matrix of `Float64` entries.
+
+
+
+
+
+
+
+# Examples
+
+```julia-repl
+julia> getSpinInteractionMatrixKSpace(unitcell, k)
+2×2 Array{Complex,2}:
+...
+
+julia> getSpinInteractionMatrixKSpace(unitcell, [pi/2.0, 0.0])
+2×2 Array{Complex,2}:
+...
+
+julia> getSpinInteractionMatrixKSpace(unitcell, [pi/2.0, 0.0], c->diagm([ c[3], c[3] ]))
+4×4 Array{Complex,2}:
+...
+```
+"""
 function getSpinInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}, bondInteractionMatrix::Function)
     # get the spin dimension
     spin_dimension = size(bondInteractionMatrix(unitcell.connections[1]), 1)
