@@ -30,10 +30,6 @@
 
 
 
-
-
-
-
 ################################################################################
 #
 #   TYPE LTBANDSTRUCTURE
@@ -41,6 +37,34 @@
 #       - printInfo function
 #
 ################################################################################
+"""
+    struct LTBandstructure
+
+The type that contains information on a Luttinger Tisza band structure (energy values in momentum space with spin constraints).
+Fields are
+
+    path              :: Path
+    bands             :: Array{Array{Array{Float64, 1}, 1}, 1}
+    constraint_values :: Array{Array{Array{Float64, 1}, 1}, 1}
+
+Note that the notation of `bands` (and `constraint_values`) is the following:
+- `bands[i]`       gives all bands of path segment `i`
+- `bands[i][j]`    gives all energy values for band `j` of path segment `i`
+- `bands[i][j][k]` gives the energy value at kpoint index `k` of band `j` in path segment `i`
+
+New `LTBandstructure` objects can be created only by the default constructor or one of
+the several functions to calculate LT band structures.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> bandstructure = LTBandstructure(path, bands, constraint_values)
+LatticePhysics.LTBandstructure(...)
+```
+"""
 struct LTBandstructure
 
     # the path along which the band structure is calcualted
@@ -65,7 +89,33 @@ end
 export LTBandstructure
 
 
+
+
+
+
 # INFORMATION FUNCTION
+"""
+    printInfo(bandstructure::LTBandstructure [; constraint::Float64=1e-6])
+
+Prints information about a `LTBandstructure` in terms of
+how many eigenvalues of the contained bands satisfy the LT constraint in which region of the path.
+The `constraint` parameter allows to sharpen or soften the distinction between constraint
+fullfilling and constraint breaking eigenvalues.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> printInfo(bandstructure)
+...
+
+julia> printInfo(unitcell, constraint=1e-8)
+...
+
+```
+"""
 function printInfo(bandstructure::LTBandstructure; constraint::Float64=1e-6)
     # print the header
     println("Bandstructure (LT), constraint satisfied for var(length) < $(constraint)")
@@ -151,6 +201,38 @@ end
 ################################################################################
 
 # Function to create a bond strength matrix
+"""
+    getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
+
+Constructs the spin interaction matrix for a single bond given by `connection`.
+The matrix is of size 3x3 and is of type `Array{Float64,2}`, i.e. it has real entries.
+Depending on the parameter of the bond strength (i.e. `c[3]`), it chooses to return a different matrix.
+The replaced strings contain
+- `"J1"`,`"J2"` --> Heisenberg type, strength 1.0
+- `"Jx"`,`"Jy"`,`"Jz"`,`"tx"`,`"tx"`,`"tx"` --> Kitaev type, strength 1.0
+
+Otherwise, the matrix has entries `matrix[i,i] = c[3]`
+
+
+
+
+# Examples
+
+```julia-repl
+julia> getBondInteractionMatrixHeisenbergKitaev(Any[1,2, "tx", (0,0,0)])
+3×3 Array{Float64,2}:
+ 1.0  0.0  0.0
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
+
+julia> getBondInteractionMatrixHeisenbergKitaev(Any[1,2, "J1", (0,0,0)])
+3×3 Array{Float64,2}:
+ 1.0  0.0  0.0
+ 0.0  1.0  0.0
+ 0.0  0.0  1.0
+
+```
+"""
 function getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
     # new 3x3 matrix
     bond_matrix = zeros(3,3)
@@ -181,6 +263,33 @@ function getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
     # return the matrix
     return bond_matrix
 end
+export getBondInteractionMatrixHeisenbergKitaev
+
+"""
+    getBondInteractionMatrixHeisenberg(connection::Array{Any,1})
+
+Constructs the spin interaction matrix for a single bond given by `connection`.
+The matrix is of size 1x1 and is of type `Array{Float64,2}`, i.e. it has only one (real) entry.
+Depending on the parameter of the bond strength (i.e. `c[3]`), it chooses to return a different matrix.
+The replaced strings contain
+- `"J1"`,`"J2"` --> Heisenberg type, strength 1.0
+
+Otherwise, the matrix has entry `matrix[i,i] = c[3]`
+
+
+# Examples
+
+```julia-repl
+
+julia> getBondInteractionMatrixHeisenberg(Any[1,2, "J1", (0,0,0)])
+1×1 Array{Float64,2}:
+ 1.0
+
+julia> getBondInteractionMatrixHeisenberg(Any[1,2, 3.0, (0,0,0)])
+1×1 Array{Float64,2}:
+ 3.0
+```
+"""
 function getBondInteractionMatrixHeisenberg(connection::Array{Any,1})
     # new 3x3 matrix
     bond_matrix = zeros(1,1)
@@ -200,9 +309,12 @@ function getBondInteractionMatrixHeisenberg(connection::Array{Any,1})
     return bond_matrix
 end
 export getBondInteractionMatrixHeisenberg
-export getBondInteractionMatrixHeisenbergKitaev
 
-# Function to produce interaction matrices
+
+
+
+
+# Function to produce interaction matrices for entire unitcell
 """
     getSpinInteractionMatrixKSpace(
         unitcell::Unitcell,
@@ -221,10 +333,10 @@ The matrix is of type `Array{Complex,2}`, i.e. it has complex entries to account
 The precise form of the spin interaction along a bond is given by the function `bondInteractionMatrix`
 (which has the default of giving 1x1 matrices with strength = c[3] for connections c).
 This function can be customised along the format f(connection) = matrix.
+The default of this function is `getBondInteractionMatrixHeisenberg`.
 
 Note that it is a possibility to add custom parameters by distinguishing different bond types based on
 their `String` valued strength but then returning a matrix of `Float64` entries.
-
 
 
 
@@ -310,6 +422,9 @@ that constructs a matrix for a passed bond argument. If this function is not pas
 the default function will be used.
 
 Note 2: The bond interaction matrix specifies the dimension of interacting spins.
+
+
+
 
 
 # Examples
