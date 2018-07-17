@@ -54,7 +54,7 @@ struct LTBandstructure
 
     # constraint value for all bands
     # value is the minimum of all sum(|s_i - 1.0|^2) for constructed s_i
-    constraint_value::Array{Array{Array{Float64, 1}, 1}, 1}
+    constraint_values::Array{Array{Array{Float64, 1}, 1}, 1}
 
     # ONLY DEFAULT CONSTRUCTOR
 
@@ -83,7 +83,7 @@ function printInfo(bandstructure::LTBandstructure; constraint::Float64=1e-6)
             # segment s starts
             print("\t")
             # calculate the number of constraint fullfilling values
-            print("$(round(100.0*sum([c>constraint ? 0 : 1 for c in bandstructure.constraint_value[s][b]])/length(bandstructure.constraint_value[s][b]),2))%")
+            print("$(round(100.0*sum([c>constraint ? 0 : 1 for c in bandstructure.constraint_values[s][b]])/length(bandstructure.constraint_values[s][b]),2))%")
             # print the next point
             print("\t|")
         end
