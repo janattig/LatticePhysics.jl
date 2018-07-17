@@ -15,7 +15,7 @@
 
 
 
-
+# Function for calculating Fermi surface in 2D (not exported)
 function getFermiSurface2D(
             unitcell::Unitcell,
             N_points::Int64;
@@ -121,6 +121,7 @@ function getFermiSurface2D(
 
 end
 
+# Function for calculating Fermi surface in 3D (not exported)
 function getFermiSurface3D(
             unitcell::Unitcell,
             N_points::Int64;
