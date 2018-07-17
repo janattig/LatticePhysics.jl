@@ -9,6 +9,9 @@
 #       - printInfo function
 #
 #   2) CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
+#       - LT constraint and deviation functions
+#       - spin interaction matrices
+#       - calculation of band structures
 #
 #   3) TODO PLOTTING OF LT BAND STRUCTURES
 #       - TODO plotting of Bandstructure objects
@@ -35,7 +38,7 @@
 #
 #   TYPE LTBANDSTRUCTURE
 #       - type definition
-#       - TODO printInfo function
+#       - printInfo function
 #
 ################################################################################
 struct LTBandstructure
@@ -169,6 +172,24 @@ function getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
     # return the matrix
     return bond_matrix
 end
+function getBondInteractionMatrixHeisenberg(connection::Array{Any,1})
+    # new 3x3 matrix
+    bond_matrix = zeros(1,1)
+    # get the bond strength
+    strength = connection[3]
+    # check what type the bond is
+    if typeof(strength) == String
+        if strength == "J1"
+            bond_matrix[1,1] = 1.0
+        elseif strength == "J2"
+            bond_matrix[1,1] = 1.0
+        end
+    else
+        bond_matrix[1,1] = strength
+    end
+    # return the matrix
+    return bond_matrix
+end
 
 # Function to produce interaction matrices
 function getSpinInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}, bondInteractionMatrix::Function)
@@ -242,10 +263,10 @@ LatticePhysics.LTBandstructure(...)
 function getLTBandStructure(
                 unitcell::Unitcell,
                 path::Path,
-                bondInteractionMatrix::Function = getBondInteractionMatrixHeisenbergKitaev;
+                bondInteractionMatrix::Function = getBondInteractionMatrixHeisenberg;
                 resolution::Int64=-1,
                 enforce_hermitian::Bool=false,
-                epsilon_degenerate::Float64=1e-8
+                epsilon_degenerate::Float64=1e-6
             )
 
     # maybe modify the path resolution
