@@ -1191,29 +1191,33 @@ end
 
 # obtain Fermi surface
 """
-    getFermiSurface(
+    getLTGroundstateKSpace(
                 unitcell::Unitcell,
-                N_points::Int64
-             [; fermi_energy::Float64=0.0,
-                enforce_hermitian::Bool=false,
+                N_points::Int64,
+             [  bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg;
+              ; groundstate_energy::Float64=Inf,
                 epsilon::Float64=1e-10,
                 epsilon_k::Float64=1e-10,
+                epsilon_degenerate::Float64=1e-6,
                 bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
                 bounds_upper::Array{Float64,1}=2*pi.*ones(4),
                 refold_to_first_BZ::Bool=true ]
             )
 
-calculates `N_points` points which belong to the Fermi surface of the tight-binding model given by
-the `Unitcell` object `unitcell`. The Fermi energy can be adjusted by using `fermi_energy=...`.
+calculates `N_points` points which belong to the Luttinger Tisza ground state manifold of the spin model given by
+the `Unitcell` object `unitcell` and the bond interaction matrix `bondInteractionMatrix` (function).
+The energy of the ground state can be either manually given by using `groundstate_energy=...`
+or is searched using optimization (by default).
 
 The points are located using Newton's method with random starting positions. The procedure can be
 modified by using some of the optional keywords:
-- `enforce_hermitian` determines if the matrix used for energy calculation is made hermitian by construction
 - `epsilon` energy threshold for values to be considered close to the Fermi energy
 - `epsilon_k` small k increment that is used for calculation of derivatives
 - `bounds_upper` / `bounds_lower` the bounds between which the random starting location for the Newton method is searched
 
 After the search has been completed, the values will optionally be refolded into the first brillouin zone by choosing `refold_to_first_BZ=true`.
+
+Also the LT constraint is calculated and returned for all points.
 
 
 
@@ -1221,35 +1225,30 @@ After the search has been completed, the values will optionally be refolded into
 # Examples
 
 ```julia-repl
-julia> fermi_surace = getFermiSurface(unitcell, 100)    # 2D unitcell
-100x2 Array{Float64}
+julia> (groundstate, constraint) = getLTGroundstateKSpace(unitcell, 100)
 ...
 
-julia> fermi_surace = getFermiSurface(unitcell, 100)    # 3D unitcell
-100x3 Array{Float64}
+julia> (groundstate, constraint) = getLTGroundstateKSpace(unitcell, 100, groundstate_energy=-4.0)
 ...
 
-julia> fermi_surace = getFermiSurface(unitcell, 100, fermi_energy=1.0)
-100x2 Array{Float64}
-...
-
-julia> fermi_surace = getFermiSurface(unitcell, 100, refold_to_first_BZ=false)
-100x2 Array{Float64}
+julia> (groundstate, constraint) = getLTGroundstateKSpace(unitcell, 100, refold_to_first_BZ=false)
 ...
 
 ```
 """
 function getLTGroundstateKSpace(
             unitcell::Unitcell,
-            N_points::Int64;
-            fermi_energy::Float64=0.0,
-            enforce_hermitian::Bool=false,
+            N_points::Int64,
+            bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg;
+            groundstate_energy::Float64=Inf,
             epsilon::Float64=1e-10,
             epsilon_k::Float64=1e-10,
-            bounds_lower::Array{Float64,1}=-2*pi.*ones(3),
-            bounds_upper::Array{Float64,1}=2*pi.*ones(3),
+            epsilon_degenerate::Float64=1e-6,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true
         )
+
     # check if the unitcell can be put in either method
     if length(unitcell.basis[1]) != length(unitcell.lattice_vectors)
         println("Unitcell has not the same number of lattice vectors as dimensions")
@@ -1258,26 +1257,28 @@ function getLTGroundstateKSpace(
     # check which function to pass to
     if length(unitcell.lattice_vectors) == 2
         # 2D case
-        return getFermiSurface2D(
+        return getLTGroundstateKSpace2D(
                 unitcell,
                 N_points,
-                fermi_energy=fermi_energy,
-                enforce_hermitian=enforce_hermitian,
+                bondInteractionMatrix,
+                groundstate_energy=groundstate_energy,
                 epsilon=epsilon,
                 epsilon_k=epsilon_k,
+                epsilon_degenerate=epsilon_degenerate,
                 bounds_lower=bounds_lower,
                 bounds_upper=bounds_upper,
                 refold_to_first_BZ=refold_to_first_BZ
             )
     else length(unitcell.lattice_vectors) == 3
         # 3D case
-        return getFermiSurface3D(
+        return getLTGroundstateKSpace3D(
                 unitcell,
                 N_points,
-                fermi_energy=fermi_energy,
-                enforce_hermitian=enforce_hermitian,
+                bondInteractionMatrix,
+                groundstate_energy=groundstate_energy,
                 epsilon=epsilon,
                 epsilon_k=epsilon_k,
+                epsilon_degenerate=epsilon_degenerate,
                 bounds_lower=bounds_lower,
                 bounds_upper=bounds_upper,
                 refold_to_first_BZ=refold_to_first_BZ
