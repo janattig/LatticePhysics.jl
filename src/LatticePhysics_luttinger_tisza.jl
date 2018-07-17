@@ -6,17 +6,17 @@
 #
 #   1) TYPE LTBANDSTRUCTURE
 #       - type definition
-#       - TODO printInfo function
+#       - printInfo function
 #
-#   2) TODO CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
+#   2) CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
 #
 #   3) TODO PLOTTING OF LT BAND STRUCTURES
 #       - TODO plotting of Bandstructure objects
 #       - TODO plotting of bandstructures of unitcells along paths
 #
-#   4) TODO CALCULATION OF LT GROUND STATES (k space)
+#   4) TODO CALCULATION OF LT GROUND STATES (k space manifold)
 #
-#   5) TODO PLOTTING OF LT GROUND STATES (k space)
+#   5) TODO PLOTTING OF LT GROUND STATES (k space manifold)
 #       - TODO plotting from points
 #       - TODO plotting from unitcell
 #
