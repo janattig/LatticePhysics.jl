@@ -62,6 +62,46 @@ end
 export LTBandstructure
 
 
+# INFORMATION FUNCTION
+function printInfo(bandstructure::LTBandstructure; constraint::Float64=1e-6)
+    # print the header
+    println("Bandstructure (LT), constraint satisfied for var(length) < $(constraint)")
+    print("\t$(bandstructure.path.point_names[1])")
+    for p in bandstructure.path.point_names[2:end]
+        print("\t->-\t$(p)")
+    end
+    println("")
+    # print each band
+    for b in 1:length(bandstructure.bands[1])
+        # first the point
+        print("$(b))\t|")
+        # then all segments with closing points
+        for s in 1:length(bandstructure.bands)
+            # segment s starts
+            print("\t")
+            # calculate the number of constraint fullfilling values
+            print("$(round(100.0*sum([c>constraint ? 0 : 1 for c in bandstructure.constraint_value[s][b]])/length(bandstructure.constraint_value[s][b]),2))%")
+            # print the next point
+            print("\t|")
+        end
+        # print a new line
+        println("")
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # function to calculate the deviation from best result
 function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64, alpha::Array{Float64,1})
@@ -77,7 +117,6 @@ function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_d
     dl = sum(abs.((spin_lengths .- 1)))
     return dl
 end
-
 
 
 # Definition of constraint
