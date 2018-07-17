@@ -52,6 +52,9 @@ Note that the notation of `bands` (and `constraint_values`) is the following:
 - `bands[i][j]`    gives all energy values for band `j` of path segment `i`
 - `bands[i][j][k]` gives the energy value at kpoint index `k` of band `j` in path segment `i`
 
+The `constraint_values` carry the minimal deviation from unit spin length within the unitcell, i.e.
+value is the minimum of all sum(|s_i - 1.0|^2) for constructed s_i.
+
 New `LTBandstructure` objects can be created only by the default constructor or one of
 the several functions to calculate LT band structures.
 
