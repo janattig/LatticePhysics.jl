@@ -572,7 +572,7 @@ export getLTBandstructure
             save_filename::String="NONE" ]
             )
 
-    plotBandstructure(
+    plotLTBandstructure(
             unitcell::Unitcell,
             path::Path,
          [  bondInteractionMatrix::Function
@@ -594,25 +594,29 @@ plotting related options of `PyPlot` as well as determining if the plot is saved
 # Examples
 
 ```julia-repl
-julia> plotBandstructure(unitcell, path)
+julia> plotLTBandstructure(unitcell, path)
 PyPlot.Figure(...)
 
-julia> plotBandstructure(unitcell, path, showPlot=false)
+julia> plotLTBandstructure(unitcell, path, c->diagm([ c[3] ]))
 PyPlot.Figure(...)
 
-julia> plotBandstructure(unitcell, save_filename="myplot.pdf")
+julia> plotLTBandstructure(unitcell, path, showPlot=false)
 PyPlot.Figure(...)
 
-julia> plotBandstructure(bandstructure)
+julia> plotLTBandstructure(unitcell, save_filename="myplot.pdf")
+PyPlot.Figure(...)
+
+julia> plotLTBandstructure(bandstructure)
 PyPlot.Figure(...)
 ```
 """
 function plotLTBandstructure(
-            bandstructure::Bandstructure;
+            bandstructure::LTBandstructure;
             constraint::Float64=1e-6,
             limits_energy="AUTO",
             plot_title::String="",
-            plot_color="b",
+            plot_color_valid="b",
+            plot_color_invalid="r",
             figsize::Tuple=(6,4),
             showPlot::Bool=true,
             save_filename::String="NONE"
@@ -640,13 +644,40 @@ function plotLTBandstructure(
 
     # plot the band structure
     for s in 1:length(bandstructure.bands)
-        # plot the segment
-        for b in bandstructure.bands[s]
-            # plot the band
+        # plot the segment (only invalid stuff)
+        for b in 1:length(bandstructure.bands[s])
+            # xvalues
+            xvals = collect(1:path.segment_resolution[s]) .+ sum(path.segment_resolution[1:s-1])
+            yvals = bandstructure.bands[s][b]
+            # check which values satisfy the constraint
+            invalid_indices = collect(1:path.segment_resolution[s])[bandstructure.constraint_values[s][b] .>= constraint]
+            # if no invalid indices are found, just skip
+            if length(invalid_indices) == 0
+                continue
+            end
+            # plot everything
             plot(
-                collect(1:path.segment_resolution[s]) .+ sum(path.segment_resolution[1:s-1]), # xvalues
-                b,
-                "-$(plot_color)"
+                [xvals[i] for i in invalid_indices],
+                [yvals[i] for i in invalid_indices],
+                ".$(plot_color_invalid)"
+            )
+        end
+        # plot the segment (only valid stuff)
+        for b in 1:length(bandstructure.bands[s])
+            # xvalues
+            xvals = collect(1:path.segment_resolution[s]) .+ sum(path.segment_resolution[1:s-1])
+            yvals = bandstructure.bands[s][b]
+            # check which values satisfy the constraint
+            valid_indices   = collect(1:path.segment_resolution[s])[bandstructure.constraint_values[s][b] .< constraint]
+            # if no valid indices are found, just skip
+            if length(valid_indices) == 0
+                continue
+            end
+            # plot everything
+            plot(
+                [xvals[i] for i in valid_indices],
+                [yvals[i] for i in valid_indices],
+                ".$(plot_color_valid)"
             )
         end
     end
@@ -750,7 +781,8 @@ function plotLTBandstructure(
             enforce_hermitian::Bool=false,
             limits_energy="AUTO",
             plot_title::String="",
-            plot_color="b",
+            plot_color_valid="b",
+            plot_color_invalid="r",
             figsize::Tuple=(6,4),
             showPlot::Bool=true,
             save_filename::String="NONE"
@@ -763,7 +795,8 @@ function plotLTBandstructure(
                 constraint=constraint,
                 limits_energy=limits_energy,
                 plot_title=plot_title,
-                plot_color=plot_color,
+                plot_color_valid=plot_color_valid,
+                plot_color_invalid=plot_color_invalid,
                 figsize=figsize,
                 showPlot=showPlot,
                 save_filename=save_filename
