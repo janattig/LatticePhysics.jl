@@ -41,13 +41,13 @@ bandstructure_testset = @testset "Bandstructures" begin
         path = getDefaultPathTriangular(resolution=30)
 
         # test the calculations (bare)
-        @test typeof(getBandStructure(unitcell, path)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path)) == Bandstructure
 
         # test the calculations (resolution set)
-        @test typeof(getBandStructure(unitcell, path, resolution=60)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, resolution=60)) == Bandstructure
 
         # test the calculations (hermitian)
-        @test typeof(getBandStructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
 
     # end the testset here
     end;
@@ -62,13 +62,13 @@ bandstructure_testset = @testset "Bandstructures" begin
         path = getDefaultPathSquare(resolution=30)
 
         # test the calculations (bare)
-        @test typeof(getBandStructure(unitcell, path)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path)) == Bandstructure
 
         # test the calculations (resolution set)
-        @test typeof(getBandStructure(unitcell, path, resolution=60)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, resolution=60)) == Bandstructure
 
         # test the calculations (hermitian)
-        @test typeof(getBandStructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
 
     # end the testset here
     end;
@@ -82,13 +82,13 @@ bandstructure_testset = @testset "Bandstructures" begin
         path = getDefaultPathFCC(resolution=60)
 
         # test the calculations (bare)
-        @test typeof(getBandStructure(unitcell, path)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path)) == Bandstructure
 
         # test the calculations (resolution set)
-        @test typeof(getBandStructure(unitcell, path, resolution=120)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, resolution=120)) == Bandstructure
 
         # test the calculations (hermitian)
-        @test typeof(getBandStructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
+        @test typeof(getBandstructure(unitcell, path, enforce_hermitian=true)) == Bandstructure
 
     # end the testset here
     end;
@@ -120,7 +120,7 @@ end;
         path = getDefaultPathTriangular(resolution=30)
 
         # get the bandstructure (bare)
-        bandstructure = getBandStructure(unitcell, path)
+        bandstructure = getBandstructure(unitcell, path)
 
         # test the plotting
         @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))
@@ -151,7 +151,7 @@ end;
         path = getDefaultPathSquare(resolution=30)
 
         # get the bandstructure (bare)
-        bandstructure = getBandStructure(unitcell, path)
+        bandstructure = getBandstructure(unitcell, path)
 
         # test the plotting
         @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))
@@ -168,7 +168,7 @@ end;
         path = getDefaultPathFCC(resolution=60)
 
         # get the bandstructure (bare)
-        bandstructure = getBandStructure(unitcell, path)
+        bandstructure = getBandstructure(unitcell, path)
 
         # test the plotting
         @test_nowarn close(plotBandstructure(bandstructure, showPlot=false))

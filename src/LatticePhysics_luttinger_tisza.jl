@@ -756,7 +756,7 @@ function plotLTBandstructure(
             save_filename::String="NONE"
         )
     # calculate the bandstructure
-    bandstructure = getLTBandStructure(unitcell, path, bondInteractionMatrix, resolution=resolution, enforce_hermitian=enforce_hermitian)
+    bandstructure = getLTBandstructure(unitcell, path, bondInteractionMatrix, resolution=resolution, enforce_hermitian=enforce_hermitian)
     # call the respective function
     return plotLTBandstructure(
                 bandstructure;
