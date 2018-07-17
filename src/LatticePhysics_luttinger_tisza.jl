@@ -106,6 +106,8 @@ end
 
 
 
+# INTERNAL FUNCTIONS CONCERNING THE CONSTRAINT IN THE LT CALCULATION
+
 # function to calculate the deviation from best result
 function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64, alpha::Array{Float64,1})
     # build up the global spin vector
@@ -120,7 +122,6 @@ function deviation(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_d
     dl = sum(abs.((spin_lengths .- 1)))
     return dl
 end
-
 
 # Definition of constraint
 function getLTConstraint(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64)
@@ -140,6 +141,13 @@ end
 
 
 
+################################################################################
+#
+#   INTERACTION MATRICES FOR SPIN SYSTEMS
+#   - bond interaction matrices
+#   - global interaction matrix (for the unitcell)
+#
+################################################################################
 
 # Function to create a bond strength matrix
 function getBondInteractionMatrixHeisenbergKitaev(connection::Array{Any,1})
@@ -190,6 +198,8 @@ function getBondInteractionMatrixHeisenberg(connection::Array{Any,1})
     # return the matrix
     return bond_matrix
 end
+export getBondInteractionMatrixHeisenberg
+export getBondInteractionMatrixHeisenbergKitaev
 
 # Function to produce interaction matrices
 function getSpinInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Float64,1}, bondInteractionMatrix::Function)
@@ -224,6 +234,13 @@ function getSpinInteractionMatrixKSpace(unitcell::Unitcell, k_vector::Array{Floa
     # return the matrix
     return matrix
 end
+export getSpinInteractionMatrixKSpace
+
+
+
+
+
+
 
 
 ################################################################################

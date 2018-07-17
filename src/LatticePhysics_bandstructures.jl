@@ -26,6 +26,32 @@
 #       - printInfo function
 #
 ################################################################################
+"""
+    struct Bandstructure
+
+The type that contains information on a band structure (energy values in momentum space). Fields are
+
+    path   :: Path
+    bands  :: Array{Array{Array{Float64, 1}, 1}, 1}
+
+Note that the notation of `bands` is the following:
+- `bands[i]`       gives all bands of path segment `i`
+- `bands[i][j]`    gives all energy values for band `j` of path segment `i`
+- `bands[i][j][k]` gives the energy value at kpoint index `k` of band `j` in path segment `i`
+
+New `Bandstructure` objects can be created only by the default constructor or one of
+the several functions to calculate band structures.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> path = Bandstructure(path, bands)
+LatticePhysics.Bandstructure(...)
+```
+"""
 struct Bandstructure
 
     # the path along which the band structure is calcualted
