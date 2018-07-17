@@ -84,8 +84,11 @@ end
 function getLTConstraint(spin_eigenvectors::Array{Array{Complex{Float64},1},1}, spin_dimension::Int64)
     # detrmine what to do based on the number of eigenvectors
     if length(spin_eigenvectors) == 1
-        # optimize the function
-        return Optim.minimum(Optim.optimize(x -> deviation(spin_eigenvectors, spin_dimension, x), ones(length(spin_eigenvectors)), Optim.GradientDescent()))
+        # find out the individual lengths of spins
+        spin_lengths = spin_eigenvectors[1] .* conj.(spin_eigenvectors[1])
+        spin_lengths = [sum(spin_lengths[s:s+spin_dimension-1]) for s in 1:spin_dimension:length(spin_lengths)]
+        # find out the deviation from unity
+        dl = sum(abs.((spin_lengths .- mean(spin_lengths))))
     else
         # optimize the function
         return Optim.minimum(Optim.optimize(x -> deviation(spin_eigenvectors, spin_dimension, x), ones(length(spin_eigenvectors))))
