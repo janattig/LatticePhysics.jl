@@ -13,9 +13,9 @@
 #       - spin interaction matrices
 #       - calculation of band structures
 #
-#   3) TODO PLOTTING OF LT BAND STRUCTURES
-#       - TODO plotting of Bandstructure objects
-#       - TODO plotting of bandstructures of unitcells along paths
+#   3) PLOTTING OF LT BAND STRUCTURES
+#       - plotting of Bandstructure objects
+#       - plotting of bandstructures of unitcells along paths
 #
 #   4) TODO CALCULATION OF LT GROUND STATES (k space manifold)
 #
