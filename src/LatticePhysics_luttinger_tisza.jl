@@ -467,7 +467,7 @@ function getLTBandstructure(
         constraints = Array{Float64, 1}[]
         for b in 1:length(unitcell.basis)*spin_dimension
             push!(segment,     zeros(Float64, path.segment_resolution[i]))
-            push!(constraints, zeros(Float64, path.segment_resolution[i]))
+            push!(constraints,  ones(Float64, path.segment_resolution[i]))
         end
         # push the segment band structure into the complete segment list
         push!(segments_total,    segment)
@@ -801,7 +801,7 @@ function plotLTBandstructure(
                 save_filename=save_filename
             )
 end
-export plotBandstructure
+export plotLTBandstructure
 
 
 
@@ -851,7 +851,7 @@ function getLTGroundstateKSpace2D(
 
     # list of k values that contribute to the BZ
     k_values          = zeros(Float64, N_points, 2)
-    constraint_values =  ones(Float64, N_points) .* 10.0
+    constraint_values =  ones(Float64, N_points)
     # get the spin dimension
     spin_dimension = size(bondInteractionMatrix(unitcell.connections[1]), 1)
 
@@ -1020,7 +1020,7 @@ function getLTGroundstateKSpace3D(
 
     # list of k values that contribute to the BZ
     k_values          = zeros(Float64, N_points, 3)
-    constraint_values = zeros(Float64, N_points)
+    constraint_values =  ones(Float64, N_points)
     # get the spin dimension
     spin_dimension = size(bondInteractionMatrix(unitcell.connections[1]), 1)
 
