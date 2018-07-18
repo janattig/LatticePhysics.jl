@@ -571,7 +571,7 @@ export getLTBandstructure
             figsize::Tuple=(6,4),
             showPlot::Bool=true,
             save_filename::String="NONE" ]
-            )
+        )
 
     plotLTBandstructure(
             unitcell::Unitcell,
@@ -956,6 +956,11 @@ function getLTGroundstateKSpace2D(
         k = k_values[index,:]
         # get the interaction matrix for this k
         matrix = getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix)
+        # get the matrix dimension and maybe (for d=1) simply set the constraint to be satisfied
+        if size(matrix) == (1,1)
+            constraint_values[index] = 0
+            continue
+        end
         # diagonalize the matrix
         eigenfactorization = eigfact(matrix)
         eigenvalues  = eigenfactorization[:values]
@@ -1138,6 +1143,11 @@ function getLTGroundstateKSpace3D(
         k = k_values[index,:]
         # get the interaction matrix for this k
         matrix = getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix)
+        # get the matrix dimension and maybe (for d=1) simply set the constraint to be satisfied
+        if size(matrix) == (1,1)
+            constraint_values[index] = 0
+            continue
+        end
         # diagonalize the matrix
         eigenfactorization = eigfact(matrix)
         eigenvalues  = eigenfactorization[:values]
@@ -1287,3 +1297,543 @@ function getLTGroundstateKSpace(
 
 end
 export getLTGroundstateKSpace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# plot the Luttinger Tisza ground state manifold in 2D (not exported)
+function plotLTGroundstateKSpace2D(
+            k_values::Array{Float64, 2},
+            constraint_values::Array{Float64, 1};
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+    # configure plot environment
+    rc("font", family="serif")
+
+    # create a new figure
+    fig = figure(figsize=figsize)
+
+
+
+    ###########################
+    #   PLOT FERMI SURFACE
+    ###########################
+
+    # scatter the points
+    invalid_indices = collect(1:length(constraint_values))[constraint_values .>= constraint]
+    valid_indices   = collect(1:length(constraint_values))[constraint_values  .< constraint]
+
+    if length(invalid_indices) > 0
+        scatter(
+                [k_values[i,1] for i in invalid_indices],
+                [k_values[i,2] for i in invalid_indices],
+                color=plot_color_invalid,
+                label="constrained NOT fullfilled"
+            )
+    end
+    if length(valid_indices) > 0
+        scatter(
+                [k_values[i,1] for i in valid_indices],
+                [k_values[i,2] for i in valid_indices],
+                color=plot_color_valid,
+                label="constrained fullfilled"
+            )
+    end
+
+    # add a legend
+    legend()
+
+    # if brillouin zone not empty, plot it as well
+    if length(brillouin_zone) > 1
+        plot([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], "-k")
+    end
+
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # set the title
+    if plot_title == "AUTO"
+        # set the title to an automatically generated title
+        title("Ground state manifold")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        # set the title to the given title
+        title(plot_title)
+    end
+
+    # equal axis
+    gca()[:set_aspect]("equal")
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # save the plot
+    if save_filename != "NONE"
+        # make sure the directory exists
+        if contains(save_filename, "/")
+    		# get the containing folder
+    		folder = save_filename[1:findlast(save_filename, '/')]
+    		# build the path to that folder
+    		mkpath(folder)
+    	end
+        # save the plot
+        savefig(save_filename)
+    end
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return fig
+
+end
+
+function plotLTGroundstateKSpace2D(
+            unitcell::Unitcell,
+            N_points::Int64,
+            bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg;
+            groundstate_energy::Float64=Inf,
+            epsilon::Float64=1e-10,
+            epsilon_k::Float64=1e-10,
+            epsilon_degenerate::Float64=1e-6,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(2),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(2),
+            refold_to_first_BZ::Bool=true,
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+    # calculate the Ground state manifold first
+    (groundstate_points, groundstate_constraints) = getLTGroundstateKSpace2D(
+            unitcell,
+            N_points,
+            bondInteractionMatrix,
+            groundstate_energy=groundstate_energy,
+            epsilon=epsilon,
+            epsilon_k=epsilon_k,
+            epsilon_degenerate=epsilon_degenerate,
+            bounds_lower=bounds_lower,
+            bounds_upper=bounds_upper,
+            refold_to_first_BZ=refold_to_first_BZ
+        )
+
+    # plot the Ground state manifold
+    plotLTGroundstateKSpace2D(
+            groundstate_points,
+            groundstate_constraints,
+            brillouin_zone=brillouin_zone,
+            plot_title=plot_title,
+            plot_color_valid=plot_color_valid,
+            plot_color_invalid=plot_color_invalid,
+            figsize=figsize,
+            showPlot=showPlot,
+            save_filename=save_filename,
+            constraint=constraint
+        )
+
+end
+
+
+
+# plot the Luttinger Tisza ground state manifold in 3D (not exported)
+function plotLTGroundstateKSpace3D(
+            k_values::Array{Float64, 2},
+            constraint_values::Array{Float64, 1};
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+    # configure plot environment
+    rc("font", family="serif")
+
+    # create a new figure
+    fig = figure(figsize=figsize)
+
+
+
+    ###########################
+    #   PLOT FERMI SURFACE
+    ###########################
+
+    # scatter the points
+    invalid_indices = collect(1:length(constraint_values))[constraint_values .>= constraint]
+    valid_indices   = collect(1:length(constraint_values))[constraint_values  .< constraint]
+
+    if length(invalid_indices) > 0
+        scatter3D(
+                [k_values[i,1] for i in invalid_indices],
+                [k_values[i,2] for i in invalid_indices],
+                [k_values[i,3] for i in invalid_indices],
+                color=plot_color_invalid,
+                label="constrained NOT fullfilled"
+            )
+    end
+    if length(valid_indices) > 0
+        scatter3D(
+                [k_values[i,1] for i in valid_indices],
+                [k_values[i,2] for i in valid_indices],
+                [k_values[i,3] for i in valid_indices],
+                color=plot_color_valid,
+                label="constrained fullfilled"
+            )
+    end
+
+    # add a legend
+    legend()
+
+    # if brillouin zone not empty, plot it as well
+    if length(brillouin_zone) > 1
+        plot3D([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], [b[3] for b in brillouin_zone], "-k")
+    end
+
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # set the title
+    if plot_title == "AUTO"
+        # set the title to an automatically generated title
+        title("Ground state manifold")
+    elseif plot_title == ""
+        # do nothing title related
+    else
+        # set the title to the given title
+        title(plot_title)
+    end
+
+    # equal axis
+    gca()[:set_aspect]("equal")
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # save the plot
+    if save_filename != "NONE"
+        # make sure the directory exists
+        if contains(save_filename, "/")
+    		# get the containing folder
+    		folder = save_filename[1:findlast(save_filename, '/')]
+    		# build the path to that folder
+    		mkpath(folder)
+    	end
+        # save the plot
+        savefig(save_filename)
+    end
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return fig
+
+end
+
+function plotLTGroundstateKSpace3D(
+            unitcell::Unitcell,
+            N_points::Int64,
+            bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg;
+            groundstate_energy::Float64=Inf,
+            epsilon::Float64=1e-10,
+            epsilon_k::Float64=1e-10,
+            epsilon_degenerate::Float64=1e-6,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+            refold_to_first_BZ::Bool=true,
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+    # calculate the Ground state manifold first
+    (groundstate_points, groundstate_constraints) = getLTGroundstateKSpace3D(
+            unitcell,
+            N_points,
+            bondInteractionMatrix,
+            groundstate_energy=groundstate_energy,
+            epsilon=epsilon,
+            epsilon_k=epsilon_k,
+            epsilon_degenerate=epsilon_degenerate,
+            bounds_lower=bounds_lower,
+            bounds_upper=bounds_upper,
+            refold_to_first_BZ=refold_to_first_BZ
+        )
+
+    # plot the Ground state manifold
+    plotLTGroundstateKSpace3D(
+            groundstate_points,
+            groundstate_constraints,
+            brillouin_zone=brillouin_zone,
+            plot_title=plot_title,
+            plot_color_valid=plot_color_valid,
+            plot_color_invalid=plot_color_invalid,
+            figsize=figsize,
+            showPlot=showPlot,
+            save_filename=save_filename,
+            constraint=constraint
+        )
+
+end
+
+
+
+
+
+"""
+    plotLTGroundstateKSpace(
+                k_values::Array{Float64, 2},
+                constraint_values::Array{Float64, 1}
+             [; brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+                plot_title::String="",
+                plot_color_valid="b",
+                plot_color_invalid="r",
+                figsize::Tuple=(6,6),
+                showPlot::Bool=true,
+                save_filename::String="NONE",
+                constraint::Float64=1e-6 ]
+            )
+
+    plotLTGroundstateKSpace(
+                unitcell::Unitcell,
+                N_points::Int64,
+             [  bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg
+              ; groundstate_energy::Float64=Inf,
+                epsilon::Float64=1e-10,
+                epsilon_k::Float64=1e-10,
+                epsilon_degenerate::Float64=1e-6,
+                bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+                bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+                refold_to_first_BZ::Bool=true,
+                brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+                plot_title::String="",
+                plot_color_valid="b",
+                plot_color_invalid="r",
+                figsize::Tuple=(6,6),
+                showPlot::Bool=true,
+                save_filename::String="NONE",
+                constraint::Float64=1e-6
+            )
+
+Plots (or before that, calculates) `N_points` points which belong to the Luttinger Tisza ground state manifold
+of the spin model given by the `Unitcell` object `unitcell` and the bond interaction matrix `bondInteractionMatrix` (function)
+and plots them using `PyPlot`.
+
+When the points are calculated, the ground state energy can be searched using optimization (DEFAULT)
+or can be set by using `groundstate_energy=...`.
+
+When calculating, the points are located using Newton's method with random starting positions. The procedure can be
+modified by using some of the optional keywords:
+- `enforce_hermitian` determines if the matrix used for energy calculation is made hermitian by construction
+- `epsilon` energy threshold for values to be considered close to the Fermi energy
+- `epsilon_k` small k increment that is used for calculation of derivatives
+- `bounds_upper` / `bounds_lower` the bounds between which the random starting location for the Newton method is searched
+
+After the search has been completed, the values will optionally be refolded into the first brillouin zone by choosing `refold_to_first_BZ=true`.
+
+For plotting, several more options can be used.
+
+
+
+# Examples
+
+```julia-repl
+julia> plotLTGroundstateKSpace(unitcell, 100)
+PyPlot.Figure(...)
+
+julia> plotLTGroundstateKSpace(unitcell, 100, groundstate_energy=-2.0, showPlot=false)
+PyPlot.Figure(...)
+
+```
+"""
+function plotLTGroundstateKSpace(
+            k_values::Array{Float64, 2},
+            constraint_values::Array{Float64, 1};
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+    # check which function to pass to
+    if size(k_values,2) == 2
+        # 2D case
+        return plotLTGroundstateKSpace2D(
+                k_values,
+                constraint_values,
+                brillouin_zone=brillouin_zone,
+                plot_title=plot_title,
+                plot_color_valid=plot_color_valid,
+                plot_color_invalid=plot_color_invalid,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename,
+                constraint=constraint
+            )
+    else size(k_values,2) == 3
+        # 3D case
+        return plotLTGroundstateKSpace3D(
+                k_values,
+                constraint_values,
+                brillouin_zone=brillouin_zone,
+                plot_title=plot_title,
+                plot_color_valid=plot_color_valid,
+                plot_color_invalid=plot_color_invalid,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename,
+                constraint=constraint
+            )
+    end
+
+end
+function plotLTGroundstateKSpace(
+            unitcell::Unitcell,
+            N_points::Int64,
+            bondInteractionMatrix::Function=getBondInteractionMatrixHeisenberg;
+            groundstate_energy::Float64=Inf,
+            epsilon::Float64=1e-10,
+            epsilon_k::Float64=1e-10,
+            epsilon_degenerate::Float64=1e-6,
+            bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
+            bounds_upper::Array{Float64,1}=2*pi.*ones(4),
+            refold_to_first_BZ::Bool=true,
+            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            plot_title::String="",
+            plot_color_valid="b",
+            plot_color_invalid="r",
+            figsize::Tuple=(6,6),
+            showPlot::Bool=true,
+            save_filename::String="NONE",
+            constraint::Float64=1e-6
+        )
+
+    # check if the unitcell can be put in either method
+    if length(unitcell.basis[1]) != length(unitcell.lattice_vectors)
+        println("Unitcell has not the same number of lattice vectors as dimensions")
+        return zeros(1,1)
+    end
+    # check which function to pass to
+    if length(unitcell.lattice_vectors) == 2
+        # 2D case
+        return plotLTGroundstateKSpace2D(
+                unitcell,
+                N_points,
+                bondInteractionMatrix,
+                groundstate_energy=groundstate_energy,
+                epsilon=epsilon,
+                epsilon_k=epsilon_k,
+                epsilon_degenerate=epsilon_degenerate,
+                bounds_lower=bounds_lower,
+                bounds_upper=bounds_upper,
+                refold_to_first_BZ=refold_to_first_BZ,
+                brillouin_zone=brillouin_zone,
+                plot_title=plot_title,
+                plot_color_valid=plot_color_valid,
+                plot_color_invalid=plot_color_invalid,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename,
+                constraint=constraint
+            )
+    else length(unitcell.lattice_vectors) == 3
+        # 3D case
+        return plotLTGroundstateKSpace3D(
+                unitcell,
+                N_points,
+                bondInteractionMatrix,
+                groundstate_energy=groundstate_energy,
+                epsilon=epsilon,
+                epsilon_k=epsilon_k,
+                epsilon_degenerate=epsilon_degenerate,
+                bounds_lower=bounds_lower,
+                bounds_upper=bounds_upper,
+                refold_to_first_BZ=refold_to_first_BZ,
+                brillouin_zone=brillouin_zone,
+                plot_title=plot_title,
+                plot_color_valid=plot_color_valid,
+                plot_color_invalid=plot_color_invalid,
+                figsize=figsize,
+                showPlot=showPlot,
+                save_filename=save_filename,
+                constraint=constraint
+            )
+    end
+
+end
+export plotLTGroundstateKSpace
