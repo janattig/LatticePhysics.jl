@@ -42,11 +42,19 @@
 #       - TODO 3D lattices
 #       - 2D plaquettes
 #
-#  10) BANDSTRUCTURES (CALCULATION AND PLOTTING)
+#  10) BLENDER PLOTTING
 #
-#  11) FERMI SURFACES (CALCULATION AND PLOTTING)
+#  11) BANDSTRUCTURES (CALCULATION AND PLOTTING)
+#
+#  12) FERMI SURFACES (CALCULATION AND PLOTTING)
 #       - 2D unitcells
 #       - 3D unitcells
+#
+#  13) LUTTINGER TISZA (CALCULATION AND PLOTTING)
+#       - LTBandstructure type
+#       - Spin interaction matrices
+#       - calculation and plotting of LT Bandstructures (path in k space)
+#       - calculation and plotting of LT Groundstates (k space)
 #
 ################################################################################
 
