@@ -19,9 +19,9 @@
 #
 #   4) CALCULATION OF LT GROUND STATES (k space manifold)
 #
-#   5) TODO PLOTTING OF LT GROUND STATES (k space manifold)
-#       - TODO plotting from points
-#       - TODO plotting from unitcell
+#   5) PLOTTING OF LT GROUND STATES (k space manifold)
+#       - plotting from points
+#       - plotting from unitcell
 #
 ################################################################################
 
@@ -1199,7 +1199,7 @@ end
 
 
 
-# obtain Fermi surface
+# obtain Ground state manifold
 """
     getLTGroundstateKSpace(
                 unitcell::Unitcell,

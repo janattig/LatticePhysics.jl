@@ -431,6 +431,23 @@ include("LatticePhysics_SVG_plotting.jl")
 
 ################################################################################
 #
+#   METHODS FOR DUMPING A LATTICE TO BLENDER INPUT FILE
+#   (input file can be used in Blender with the provided AddOn)
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) SAVING LATTICE DATA TO FILE
+#
+################################################################################
+
+# included in subfile (450 lines)
+include("LatticePhysics_blender.jl")
+
+
+
+
+################################################################################
+#
 #   METHODS FOR CONSTRUCTION OF BANDSTRUCTURES (ALONG PATHS)
 #
 #   STRUCTURE OF THE FILE
@@ -447,7 +464,7 @@ include("LatticePhysics_SVG_plotting.jl")
 #
 ################################################################################
 
-# included in subfile (350 lines)
+# included in subfile (470 lines)
 include("LatticePhysics_bandstructures.jl")
 
 
@@ -469,12 +486,42 @@ include("LatticePhysics_bandstructures.jl")
 #
 ################################################################################
 
-# included in subfile (772 lines)
+# included in subfile (773 lines)
 include("LatticePhysics_fermi_surfaces.jl")
 
 
 
 
+
+################################################################################
+#
+#   METHODS FOR LUTTINGER TISZA CALCULATION
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) TYPE LTBANDSTRUCTURE
+#       - type definition
+#       - printInfo function
+#
+#   2) CALCULATION OF LT BAND STRUCTURES OF UNTICELL OBJECTS
+#      (- LT constraint and deviation functions (NOT EXPORTED) )
+#       - spin interaction matrices
+#       - calculation of band structures
+#
+#   3) PLOTTING OF LT BAND STRUCTURES
+#       - plotting of Bandstructure objects
+#       - plotting of bandstructures of unitcells along paths
+#
+#   4) CALCULATION OF LT GROUND STATES (k space manifold)
+#
+#   5) PLOTTING OF LT GROUND STATES (k space manifold)
+#       - plotting from points
+#       - plotting from unitcell
+#
+################################################################################
+
+# included in subfile (1839 lines)
+include("LatticePhysics_luttinger_tisza.jl")
 
 
 
@@ -485,6 +532,6 @@ include("LatticePhysics_fermi_surfaces.jl")
 
 
 # MODULE END
-# total lines: 490 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 350 + 772
-# = 13397 lines
+# total lines: 537 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 2094 + 450 + 470 + 773 + 1839
+# = 15854 lines
 end
