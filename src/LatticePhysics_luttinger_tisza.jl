@@ -501,10 +501,8 @@ function getLTBandstructure(
             # compute the constraint, first find out what bands are degenerate
             # list of bands they are degenerate with
             degenerate = zeros(Int64,   length(eigenvalues)) .- 1
-            treat      = zeros(Int64,   length(eigenvalues))
+            treat      =  ones(Int64,   length(eigenvalues))
             for b in 2:length(eigenvalues)
-                # treat the current band
-                treat[b] = 1
                 # check if degenerate
                 if eigenvalues[b] - epsilon_degenerate <= eigenvalues[b-1]
                     # band b is degenerate with band b-1
@@ -968,10 +966,8 @@ function getLTGroundstateKSpace2D(
         # compute the constraint, first find out what bands are degenerate
         # list of bands they are degenerate with
         degenerate = zeros(Int64,   length(eigenvalues)) .- 1
-        treat      = zeros(Int64,   length(eigenvalues))
+        treat      =  ones(Int64,   length(eigenvalues))
         for b in 2:length(eigenvalues)
-            # treat the current band
-            treat[b] = 1
             # check if degenerate
             if eigenvalues[b] - epsilon_degenerate <= eigenvalues[b-1]
                 # band b is degenerate with band b-1
@@ -1155,10 +1151,8 @@ function getLTGroundstateKSpace3D(
         # compute the constraint, first find out what bands are degenerate
         # list of bands they are degenerate with
         degenerate = zeros(Int64,   length(eigenvalues)) .- 1
-        treat      = zeros(Int64,   length(eigenvalues))
+        treat      =  ones(Int64,   length(eigenvalues))
         for b in 2:length(eigenvalues)
-            # treat the current band
-            treat[b] = 1
             # check if degenerate
             if eigenvalues[b] - epsilon_degenerate <= eigenvalues[b-1]
                 # band b is degenerate with band b-1
