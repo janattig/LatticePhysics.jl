@@ -857,8 +857,16 @@ function getLTGroundstateKSpace2D(
 
     # check if the GS energy has to be calculated
     if groundstate_energy == Inf
-        # optimize the energy
-        groundstate_energy = Optim.minimum(Optim.optimize(k->minimum(eigvals(getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix))), zeros(2)))
+        # search for 10 random points and compare the found minimum
+        for tries in 1:10
+            # find a suitable starting point for the Newton algorithm
+            k_start = Float64[rand(), rand()]
+            for j in 1:length(k_start)
+                k_start[j] = k_start[j] * bounds_lower[j] + (1-k_start[j]) * bounds_upper[j]
+            end
+            # optimize the energy
+            groundstate_energy = min(Optim.minimum(Optim.optimize(k->minimum(eigvals(getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix))), k_start)), groundstate_energy)
+        end
         # print the groundstate_energy
         println("Groundstate energy is E_min = $(groundstate_energy)")
     end
@@ -1026,8 +1034,16 @@ function getLTGroundstateKSpace3D(
 
     # check if the GS energy has to be calculated
     if groundstate_energy == Inf
-        # optimize the energy
-        groundstate_energy = Optim.minimum(Optim.optimize(k->minimum(eigvals(getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix))), zeros(3)))
+        # search for 10 random points and compare the found minimum
+        for tries in 1:10
+            # find a suitable starting point for the Newton algorithm
+            k_start = Float64[rand(), rand(), rand()]
+            for j in 1:length(k_start)
+                k_start[j] = k_start[j] * bounds_lower[j] + (1-k_start[j]) * bounds_upper[j]
+            end
+            # optimize the energy
+            groundstate_energy = min(Optim.minimum(Optim.optimize(k->minimum(eigvals(getSpinInteractionMatrixKSpace(unitcell, k, bondInteractionMatrix))), k_start)), groundstate_energy)
+        end
         # print the groundstate_energy
         println("Groundstate energy is E_min = $(groundstate_energy)")
     end
