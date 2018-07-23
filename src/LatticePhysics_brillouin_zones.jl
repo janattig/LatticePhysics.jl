@@ -195,7 +195,8 @@ function plotBrillouinZone2D(
             brillouin_zone::BrillouinZone;
             filter_points::Bool=true,
             plot_color="k",
-            new_figure=true,
+            new_figure::Bool=true,
+            zoom_to_BZ::Bool=true,
             showPlot::Bool=true
         )
 
@@ -244,9 +245,21 @@ function plotBrillouinZone2D(
         end
         # scatter only filtered points
         scatter(x_values[used], y_values[used], color=plot_color)
+        # zoom to the used points as well
+        max_dim = 0
+        max_dim = max(max_dim, maximum(x_values[used]))
+        max_dim = max(max_dim, maximum(y_values[used]))
+        max_dim = max(max_dim, maximum(x_values[used].*-1))
+        max_dim = max(max_dim, maximum(y_values[used].*-1))
     else
         # no filter, scatter everything
         scatter(x_values, y_values, color=plot_color)
+        # zoom to all points
+        max_dim = 0
+        max_dim = max(max_dim, maximum(x_values))
+        max_dim = max(max_dim, maximum(y_values))
+        max_dim = max(max_dim, maximum(x_values.*-1))
+        max_dim = max(max_dim, maximum(y_values.*-1))
     end
 
     # STEP 2 - draw all lines of edges
@@ -279,6 +292,12 @@ function plotBrillouinZone2D(
     #   FINISH THE PLOT
     ###########################
 
+    # maybe zoom
+    if zoom_to_BZ
+        xlim(-max_dim, max_dim)
+        ylim(-max_dim, max_dim)
+    end
+
     # tighten the layout
     tight_layout()
 
@@ -297,7 +316,8 @@ function plotBrillouinZone3D(
             brillouin_zone::BrillouinZone;
             filter_points::Bool=true,
             plot_color="k",
-            new_figure=true,
+            new_figure::Bool=true,
+            zoom_to_BZ::Bool=true,
             showPlot::Bool=true
         )
 
@@ -347,9 +367,25 @@ function plotBrillouinZone3D(
         end
         # scatter only filtered points
         scatter3D(x_values[used], y_values[used], z_values[used], color=plot_color)
+        # find out maximum dimension
+        max_dim = 0
+        max_dim = max(max_dim, maximum(x_values[used]))
+        max_dim = max(max_dim, maximum(y_values[used]))
+        max_dim = max(max_dim, maximum(z_values[used]))
+        max_dim = max(max_dim, maximum(x_values[used].*-1))
+        max_dim = max(max_dim, maximum(y_values[used].*-1))
+        max_dim = max(max_dim, maximum(z_values[used].*-1))
     else
         # no filter, scatter everything
         scatter3D(x_values, y_values, z_values, color=plot_color)
+        # find out maximum dimension
+        max_dim = 0
+        max_dim = max(max_dim, maximum(x_values))
+        max_dim = max(max_dim, maximum(y_values))
+        max_dim = max(max_dim, maximum(z_values))
+        max_dim = max(max_dim, maximum(x_values.*-1))
+        max_dim = max(max_dim, maximum(y_values.*-1))
+        max_dim = max(max_dim, maximum(z_values.*-1))
     end
 
     # STEP 2 - draw all lines of edges
@@ -383,6 +419,13 @@ function plotBrillouinZone3D(
     #   FINISH THE PLOT
     ###########################
 
+    # maybe zoom
+    if zoom_to_BZ
+        xlim(-max_dim, max_dim)
+        ylim(-max_dim, max_dim)
+        zlim(-max_dim, max_dim)
+    end
+
     # tighten the layout
     tight_layout()
 
@@ -405,7 +448,8 @@ end
                 brillouin_zone::BrillouinZone
              [; filter_points::Bool=true,
                 plot_color="k",
-                new_figure=true,
+                new_figure::Bool=true,
+                zoom_to_BZ::Bool=true,
                 showPlot::Bool=true ]
             )
 
@@ -438,7 +482,8 @@ function plotBrillouinZone(
             brillouin_zone::BrillouinZone;
             filter_points::Bool=true,
             plot_color="k",
-            new_figure=true,
+            new_figure::Bool=true,
+            zoom_to_BZ::Bool=true,
             showPlot::Bool=true
         )
     # check if points are 3D or 2D
@@ -448,6 +493,7 @@ function plotBrillouinZone(
             filter_points=filter_points,
             plot_color=plot_color,
             new_figure=new_figure,
+            zoom_to_BZ=zoom_to_BZ,
             showPlot=showPlot
         )
     elseif length(brillouin_zone.points[1]) == 3
@@ -456,6 +502,7 @@ function plotBrillouinZone(
             filter_points=filter_points,
             plot_color=plot_color,
             new_figure=new_figure,
+            zoom_to_BZ=zoom_to_BZ,
             showPlot=showPlot
         )
     else

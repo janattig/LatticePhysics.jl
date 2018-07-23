@@ -1331,7 +1331,7 @@ export getLTGroundstateKSpace
 function plotLTGroundstateKSpace2D(
             k_values::Array{Float64, 2},
             constraint_values::Array{Float64, 1};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1383,8 +1383,8 @@ function plotLTGroundstateKSpace2D(
     legend()
 
     # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone) > 1
-        plot([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], "-k")
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
     end
 
 
@@ -1450,7 +1450,7 @@ function plotLTGroundstateKSpace2D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(2),
             bounds_upper::Array{Float64,1}=2*pi.*ones(2),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1496,7 +1496,7 @@ end
 function plotLTGroundstateKSpace3D(
             k_values::Array{Float64, 2},
             constraint_values::Array{Float64, 1};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1550,8 +1550,8 @@ function plotLTGroundstateKSpace3D(
     legend()
 
     # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone) > 1
-        plot3D([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], [b[3] for b in brillouin_zone], "-k")
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
     end
 
 
@@ -1617,7 +1617,7 @@ function plotLTGroundstateKSpace3D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1665,7 +1665,7 @@ end
     plotLTGroundstateKSpace(
                 k_values::Array{Float64, 2},
                 constraint_values::Array{Float64, 1}
-             [; brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+             [; brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
                 plot_title::String="",
                 plot_color_valid="b",
                 plot_color_invalid="r",
@@ -1686,7 +1686,7 @@ end
                 bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
                 bounds_upper::Array{Float64,1}=2*pi.*ones(4),
                 refold_to_first_BZ::Bool=true,
-                brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+                brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
                 plot_title::String="",
                 plot_color_valid="b",
                 plot_color_invalid="r",
@@ -1730,7 +1730,7 @@ PyPlot.Figure(...)
 function plotLTGroundstateKSpace(
             k_values::Array{Float64, 2},
             constraint_values::Array{Float64, 1};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1783,7 +1783,7 @@ function plotLTGroundstateKSpace(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
