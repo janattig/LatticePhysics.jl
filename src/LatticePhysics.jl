@@ -406,6 +406,36 @@ include("LatticePhysics_paths.jl")
 
 
 
+################################################################################
+#
+#   METHODS FOR CONSTRUCTION AND PLOTTING OF BRILLOUIN ZONES (BZ) OF A UNITCELL
+#
+#   STRUCTURE OF THE FILE
+#
+#   1) TYPE BRILLOUINZONE
+#       - type definition
+#       - TODO printInfo function
+#
+#   2) TODO CONSTRUCTION FUNCTIONS BZ
+#
+#   3) DEFAULT BZ
+#       - TODO getDefaultBZSquare
+#       - getDefaultBZFCC
+#
+#   4) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#
+#   5) PLOTTING OF A BZ
+#
+################################################################################
+
+# included in subfile (555 lines)
+include("LatticePhysics_brillouin_zones.jl")
+
+
+
+
+
+
 
 
 ################################################################################
