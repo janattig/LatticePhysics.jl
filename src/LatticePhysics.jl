@@ -37,20 +37,25 @@
 #       - modification of paths
 #       - pre-implemented paths
 #
-#   9) SVG PLOTTING
+#   9) BRILLOUIN ZONE BUILDING
+#       - type definition
+#       - pre-implemented BZs
+#       - plotting of BZ
+#
+#   10) SVG PLOTTING
 #       - 2D lattices
 #       - TODO 3D lattices
 #       - 2D plaquettes
 #
-#  10) BLENDER PLOTTING
+#  11) BLENDER PLOTTING
 #
-#  11) BANDSTRUCTURES (CALCULATION AND PLOTTING)
+#  12) BANDSTRUCTURES (CALCULATION AND PLOTTING)
 #
-#  12) FERMI SURFACES (CALCULATION AND PLOTTING)
+#  13) FERMI SURFACES (CALCULATION AND PLOTTING)
 #       - 2D unitcells
 #       - 3D unitcells
 #
-#  13) LUTTINGER TISZA (CALCULATION AND PLOTTING)
+#  14) LUTTINGER TISZA (CALCULATION AND PLOTTING)
 #       - LTBandstructure type
 #       - Spin interaction matrices
 #       - calculation and plotting of LT Bandstructures (path in k space)
