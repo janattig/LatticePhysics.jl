@@ -24,6 +24,7 @@
 #   3D UNITCELLS
 #   - CUBIC / FCC
 #       - getUnitcellDiamond
+#       - getUnitcellFCC
 #       - getUnitcellBCC
 #       - getUnitcellPyrochlore
 #   - (X,3)y FAMILY
@@ -1947,6 +1948,217 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
     return uc
 end
 export getUnitcellDiamond
+
+
+"""
+    getUnitcellFCC([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D fcc lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 & 4 - simple (DEFAULT) & simple Kitaev
+
+Bravais lattice vectors are
+
+    a1 = 0.5 .* [0, 1, 1]
+    a2 = 0.5 .* [1, 0, 1]
+    a3 = 0.5 .* [1, 1, 0]
+
+1 site per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+
+Connections are only between nearest neighbors.
+
+For version `1`, all couplings have strength `1.0`.
+
+For version `4`, the couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`.
+
+
+
+
+
+#### 2 & 5 - NNN & Kitaev + NNN
+
+Bravais lattice vectors are
+
+    a1 = 0.5 .* [0, 1, 1]
+    a2 = 0.5 .* [1, 0, 1]
+    a3 = 0.5 .* [1, 1, 0]
+
+1 site per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+
+Connections are between nearest neighbors and next-nearest neighbors (which are chosen by real-space distance).
+
+For version `1`, nearest neighbors have strength `"J1"` and next-nearest neighbors have strength `"J2"`.
+
+For version `4`, the nearest-neighbor couplings follow the Kitaev scheme and are labeled `"tx"`, `"ty"` and `"tz"`
+whereas next-nearest neighbors have strength `"J2"`.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellFCC()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellFCC(version::Int64=1; save::Bool=false)
+    if version == 1
+        # the lattice vectors
+        a1 = 0.5 .* [0, 1, 1]
+        a2 = 0.5 .* [1, 0, 1]
+        a3 = 0.5 .* [1, 1, 0]
+        lattice_vectors = Array{Float64, 1}[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array{Float64, 1}[
+            [0.0, 0.0, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array{Any, 1}[
+            [1; 1; 1.0; (1, 0, 0)],
+            [1; 1; 1.0; (-1, 0, 0)],
+            [1; 1; 1.0; (0, 1, -1)],
+            [1; 1; 1.0; (0, -1, 1)],
+            [1; 1; 1.0; (0, 1, 0)],
+            [1; 1; 1.0; (0, -1, 0)],
+            [1; 1; 1.0; (-1, 0, 1)],
+            [1; 1; 1.0; (1, 0, -1)],
+            [1; 1; 1.0; (0, 0, 1)],
+            [1; 1; 1.0; (0, 0, -1)],
+            [1; 1; 1.0; (-1, 1, 0)],
+            [1; 1; 1.0; (1, -1, 0)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_fcc_unitcell.jld"
+    elseif version == 2
+        # the lattice vectors
+        a1 = 0.5 .* [0, 1, 1]
+        a2 = 0.5 .* [1, 0, 1]
+        a3 = 0.5 .* [1, 1, 0]
+        lattice_vectors = Array{Float64, 1}[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array{Float64, 1}[
+            [0.0, 0.0, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array{Any, 1}[
+            [1; 1; "J1"; (1, 0, 0)],
+            [1; 1; "J1"; (-1, 0, 0)],
+            [1; 1; "J1"; (0, 1, -1)],
+            [1; 1; "J1"; (0, -1, 1)],
+            [1; 1; "J1"; (0, 1, 0)],
+            [1; 1; "J1"; (0, -1, 0)],
+            [1; 1; "J1"; (-1, 0, 1)],
+            [1; 1; "J1"; (1, 0, -1)],
+            [1; 1; "J1"; (0, 0, 1)],
+            [1; 1; "J1"; (0, 0, -1)],
+            [1; 1; "J1"; (-1, 1, 0)],
+            [1; 1; "J1"; (1, -1, 0)],
+            [1; 1; "J2"; (1, 1, -1)],
+            [1; 1; "J2"; (1, -1, 1)],
+            [1; 1; "J2"; (-1, 1, 1)],
+            [1; 1; "J2"; (-1, -1, 1)],
+            [1; 1; "J2"; (1, -1, -1)],
+            [1; 1; "J2"; (-1, 1, -1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_fcc_NN_NNN_unitcell.jld"
+    elseif version == 4
+        # the lattice vectors
+        a1 = 0.5 .* [0, 1, 1]
+        a2 = 0.5 .* [1, 0, 1]
+        a3 = 0.5 .* [1, 1, 0]
+        lattice_vectors = Array{Float64, 1}[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array{Float64, 1}[
+            [0.0, 0.0, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array{Any, 1}[
+            [1; 1; "tx"; (1, 0, 0)],
+            [1; 1; "tx"; (-1, 0, 0)],
+            [1; 1; "tx"; (0, 1, -1)],
+            [1; 1; "tx"; (0, -1, 1)],
+            [1; 1; "ty"; (0, 1, 0)],
+            [1; 1; "ty"; (0, -1, 0)],
+            [1; 1; "ty"; (-1, 0, 1)],
+            [1; 1; "ty"; (1, 0, -1)],
+            [1; 1; "tz"; (0, 0, 1)],
+            [1; 1; "tz"; (0, 0, -1)],
+            [1; 1; "tz"; (-1, 1, 0)],
+            [1; 1; "tz"; (1, -1, 0)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_fcc_kitaev_unitcell.jld"
+    elseif version == 5
+        # the lattice vectors
+        a1 = 0.5 .* [0, 1, 1]
+        a2 = 0.5 .* [1, 0, 1]
+        a3 = 0.5 .* [1, 1, 0]
+        lattice_vectors = Array{Float64, 1}[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array{Float64, 1}[
+            [0.0, 0.0, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array{Any, 1}[
+            [1; 1; "tx"; (1, 0, 0)],
+            [1; 1; "tx"; (-1, 0, 0)],
+            [1; 1; "tx"; (0, 1, -1)],
+            [1; 1; "tx"; (0, -1, 1)],
+            [1; 1; "ty"; (0, 1, 0)],
+            [1; 1; "ty"; (0, -1, 0)],
+            [1; 1; "ty"; (-1, 0, 1)],
+            [1; 1; "ty"; (1, 0, -1)],
+            [1; 1; "tz"; (0, 0, 1)],
+            [1; 1; "tz"; (0, 0, -1)],
+            [1; 1; "tz"; (-1, 1, 0)],
+            [1; 1; "tz"; (1, -1, 0)],
+            [1; 1; "J2"; (1, 1, -1)],
+            [1; 1; "J2"; (1, -1, 1)],
+            [1; 1; "J2"; (-1, 1, 1)],
+            [1; 1; "J2"; (-1, -1, 1)],
+            [1; 1; "J2"; (1, -1, -1)],
+            [1; 1; "J2"; (-1, 1, -1)]
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_fcc_J1_K1_J2_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+export getUnitcellFCC
 
 
 """
