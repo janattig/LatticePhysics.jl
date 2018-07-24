@@ -169,7 +169,7 @@ export buildFolders
 #
 #   TYPE DEFINITIONS OF OBJECT CLASSES IN JULIA
 #
-#   STRUCTURE OF THE FILE "LatticePhysics_type_definitions.jl"
+#   STRUCTURE OF THE FILE:
 #
 #   1) Definition of UNITCELL OBJECT
 #       - Saving
@@ -254,8 +254,8 @@ include("LatticePhysics_unitcell_implementations.jl")
 #   STRUCTURE OF THE FILE
 #
 #   1) UNITCELL FROM SITE COLLECTION (automatically determine the connections)
-#       - 2D
-#       - 3D
+#       - 2D (not exported)
+#       - 3D (not exported)
 #       - independent of the dimension
 #
 #   2) UNITCELL GENERATING CODE
@@ -450,7 +450,7 @@ include("LatticePhysics_brillouin_zones.jl")
 #
 #   STRUCTURE OF THE FILE
 #
-#   1) HELPER SVG FUNCTIONS
+#   1) HELPER SVG FUNCTIONS (NOTE: not exported)
 #       - Header / Footer String
 #       - Ellipse (stroked) String
 #       - Line String
