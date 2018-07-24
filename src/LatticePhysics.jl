@@ -32,12 +32,12 @@
 #
 #   7) INTERACTION MATRICES (REAL AND MOMENTUM SPACE)
 #
-#   8) PATH BUILDING (MOMENTUM SPACE)
+#   8) PATHS (IN MOMENTUM SPACE)
 #       - type definition
 #       - modification of paths
 #       - pre-implemented paths
 #
-#   9) BRILLOUIN ZONE BUILDING
+#   9) BRILLOUIN ZONES
 #       - type definition
 #       - pre-implemented BZs
 #       - plotting of BZ
@@ -58,8 +58,8 @@
 #  14) LUTTINGER TISZA (CALCULATION AND PLOTTING)
 #       - LTBandstructure type
 #       - Spin interaction matrices
-#       - calculation and plotting of LT Bandstructures (path in k space)
-#       - calculation and plotting of LT Groundstates (k space)
+#       - calculation and plotting of LT Bandstructures (along path in k space)
+#       - calculation and plotting of LT Groundstates (in k space)
 #
 ################################################################################
 
