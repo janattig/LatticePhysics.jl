@@ -23,6 +23,8 @@
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
+#   5) TODO FUNCTION TO PLOT A PATH
+#
 ################################################################################
 
 

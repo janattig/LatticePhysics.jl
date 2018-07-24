@@ -8,15 +8,13 @@
 #       - type definition
 #       - TODO printInfo function
 #
-#   2) TODO CONSTRUCTION FUNCTIONS BZ
-#
-#   3) DEFAULT BZ
+#   2) DEFAULT BZ
 #       - TODO getDefaultBZSquare
 #       - getDefaultBZFCC
 #
-#   4) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
 #
-#   5) PLOTTING OF A BZ
+#   4) PLOTTING OF A BZ
 #
 ################################################################################
 

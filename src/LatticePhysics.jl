@@ -403,9 +403,11 @@ include("LatticePhysics_interaction_matrices.jl")
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
+#   5) TODO FUNCTION TO PLOT A PATH
+#
 ################################################################################
 
-# included in subfile (555 lines)
+# included in subfile (557 lines)
 include("LatticePhysics_paths.jl")
 
 
@@ -421,19 +423,17 @@ include("LatticePhysics_paths.jl")
 #       - type definition
 #       - TODO printInfo function
 #
-#   2) TODO CONSTRUCTION FUNCTIONS BZ
-#
-#   3) DEFAULT BZ
+#   2) DEFAULT BZ
 #       - TODO getDefaultBZSquare
 #       - getDefaultBZFCC
 #
-#   4) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
 #
-#   5) PLOTTING OF A BZ
+#   4) PLOTTING OF A BZ
 #
 ################################################################################
 
-# included in subfile (513 lines)
+# included in subfile (511 lines)
 include("LatticePhysics_brillouin_zones.jl")
 
 
@@ -575,6 +575,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 580 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 555 + 513 + 2094 + 450 + 470 + 773 + 1849
+# total lines: 580 + 1153 + 4023 + 554 + 2079 + 748 + 333 + 246 + 557 + 511 + 2094 + 450 + 470 + 773 + 1849
 # = 16420 lines
 end
