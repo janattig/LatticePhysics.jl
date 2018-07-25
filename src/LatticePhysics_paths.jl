@@ -523,7 +523,7 @@ creates the default path for the FCC lattice (3D). Points in this path are
     [    pi,     pi,   pi]   (L)
     [   0.0,    0.0,  0.0]   (Gamma)
     [3*pi/2, 3*pi/2,  0.0]   (K)
-    [  2*pi,    0.0,  0.0]   (X)
+    [  2*pi,     pi,  0.0]   (W)
 
 Additionally, a resolution can be set so that the entire path in total has this resolution.
 
@@ -546,7 +546,7 @@ function getDefaultPathFCC( ; resolution::Int64=1200)
     addPointToPath!(path, [    pi,     pi,   pi], "L")
     addPointToPath!(path, [   0.0,    0.0,  0.0], "Gamma")
     addPointToPath!(path, [3*pi/2, 3*pi/2,  0.0], "K")
-    addPointToPath!(path, [  2*pi,    0.0,  0.0], "X")
+    addPointToPath!(path, [  2*pi,     pi,  0.0], "W")
     # set the total resolution
     setTotalResolution!(path, resolution)
     # return the path
