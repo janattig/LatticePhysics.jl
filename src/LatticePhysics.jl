@@ -42,7 +42,7 @@
 #       - pre-implemented BZs
 #       - plotting of BZ
 #
-#   10) SVG PLOTTING
+#  10) SVG PLOTTING
 #       - 2D lattices
 #       - TODO 3D lattices
 #       - 2D plaquettes
@@ -498,7 +498,7 @@ include("LatticePhysics_blender.jl")
 #
 #   1) TYPE BANDSTRUCTURE
 #       - type definition
-#       - TODO printInfo function
+#       - printInfo function
 #
 #   2) CALCULATION OF BAND STRUCTURES OF UNTICELL OBJECTS
 #
@@ -508,7 +508,7 @@ include("LatticePhysics_blender.jl")
 #
 ################################################################################
 
-# included in subfile (470 lines)
+# included in subfile (529 lines)
 include("LatticePhysics_bandstructures.jl")
 
 
@@ -576,6 +576,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 581 + 1153 + 4235 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 470 + 773 + 1849
-# = 16875 lines
+# total lines: 581 + 1153 + 4235 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
+# = 16934 lines
 end

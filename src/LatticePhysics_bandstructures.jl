@@ -6,7 +6,7 @@
 #
 #   1) TYPE BANDSTRUCTURE
 #       - type definition
-#       - TODO printInfo function
+#       - printInfo function
 #
 #   2) CALCULATION OF BAND STRUCTURES OF UNTICELL OBJECTS
 #
@@ -69,6 +69,65 @@ end
 
 # export the type
 export Bandstructure
+
+
+
+
+
+
+# INFORMATION FUNCTION
+"""
+    printInfo(bandstructure::Bandstructure)
+
+Prints information about a `Bandstructure` in terms of
+how many bands are in the given object and along which path the structure is calculated.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> printInfo(bandstructure)
+...
+
+```
+"""
+function printInfo(bandstructure::Bandstructure)
+    # print the header
+    println("Bandstructure information:")
+    print("$(bandstructure.path.point_names[1])")
+    for p in bandstructure.path.point_names[2:end]
+        print("\t->-\t$(p)")
+    end
+    println("")
+    # first the point
+    print("|")
+    # then all segments with closing points
+    for s in 1:length(bandstructure.bands)
+        # segment s starts
+        print("\t")
+        # calculate the number of bands
+        print("$(length(bandstructure.bands[s])) bands")
+        # print the next point
+        print("\t|")
+    end
+    # print a new line
+    println("")
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
