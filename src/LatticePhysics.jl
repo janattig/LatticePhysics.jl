@@ -404,11 +404,11 @@ include("LatticePhysics_interaction_matrices.jl")
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
-#   5) TODO FUNCTION TO PLOT A PATH
+#   5) FUNCTION TO PLOT A PATH (in both 2D and 3D)
 #
 ################################################################################
 
-# included in subfile (557 lines)
+# included in subfile (799 lines)
 include("LatticePhysics_paths.jl")
 
 
@@ -576,6 +576,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 581 + 1153 + 4235 + 554 + 2079 + 748 + 333 + 246 + 557 + 511 + 2094 + 450 + 470 + 773 + 1849
-# = 16633 lines
+# total lines: 581 + 1153 + 4235 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 470 + 773 + 1849
+# = 16875 lines
 end
