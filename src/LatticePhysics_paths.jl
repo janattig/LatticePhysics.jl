@@ -23,7 +23,7 @@
 #
 #   4) TODO FUNCTION TO CREATE A DEFAULT PATH BASED ON A UNITCELL OBJECT
 #
-#   5) TODO FUNCTION TO PLOT A PATH
+#   5) FUNCTION TO PLOT A PATH (in both 2D and 3D)
 #
 ################################################################################
 
@@ -555,3 +555,245 @@ end
 
 # export the function
 export getDefaultPathFCC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# PLOTTING IN 2D (not exported)
+function plotPath2D(
+            path::Path;
+            plot_color="r",
+            new_figure::Bool=true,
+            showPlot::Bool=true
+        )
+
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+
+    # only if new figure is desired
+    if new_figure
+
+        # configure plot environment
+        rc("font", family="serif")
+
+        # create a new figure
+        fig = figure()
+
+    end
+
+
+
+
+    ###########################
+    #   PLOT BRILLOUIN ZONE
+    ###########################
+
+    # compile lists of x and y values
+    x_values = Float64[p[1] for p in path.points]
+    y_values = Float64[p[2] for p in path.points]
+
+    # STEP 1 - scatter the points
+    scatter(x_values, y_values, color=plot_color)
+
+    # STEP 2 - draw all lines of edges
+    plot(
+            x_values, y_values, "-",
+            color=plot_color
+        )
+
+    # STEP 3 - set all labels
+    for i in 1:length(path.points)
+        text(
+            x_values[i], y_values[i], path.point_names[i],
+            ha="left", va="top", size=15, color=plot_color
+        )
+    end
+
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # equal axis
+    gca()[:set_aspect]("equal")
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return gcf()
+
+end
+
+# PLOTTING IN 3D (not exported)
+function plotPath3D(
+            path::Path;
+            plot_color="r",
+            new_figure::Bool=true,
+            showPlot::Bool=true
+        )
+
+
+    ###########################
+    #   INITIAL SETTINGS
+    ###########################
+
+
+    # only if new figure is desired
+    if new_figure
+
+        # configure plot environment
+        rc("font", family="serif")
+
+        # create a new figure
+        fig = figure()
+
+    end
+
+
+
+
+    ###########################
+    #   PLOT BRILLOUIN ZONE
+    ###########################
+
+    # compile lists of x and y values
+    x_values = Float64[p[1] for p in path.points]
+    y_values = Float64[p[2] for p in path.points]
+    z_values = Float64[p[3] for p in path.points]
+
+    # STEP 1 - scatter the points
+    scatter3D(x_values, y_values, z_values, color=plot_color)
+
+    # STEP 2 - draw all lines of edges
+    plot3D(
+            x_values, y_values, z_values, "-",
+            color=plot_color
+        )
+
+    # STEP 3 - set all labels
+    for i in 1:length(path.points)
+        text3D(
+            x_values[i], y_values[i], z_values[i], path.point_names[i],
+            ha="left", va="top", size=15, color=plot_color
+        )
+    end
+
+
+
+
+    ###########################
+    #   CONFIGURE AXIS & TITLE
+    ###########################
+
+    # equal axis
+    gca()[:set_aspect]("equal")
+
+
+
+    ###########################
+    #   FINISH THE PLOT
+    ###########################
+
+    # tighten the layout
+    tight_layout()
+
+    # maybe show the plot
+    if showPlot
+        show()
+    end
+
+    # return the figure object
+    return gcf()
+
+end
+
+
+# GENERAL PLOTTING (exported)
+
+"""
+    plotPath(
+                path::Path
+             [; plot_color="r",
+                new_figure::Bool=true,
+                showPlot::Bool=true ]
+            )
+
+Plots the Path using `PyPlot`. First, all corner points are scattered using `scatter3d`.
+Second, all vertices are plotted using `plot3d`.
+Third, all labels are put at the location of the points.
+
+For specifying details while plotting, optional keywords can be passed:
+- `plot_color` is the color of the BZ in the plot.
+- `new_figure` specifies if a new figure should be created before plotting (or if the current open figure should be used)
+- `showPlot` specifies if the plot should be opened after plotting.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> plotPath(path)
+PyPlot.Figure(...)
+
+julia> plotPath(path, plot_color="m")
+PyPlot.Figure(...)
+
+```
+"""
+function plotPath(
+            path::Path;
+            plot_color="r",
+            new_figure::Bool=true,
+            showPlot::Bool=true
+        )
+    # check if points are 3D or 2D
+    if length(path.points[1]) == 2
+        return plotPath2D(
+            path,
+            plot_color=plot_color,
+            new_figure=new_figure,
+            showPlot=showPlot
+        )
+    elseif length(path.points[1]) == 3
+        return plotPath3D(
+            path,
+            plot_color=plot_color,
+            new_figure=new_figure,
+            showPlot=showPlot
+        )
+    else
+        println("Bad dimension of k space: $(length(path.points[1]))")
+    end
+
+end
+export plotPath
