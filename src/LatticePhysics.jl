@@ -226,6 +226,8 @@ include("LatticePhysics_type_definitions.jl")
 #   3D UNITCELLS
 #   - CUBIC / FCC
 #       - getUnitcellDiamond
+#       - getUnitcellCubic
+#       - getUnitcellSC
 #       - getUnitcellFCC
 #       - getUnitcellBCC
 #       - getUnitcellPyrochlore
@@ -242,7 +244,7 @@ include("LatticePhysics_type_definitions.jl")
 #
 ################################################################################
 
-# included in subfile (4235 lines)
+# included in subfile (4315 lines)
 include("LatticePhysics_unitcell_implementations.jl")
 
 
@@ -576,6 +578,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 581 + 1153 + 4235 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
-# = 16934 lines
+# total lines: 583 + 1153 + 4315 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
+# = 17016 lines
 end

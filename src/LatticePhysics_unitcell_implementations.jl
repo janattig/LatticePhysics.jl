@@ -24,6 +24,8 @@
 #   3D UNITCELLS
 #   - CUBIC / FCC
 #       - getUnitcellDiamond
+#       - getUnitcellCubic
+#       - getUnitcellSC
 #       - getUnitcellFCC
 #       - getUnitcellBCC
 #       - getUnitcellPyrochlore
@@ -1948,6 +1950,84 @@ function getUnitcellDiamond(version::Int64=1; save::Bool=false)
     return uc
 end
 export getUnitcellDiamond
+
+
+"""
+    getUnitcellSC([version::Int64=1; save::Bool=false])
+    getUnitcellCubic([version::Int64=1; save::Bool=false])
+
+get the implementation of the *3D sc (simple cubic) lattice* unitcell. The `version` integer
+specifies the exact implementation convention that is used and the boolean `save`
+can be passed if one wants to save the unitcell after creation.
+
+
+
+# Versions
+
+#### 1 - simple (DEFAULT)
+
+Bravais lattice vectors are
+
+    a1 = [1.0, 0.0, 0.0]
+    a2 = [0.0, 1.0, 0.0]
+    a3 = [0.0, 0.0, 1.0]
+
+1 site per unitcell, located at
+
+    r1 = [0.0,  0.0,  0.0]
+
+Connections are only between nearest neighbors, all couplings have strength `1.0`.
+
+
+
+
+# Examples
+
+```julia-repl
+julia> unitcell = getUnitcellSC()
+LatticePhysics.Unitcell(...)
+```
+"""
+function getUnitcellSC(version::Int64=1; save::Bool=false)
+    if version == 1
+        # the lattice vectors
+        a1 = [1.0, 0.0, 0.0]
+        a2 = [0.0, 1.0, 0.0]
+        a3 = [0.0, 0.0, 1.0]
+        lattice_vectors = Array{Float64, 1}[]
+        push!(lattice_vectors, a1)
+        push!(lattice_vectors, a2)
+        push!(lattice_vectors, a3)
+        # Basis Definition
+        basis = Array{Float64, 1}[
+            [0.0, 0.0, 0.0]
+        ]
+        # Connection Definition
+        # [<from index>; <to index>; <strength>; (<lattice displaced by lattice vector j>)]
+        connections = Array{Any, 1}[
+            [1; 1; 1.0; (1, 0, 0)],
+            [1; 1; 1.0; (-1, 0, 0)],
+            [1; 1; 1.0; (0, 1, 0)],
+            [1; 1; 1.0; (0, -1, 0)],
+            [1; 1; 1.0; (0, 0, 1)],
+            [1; 1; 1.0; (0, 0, -1)],
+        ]
+        # filename
+        filename = "$(FOLDER_UNITCELLS)3d_sc_unitcell.jld"
+    end
+    # generate unitcell
+    uc = Unitcell(lattice_vectors, basis, connections, filename)
+    if save
+        saveUnitcell(uc)
+    end
+    # return the unitcell
+    return uc
+end
+getUnitcellCubic = getUnitcellSC
+export getUnitcellSC
+export getUnitcellCubic
+
+
 
 
 """
