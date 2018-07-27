@@ -20,6 +20,11 @@
 #       - evaluate strengths
 #       - optimize connections
 #
+#   4) TODO REAL SPACE ROTATION / SCALING
+#       - TODO Rotation around some axis
+#       - TODO Scaling along some axis
+#       - TODO Global scaling
+#
 ################################################################################
 
 
@@ -746,3 +751,135 @@ function optimizeConnections!(unitcell::Unitcell)
     return nothing
 end
 export optimizeConnections!
+
+
+
+
+
+
+
+################################################################################
+#
+#   4) REAL SPACE ROTATION / SCALING
+#       - Rotation around some axis
+#       - TODO Scaling along some axis
+#       - TODO Global (isotropic) scaling
+#       - TODO Global (isotropic) scaling to mean bond length
+#
+################################################################################
+
+
+
+
+# ROTATION AROUND X AXIS
+function rotateAroundXAxis!(unitcell::Unitcell, angle::Float64)
+    # rotate the lattice vectors
+    for lv in unitcell.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[2], lv[3] = cos(angle)*lv[2] + sin(angle)*lv[3]  ,   -sin(angle)*lv[2] + cos(angle)*lv[3]
+    end
+    # rotate the basis sites
+    for bs in unitcell.basis
+        # rotate and overwrite simulateously all components
+        bs[2], bs[3] = cos(angle)*bs[2] + sin(angle)*bs[3]  ,   -sin(angle)*bs[2] + cos(angle)*bs[3]
+    end
+end
+function rotateAroundXAxis!(lattice::Lattice, angle::Float64)
+    # rotate the lattice vectors
+    for lv in lattice.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[2], lv[3] = cos(angle)*lv[2] + sin(angle)*lv[3]  ,   -sin(angle)*lv[2] + cos(angle)*lv[3]
+    end
+    # rotate the basis sites
+    for p in lattice.positions
+        # rotate and overwrite simulateously all components
+        p[2], p[3] = cos(angle)*p[2] + sin(angle)*p[3]  ,   -sin(angle)*p[2] + cos(angle)*p[3]
+    end
+end
+export rotateAroundXAxis!
+
+
+function rotateAroundXAxisDeg!(unitcell::Unitcell, angle::Float64)
+    rotateAroundXAxis!(unitcell, angle*pi/180.0)
+end
+function rotateAroundXAxisDeg!(lattice::Lattice, angle::Float64)
+    rotateAroundXAxis!(lattice, angle*pi/180.0)
+end
+export rotateAroundXAxisDeg!
+
+
+
+
+# ROTATION AROUND Y AXIS
+function rotateAroundYAxis!(unitcell::Unitcell, angle::Float64)
+    # rotate the lattice vectors
+    for lv in unitcell.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[3], lv[1] = cos(angle)*lv[3] + sin(angle)*lv[1]  ,   -sin(angle)*lv[3] + cos(angle)*lv[1]
+    end
+    # rotate the basis sites
+    for bs in unitcell.basis
+        # rotate and overwrite simulateously all components
+        bs[3], bs[1] = cos(angle)*bs[3] + sin(angle)*bs[1]  ,   -sin(angle)*bs[3] + cos(angle)*bs[1]
+    end
+end
+function rotateAroundYAxis!(lattice::Lattice, angle::Float64)
+    # rotate the lattice vectors
+    for lv in lattice.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[3], lv[1] = cos(angle)*lv[3] + sin(angle)*lv[1]  ,   -sin(angle)*lv[3] + cos(angle)*lv[1]
+    end
+    # rotate the basis sites
+    for p in lattice.positions
+        # rotate and overwrite simulateously all components
+        p[3], p[1] = cos(angle)*p[3] + sin(angle)*p[1]  ,   -sin(angle)*p[3] + cos(angle)*p[1]
+    end
+end
+export rotateAroundYAxis!
+
+
+function rotateAroundYAxisDeg!(unitcell::Unitcell, angle::Float64)
+    rotateAroundYAxis!(unitcell, angle*pi/180.0)
+end
+function rotateAroundYAxisDeg!(lattice::Lattice, angle::Float64)
+    rotateAroundYAxis!(lattice, angle*pi/180.0)
+end
+export rotateAroundYAxisDeg!
+
+
+
+# ROTATION AROUND Z AXIS
+function rotateAroundZAxis!(unitcell::Unitcell, angle::Float64)
+    # rotate the lattice vectors
+    for lv in unitcell.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[1], lv[2] = cos(angle)*lv[1] + sin(angle)*lv[2]  ,   -sin(angle)*lv[1] + cos(angle)*lv[2]
+    end
+    # rotate the basis sites
+    for bs in unitcell.basis
+        # rotate and overwrite simulateously all components
+        bs[1], bs[2] = cos(angle)*bs[1] + sin(angle)*bs[2]  ,   -sin(angle)*bs[1] + cos(angle)*bs[2]
+    end
+end
+function rotateAroundZAxis!(lattice::Lattice, angle::Float64)
+    # rotate the lattice vectors
+    for lv in lattice.lattice_vectors
+        # rotate and overwrite simulateously all components
+        lv[1], lv[2] = cos(angle)*lv[1] + sin(angle)*lv[2]  ,   -sin(angle)*lv[1] + cos(angle)*lv[2]
+    end
+    # rotate the basis sites
+    for p in lattice.positions
+        # rotate and overwrite simulateously all components
+        p[1], p[2] = cos(angle)*p[1] + sin(angle)*p[2]  ,   -sin(angle)*p[1] + cos(angle)*p[2]
+    end
+end
+export rotateAroundZAxis!
+
+
+function rotateAroundZAxisDeg!(unitcell::Unitcell, angle::Float64)
+    rotateAroundZAxis!(unitcell, angle*pi/180.0)
+end
+function rotateAroundZAxisDeg!(lattice::Lattice, angle::Float64)
+    rotateAroundZAxis!(lattice, angle*pi/180.0)
+end
+export rotateAroundZAxisDeg!
