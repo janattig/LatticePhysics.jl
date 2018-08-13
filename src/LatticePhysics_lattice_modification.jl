@@ -25,7 +25,7 @@
 #       - Scaling along some axis
 #       - Global (isotropic) scaling
 #       - Global (isotropic) scaling to mean / minimum bond length
-#       - TODO Shifting along some axis
+#       - Shifting along some axis
 #       - TODO Shifting along some lattice vector
 #
 ################################################################################
@@ -768,7 +768,7 @@ export optimizeConnections!
 #       - Scaling along some axis
 #       - Global (isotropic) scaling
 #       - Global (isotropic) scaling to mean / minimum bond length
-#       - TODO Shifting along some axis
+#       - Shifting along some axis
 #       - TODO Shifting along some lattice vector
 #
 ################################################################################
@@ -1079,3 +1079,73 @@ function scaleToMinimumBondLength!(lattice::Lattice, bond_length::Float64=1.0)
     scaleIsotropic!(lattice, factor)
 end
 export scaleToMinimumBondLength!
+
+
+
+
+
+###################
+#   SHIFTING
+###################
+
+
+# SHIFT ALONG X AXIS
+function shiftAlongXAxis!(unitcell::Unitcell, offset::Float64)
+    # shift all positions
+    for p in unitcell.basis
+        p[1] += offset
+    end
+end
+function shiftAlongXAxis!(lattice::Lattice, offset::Float64)
+    # shift all positions
+    for p in lattice.positions
+        p[1] += offset
+    end
+end
+export shiftAlongXAxis!
+
+# SHIFT ALONG Y AXIS
+function shiftAlongYAxis!(unitcell::Unitcell, offset::Float64)
+    # shift all positions
+    for p in unitcell.basis
+        p[2] += offset
+    end
+end
+function shiftAlongYAxis!(lattice::Lattice, offset::Float64)
+    # shift all positions
+    for p in lattice.positions
+        p[2] += offset
+    end
+end
+export shiftAlongYAxis!
+
+# SHIFT ALONG Z AXIS
+function shiftAlongZAxis!(unitcell::Unitcell, offset::Float64)
+    # shift all positions
+    for p in unitcell.basis
+        p[3] += offset
+    end
+end
+function shiftAlongZAxis!(lattice::Lattice, offset::Float64)
+    # shift all positions
+    for p in lattice.positions
+        p[3] += offset
+    end
+end
+export shiftAlongZAxis!
+
+
+# SHIFT BY VECTOR
+function shiftByVector!(unitcell::Unitcell, vector::Array{Float64,1})
+    # shift all positions
+    for p in unitcell.basis
+        p .+= vector
+    end
+end
+function shiftByVector!(lattice::Lattice, vector::Array{Float64,1})
+    # shift all positions
+    for p in lattice.positions
+        p .+= vector
+    end
+end
+export shiftByVector!
