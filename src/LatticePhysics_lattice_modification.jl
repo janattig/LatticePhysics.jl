@@ -762,13 +762,18 @@ export optimizeConnections!
 #
 #   4) REAL SPACE ROTATION / SCALING
 #       - Rotation around some axis
-#       - TODO Scaling along some axis
+#       - Scaling along some axis
 #       - TODO Global (isotropic) scaling
 #       - TODO Global (isotropic) scaling to mean bond length
 #
 ################################################################################
 
 
+
+
+###################
+#   ROTATION
+###################
 
 
 # ROTATION AROUND X AXIS
@@ -798,7 +803,6 @@ function rotateAroundXAxis!(lattice::Lattice, angle::Float64)
 end
 export rotateAroundXAxis!
 
-
 function rotateAroundXAxisDeg!(unitcell::Unitcell, angle::Float64)
     rotateAroundXAxis!(unitcell, angle*pi/180.0)
 end
@@ -806,8 +810,6 @@ function rotateAroundXAxisDeg!(lattice::Lattice, angle::Float64)
     rotateAroundXAxis!(lattice, angle*pi/180.0)
 end
 export rotateAroundXAxisDeg!
-
-
 
 
 # ROTATION AROUND Y AXIS
@@ -837,7 +839,6 @@ function rotateAroundYAxis!(lattice::Lattice, angle::Float64)
 end
 export rotateAroundYAxis!
 
-
 function rotateAroundYAxisDeg!(unitcell::Unitcell, angle::Float64)
     rotateAroundYAxis!(unitcell, angle*pi/180.0)
 end
@@ -845,7 +846,6 @@ function rotateAroundYAxisDeg!(lattice::Lattice, angle::Float64)
     rotateAroundYAxis!(lattice, angle*pi/180.0)
 end
 export rotateAroundYAxisDeg!
-
 
 
 # ROTATION AROUND Z AXIS
@@ -875,7 +875,6 @@ function rotateAroundZAxis!(lattice::Lattice, angle::Float64)
 end
 export rotateAroundZAxis!
 
-
 function rotateAroundZAxisDeg!(unitcell::Unitcell, angle::Float64)
     rotateAroundZAxis!(unitcell, angle*pi/180.0)
 end
@@ -883,3 +882,80 @@ function rotateAroundZAxisDeg!(lattice::Lattice, angle::Float64)
     rotateAroundZAxis!(lattice, angle*pi/180.0)
 end
 export rotateAroundZAxisDeg!
+
+
+
+
+
+###################
+#   SCALING
+###################
+
+# SCALING ALONG X AXIS
+function scaleAlongXAxis!(unitcell::Unitcell, factor::Float64)
+    # scale all lattice vectors
+    for l in unitcell.lattice_vectors
+        l[1] *= factor
+    end
+    # scale all positions
+    for p in unitcell.basis
+        p[1] *= factor
+    end
+end
+function scaleAlongXAxis!(lattice::Lattice, factor::Float64)
+    # scale all lattice vectors
+    for l in lattice.lattice_vectors
+        l[1] *= factor
+    end
+    # scale all positions
+    for p in lattice.positions
+        p[1] *= factor
+    end
+end
+export scaleAlongXAxis!
+
+# SCALING ALONG Y AXIS
+function scaleAlongYAxis!(unitcell::Unitcell, factor::Float64)
+    # scale all lattice vectors
+    for l in unitcell.lattice_vectors
+        l[2] *= factor
+    end
+    # scale all positions
+    for p in unitcell.basis
+        p[2] *= factor
+    end
+end
+function scaleAlongYAxis!(lattice::Lattice, factor::Float64)
+    # scale all lattice vectors
+    for l in lattice.lattice_vectors
+        l[2] *= factor
+    end
+    # scale all positions
+    for p in lattice.positions
+        p[2] *= factor
+    end
+end
+export scaleAlongYAxis!
+
+# SCALING ALONG Z AXIS
+function scaleAlongZAxis!(unitcell::Unitcell, factor::Float64)
+    # scale all lattice vectors
+    for l in unitcell.lattice_vectors
+        l[3] *= factor
+    end
+    # scale all positions
+    for p in unitcell.basis
+        p[3] *= factor
+    end
+end
+function scaleAlongZAxis!(lattice::Lattice, factor::Float64)
+    # scale all lattice vectors
+    for l in lattice.lattice_vectors
+        l[3] *= factor
+    end
+    # scale all positions
+    for p in lattice.positions
+        p[3] *= factor
+    end
+end
+export scaleAlongZAxis!
