@@ -322,9 +322,17 @@ include("LatticePhysics_lattice_construction.jl")
 #       - evaluate strengths
 #       - optimize connections
 #
+#   4) REAL SPACE ROTATION / SCALING / SHIFTING
+#       - Rotation around some axis
+#       - Scaling along some axis
+#       - Global (isotropic) scaling
+#       - Global (isotropic) scaling to mean / minimum bond length
+#       - TODO Shifting along some axis
+#       - TODO Shifting along some lattice vector
+#
 ################################################################################
 
-# included in subfile (748 lines)
+# included in subfile (1081 lines)
 include("LatticePhysics_lattice_modification.jl")
 
 
@@ -578,6 +586,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 583 + 1153 + 4315 + 554 + 2079 + 748 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
-# = 17016 lines
+# total lines: 591 + 1153 + 4315 + 554 + 2079 + 1081 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
+# = 17357 lines
 end

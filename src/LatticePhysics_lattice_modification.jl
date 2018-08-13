@@ -20,11 +20,13 @@
 #       - evaluate strengths
 #       - optimize connections
 #
-#   4) TODO REAL SPACE ROTATION / SCALING
-#       - TODO Rotation around some axis
-#       - TODO Scaling along some axis
+#   4) REAL SPACE ROTATION / SCALING / SHIFTING
+#       - Rotation around some axis
+#       - Scaling along some axis
+#       - Global (isotropic) scaling
+#       - Global (isotropic) scaling to mean / minimum bond length
 #       - TODO Shifting along some axis
-#       - TODO Global scaling
+#       - TODO Shifting along some lattice vector
 #
 ################################################################################
 
@@ -761,12 +763,13 @@ export optimizeConnections!
 
 ################################################################################
 #
-#   4) REAL SPACE ROTATION / SCALING
+#   4) REAL SPACE ROTATION / SCALING / SHIFTING
 #       - Rotation around some axis
 #       - Scaling along some axis
 #       - Global (isotropic) scaling
-#       - TODO Global (isotropic) scaling to mean bond length
+#       - Global (isotropic) scaling to mean / minimum bond length
 #       - TODO Shifting along some axis
+#       - TODO Shifting along some lattice vector
 #
 ################################################################################
 
