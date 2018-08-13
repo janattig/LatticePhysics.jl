@@ -27,6 +27,7 @@
 #       - Global (isotropic) scaling to mean / minimum bond length
 #       - Shifting along some axis
 #       - TODO Shifting along some lattice vector
+#       - TODO Shifting center of lattice to origin
 #
 ################################################################################
 
@@ -770,6 +771,7 @@ export optimizeConnections!
 #       - Global (isotropic) scaling to mean / minimum bond length
 #       - Shifting along some axis
 #       - TODO Shifting along some lattice vector
+#       - TODO Shifting center of lattice to origin
 #
 ################################################################################
 
@@ -1149,3 +1151,53 @@ function shiftByVector!(lattice::Lattice, vector::Array{Float64,1})
     end
 end
 export shiftByVector!
+
+
+# SHIFT ALONG ANY LATTICE VECTOR
+function shiftAlongLatticeVector!(unitcell::Unitcell, lattice_vector::Int64, offset::Float64)
+    # define a vector for shifting
+    vector = unitcell.lattice_vectors[lattice_vector] .* (offset / sqrt(sum(unitcell.lattice_vectors[lattice_vector].*unitcell.lattice_vectors[lattice_vector])))
+    # shift by that vector
+    shiftByVector!(unitcell, vector)
+end
+function shiftAlongLatticeVector!(lattice::Lattice, lattice_vector::Int64, offset::Float64)
+    # define a vector for shifting
+    vector = lattice.lattice_vectors[lattice_vector] .* (offset / sqrt(sum(lattice.lattice_vectors[lattice_vector].*lattice.lattice_vectors[lattice_vector])))
+    # shift by that vector
+    shiftByVector!(lattice, vector)
+end
+export shiftAlongLatticeVector!
+
+
+# SHIFT ALONG A1
+function shiftAlongA1!(unitcell::Unitcell, offset::Float64)
+    # shift along the first lattice vector
+    shiftAlongLatticeVector!(unitcell, 1, offset)
+end
+function shiftAlongA1!(lattice::Lattice, offset::Float64)
+    # shift along the first lattice vector
+    shiftAlongLatticeVector!(lattice, 1, offset)
+end
+export shiftAlongA1!
+
+# SHIFT ALONG A2
+function shiftAlongA2!(unitcell::Unitcell, offset::Float64)
+    # shift along the second lattice vector
+    shiftAlongLatticeVector!(unitcell, 2, offset)
+end
+function shiftAlongA2!(lattice::Lattice, offset::Float64)
+    # shift along the second lattice vector
+    shiftAlongLatticeVector!(lattice, 2, offset)
+end
+export shiftAlongA2!
+
+# SHIFT ALONG A3
+function shiftAlongA3!(unitcell::Unitcell, offset::Float64)
+    # shift along the third lattice vector
+    shiftAlongLatticeVector!(unitcell, 3, offset)
+end
+function shiftAlongA3!(lattice::Lattice, offset::Float64)
+    # shift along the third lattice vector
+    shiftAlongLatticeVector!(lattice, 3, offset)
+end
+export shiftAlongA3!
