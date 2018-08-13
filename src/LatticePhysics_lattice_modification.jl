@@ -985,3 +985,94 @@ function scaleIsotropic!(lattice::Lattice, factor::Float64)
     end
 end
 export scaleIsotropic!
+
+
+# SCALING TO MEAN BOND LENGTH
+function scaleToMeanBondLength!(unitcell::Unitcell, bond_length::Float64=1.0)
+    # get all bond lengths
+    bond_lengths = zeros(length(unitcell.connections))
+    for i in 1:length(bond_lengths)
+        # get the connection
+        c = unitcell.connections[i]
+        # get the connecting vector
+        c_vector = unitcell.basis[Int(c[2])] .- unitcell.basis[Int(c[1])]
+        for (j,l) in enumerate(unitcell.lattice_vectors)
+            c_vector .+= l.*c[4][j]
+        end
+        # get how long it is
+        bond_lengths[i] = sqrt(sum(c_vector.*c_vector))
+    end
+    # calculate the mean bond length
+    mean_bond_length = mean(bond_lengths)
+    # calculate how the scale factor looks like
+    factor = bond_length / mean_bond_length
+    # scale the object
+    scaleIsotropic!(unitcell, factor)
+end
+function scaleToMeanBondLength!(lattice::Lattice, bond_length::Float64=1.0)
+    # get all bond lengths
+    bond_lengths = zeros(length(lattice.connections))
+    for i in 1:length(bond_lengths)
+        # get the connection
+        c = lattice.connections[i]
+        # get the connecting vector
+        c_vector = lattice.positions[Int(c[2])] .- lattice.positions[Int(c[1])]
+        for (j,l) in enumerate(lattice.lattice_vectors)
+            c_vector .+= l.*c[4][j]
+        end
+        # get how long it is
+        bond_lengths[i] = sqrt(sum(c_vector.*c_vector))
+    end
+    # calculate the mean bond length
+    mean_bond_length = mean(bond_lengths)
+    # calculate how the scale factor looks like
+    factor = bond_length / mean_bond_length
+    # scale the object
+    scaleIsotropic!(lattice, factor)
+end
+export scaleToMeanBondLength!
+
+# SCALING TO MINIMUM BOND LENGTH
+function scaleToMinimumBondLength!(unitcell::Unitcell, bond_length::Float64=1.0)
+    # get all bond lengths
+    bond_lengths = zeros(length(unitcell.connections))
+    for i in 1:length(bond_lengths)
+        # get the connection
+        c = unitcell.connections[i]
+        # get the connecting vector
+        c_vector = unitcell.basis[Int(c[2])] .- unitcell.basis[Int(c[1])]
+        for (j,l) in enumerate(unitcell.lattice_vectors)
+            c_vector .+= l.*c[4][j]
+        end
+        # get how long it is
+        bond_lengths[i] = sqrt(sum(c_vector.*c_vector))
+    end
+    # calculate the minimum bond length
+    minimum_bond_length = minimum(bond_lengths)
+    # calculate how the scale factor looks like
+    factor = bond_length / minimum_bond_length
+    # scale the object
+    scaleIsotropic!(unitcell, factor)
+end
+function scaleToMinimumBondLength!(lattice::Lattice, bond_length::Float64=1.0)
+    # get all bond lengths
+    bond_lengths = zeros(length(lattice.connections))
+    for i in 1:length(bond_lengths)
+        # get the connection
+        c = lattice.connections[i]
+        # get the connecting vector
+        c_vector = lattice.positions[Int(c[2])] .- lattice.positions[Int(c[1])]
+        for (j,l) in enumerate(lattice.lattice_vectors)
+            c_vector .+= l.*c[4][j]
+        end
+        # get how long it is
+        bond_lengths[i] = sqrt(sum(c_vector.*c_vector))
+    end
+    # calculate the minimum bond length
+    minimum_bond_length = minimum(bond_lengths)
+    # calculate how the scale factor looks like
+    factor = bond_length / minimum_bond_length
+    # scale the object
+    scaleIsotropic!(lattice, factor)
+end
+export scaleToMinimumBondLength!
