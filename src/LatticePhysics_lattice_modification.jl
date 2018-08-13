@@ -23,6 +23,7 @@
 #   4) TODO REAL SPACE ROTATION / SCALING
 #       - TODO Rotation around some axis
 #       - TODO Scaling along some axis
+#       - TODO Shifting along some axis
 #       - TODO Global scaling
 #
 ################################################################################
@@ -763,8 +764,9 @@ export optimizeConnections!
 #   4) REAL SPACE ROTATION / SCALING
 #       - Rotation around some axis
 #       - Scaling along some axis
-#       - TODO Global (isotropic) scaling
+#       - Global (isotropic) scaling
 #       - TODO Global (isotropic) scaling to mean bond length
+#       - TODO Shifting along some axis
 #
 ################################################################################
 
@@ -861,7 +863,7 @@ function rotateAroundZAxis!(unitcell::Unitcell, angle::Float64)
         bs[1], bs[2] = cos(angle)*bs[1] + sin(angle)*bs[2]  ,   -sin(angle)*bs[1] + cos(angle)*bs[2]
     end
 end
-function rotateAroundZAxis!(lattice::Lattice, angle::Float64)
+function rotateAroundZAxis!(lattice::Lattice, anglTODOe::Float64)
     # rotate the lattice vectors
     for lv in lattice.lattice_vectors
         # rotate and overwrite simulateously all components
@@ -959,3 +961,27 @@ function scaleAlongZAxis!(lattice::Lattice, factor::Float64)
     end
 end
 export scaleAlongZAxis!
+
+
+# SCALING ISOTROPIC
+function scaleIsotropic!(unitcell::Unitcell, factor::Float64)
+    # scale all lattice vectors
+    for l in unitcell.lattice_vectors
+        l .*= factor
+    end
+    # scale all positions
+    for p in unitcell.basis
+        p .*= factor
+    end
+end
+function scaleIsotropic!(lattice::Lattice, factor::Float64)
+    # scale all lattice vectors
+    for l in lattice.lattice_vectors
+        l .*= factor
+    end
+    # scale all positions
+    for p in lattice.positions
+        p .*= factor
+    end
+end
+export scaleIsotropic!
