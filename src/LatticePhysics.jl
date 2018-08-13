@@ -25,6 +25,7 @@
 #       - Adding / Removing Connections
 #       - Adding / Removing sites
 #       - Interaction Strengths
+#       - Scaling / Rotating / Shifting in real space
 #
 #   6) PLAQUETTE RELATED FUNCTIONS
 #       - obtaining plaquettes of lattice
@@ -586,6 +587,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 591 + 1153 + 4315 + 554 + 2079 + 1081 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
-# = 17357 lines
+# total lines: 592 + 1153 + 4315 + 554 + 2079 + 1081 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
+# = 17358 lines
 end
