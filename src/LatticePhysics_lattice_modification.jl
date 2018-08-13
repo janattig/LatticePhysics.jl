@@ -26,8 +26,8 @@
 #       - Global (isotropic) scaling
 #       - Global (isotropic) scaling to mean / minimum bond length
 #       - Shifting along some axis
-#       - TODO Shifting along some lattice vector
-#       - TODO Shifting center of lattice to origin
+#       - Shifting along some lattice vector
+#       - Shifting center of lattice to origin
 #
 ################################################################################
 
@@ -770,8 +770,8 @@ export optimizeConnections!
 #       - Global (isotropic) scaling
 #       - Global (isotropic) scaling to mean / minimum bond length
 #       - Shifting along some axis
-#       - TODO Shifting along some lattice vector
-#       - TODO Shifting center of lattice to origin
+#       - Shifting along some lattice vector
+#       - Shifting center of lattice to origin
 #
 ################################################################################
 
@@ -1251,3 +1251,28 @@ function shiftAlongA3Relative!(lattice::Lattice, offset::Float64)
     shiftAlongLatticeVectorRelative!(lattice, 3, offset)
 end
 export shiftAlongA3Relative!
+
+
+
+# SHIFT CENTER TO ORIGIN
+function shiftCenterToOrigin!(unitcell::Unitcell)
+    # look for the central point
+    center = unitcell.basis .* 0.0
+    for p in unitcell.basis
+        center .+= p
+    end
+    center ./= length(unitcell.basis)
+    # shift by negative of that vector
+    shiftByVector!(unitcell, center.*(-1))
+end
+function shiftCenterToOrigin!(lattice::Lattice)
+    # look for the central point
+    center = lattice.positions .* 0.0
+    for p in lattice.positions
+        center .+= p
+    end
+    center ./= length(lattice.positions)
+    # shift by negative of that vector
+    shiftByVector!(lattice, center.*(-1))
+end
+export shiftCenterToOrigin!

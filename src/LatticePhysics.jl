@@ -329,11 +329,12 @@ include("LatticePhysics_lattice_construction.jl")
 #       - Global (isotropic) scaling
 #       - Global (isotropic) scaling to mean / minimum bond length
 #       - Shifting along some axis
-#       - TODO Shifting along some lattice vector
+#       - Shifting along some lattice vector
+#       - Shifting center of lattice to origin
 #
 ################################################################################
 
-# included in subfile (1151 lines)
+# included in subfile (1278 lines)
 include("LatticePhysics_lattice_modification.jl")
 
 
@@ -587,6 +588,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 592 + 1153 + 4315 + 554 + 2079 + 1151 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
-# = 17428 lines
+# total lines: 593 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
+# = 17556 lines
 end
