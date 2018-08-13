@@ -1201,3 +1201,53 @@ function shiftAlongA3!(lattice::Lattice, offset::Float64)
     shiftAlongLatticeVector!(lattice, 3, offset)
 end
 export shiftAlongA3!
+
+
+# SHIFT ALONG ANY LATTICE VECTOR (Relative)
+function shiftAlongLatticeVectorRelative!(unitcell::Unitcell, lattice_vector::Int64, offset::Float64)
+    # define a vector for shifting
+    vector = unitcell.lattice_vectors[lattice_vector] .* offset
+    # shift by that vector
+    shiftByVector!(unitcell, vector)
+end
+function shiftAlongLatticeVectorRelative!(lattice::Lattice, lattice_vector::Int64, offset::Float64)
+    # define a vector for shifting
+    vector = lattice.lattice_vectors[lattice_vector] .* offset
+    # shift by that vector
+    shiftByVector!(lattice, vector)
+end
+export shiftAlongLatticeVectorRelative!
+
+
+# SHIFT ALONG A1 (Relative)
+function shiftAlongA1Relative!(unitcell::Unitcell, offset::Float64)
+    # shift along the first lattice vector
+    shiftAlongLatticeVectorRelative!(unitcell, 1, offset)
+end
+function shiftAlongA1Relative!(lattice::Lattice, offset::Float64)
+    # shift along the first lattice vector
+    shiftAlongLatticeVectorRelative!(lattice, 1, offset)
+end
+export shiftAlongA1Relative!
+
+# SHIFT ALONG A2 (Relative)
+function shiftAlongA2Relative!(unitcell::Unitcell, offset::Float64)
+    # shift along the second lattice vector
+    shiftAlongLatticeVectorRelative!(unitcell, 2, offset)
+end
+function shiftAlongA2Relative!(lattice::Lattice, offset::Float64)
+    # shift along the second lattice vector
+    shiftAlongLatticeVectorRelative!(lattice, 2, offset)
+end
+export shiftAlongA2Relative!
+
+# SHIFT ALONG A3 (Relative)
+function shiftAlongA3Relative!(unitcell::Unitcell, offset::Float64)
+    # shift along the third lattice vector
+    shiftAlongLatticeVectorRelative!(unitcell, 3, offset)
+end
+function shiftAlongA3Relative!(lattice::Lattice, offset::Float64)
+    # shift along the third lattice vector
+    shiftAlongLatticeVectorRelative!(lattice, 3, offset)
+end
+export shiftAlongA3Relative!
