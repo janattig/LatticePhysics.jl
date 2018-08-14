@@ -193,14 +193,14 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         bpy.context.scene.render.engine = "CYCLES"
 
         # set the units
-        bpy.context.scene.system = "METRIC"
-        bpy.context.scene.system_rotation = "DEGREES"
+        bpy.context.scene.unit_settings.system = "METRIC"
+        bpy.context.scene.unit_settings.system_rotation = "DEGREES"
 
         # try to set to filmic color space
         try:
             bpy.context.scene.view_settings.view_transform = "Filmic"
         except:
-            pass
+            print("Filmic color space not available")
 
 
 
@@ -225,6 +225,8 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 bond_data = [float(x) for x in l.split("\t")[1].split(", ")]
                 # add the bond
                 self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
+
+
 
 
 
