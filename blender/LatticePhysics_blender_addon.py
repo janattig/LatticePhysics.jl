@@ -105,6 +105,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         diffuse.inputs['Roughness'].default_value = 0.75  # Roughness of the diffuse part of material
         glossy.inputs['Roughness'].default_value  = 0.05  # Roughness of the glossy part of material
         glossy.inputs[0].default_value            = (1.0,1.0,1.0, 1.0)  # color of the gloss
+        glossy.distribution                       = "MULTI_GGX"
         # fix location of nodes
         output.location  = ( 200, 0)
         fresnel.location = (-200, 150)
@@ -186,8 +187,22 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         # remove whitespace characters like `\n` at the end of each line
         lines = [x.strip() for x in lines]
 
+
+
         # set the render engine
         bpy.context.scene.render.engine = "CYCLES"
+
+        # set the units
+        bpy.context.scene.system = "METRIC"
+        bpy.context.scene.system_rotation = "DEGREES"
+
+        # try to set to filmic color space
+        try:
+            bpy.context.scene.view_settings.view_transform = "Filmic"
+        except:
+            pass
+
+
 
         # go through all lines and check if a site or bond has to be added
         for l in lines:
