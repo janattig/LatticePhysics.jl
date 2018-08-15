@@ -59,15 +59,37 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         name = "Site resolution",
         default = 2,
         min = 1,
-        max = 32
+        max = 16
+    )
+
+    # if there is a subsurf modifier for sites
+    subdivide_sites = BoolProperty(
+        name = "Apply subsurf to sites",
+        default = True
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_sites = IntProperty(
         name = "Site subdivision",
+        default = 3,
+        min = 1,
+        max = 8
+    )
+
+    # if there is a subsurf modifier for bonds
+    subdivide_bonds = BoolProperty(
+        name = "Apply subsurf to bonds",
+        default = True
+    )
+    # number of subdivisions of sites (passed to the subsurf modifier)
+    subdivision_bonds = IntProperty(
+        name = "Bond subdivision",
         default = 2,
         min = 1,
         max = 8
     )
+
+
+
 
 
     ##########---------------------------------
@@ -126,9 +148,10 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         # set the name
         obj.name = "site_{0}".format(site_index)
         # add subsurf modifier to make surface look smoother
-        obj.modifiers.new("subd", "SUBSURF")
-        obj.modifiers["subd"].levels = 1
-        obj.modifiers["subd"].render_levels = self.subdivision_sites
+        if self.subdivide_sites:
+            obj.modifiers.new("site_subsurf", "SUBSURF")
+            obj.modifiers["site_subsurf"].levels = 1
+            obj.modifiers["site_subsurf"].render_levels = self.subdivision_sites
         # set the material (color)
         material = bpy.data.materials.get(color)
         if obj.data.materials:
@@ -165,6 +188,15 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         obj = bpy.context.active_object
         # set the name
         obj.name = "bond_{0}".format(bond_index)
+        # add subsurf modifier to make surface look smoother
+        if self.subdivide_bonds:
+            # first edge split (to seperate the faces of the tubes from subsurfing)
+            obj.modifiers.new("bond_edge_split", "EDGE_SPLIT")
+            obj.modifiers["bond_edge_split"].split_angle = 1.0
+            # then subsurf
+            obj.modifiers.new("bond_subsurf", "SUBSURF")
+            obj.modifiers["bond_subsurf"].levels = 1
+            obj.modifiers["bond_subsurf"].render_levels = self.subdivision_bonds
         # set the material (color)
         material = bpy.data.materials.get(color)
         if obj.data.materials:
