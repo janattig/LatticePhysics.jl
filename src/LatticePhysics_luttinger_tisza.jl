@@ -1336,7 +1336,7 @@ export getLTGroundstateKSpace
 function plotLTGroundstateKSpace2D(
             k_values::Array{Float64, 2},
             constraint_values::Array{Float64, 1};
-            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1363,6 +1363,11 @@ function plotLTGroundstateKSpace2D(
     #   PLOT FERMI SURFACE
     ###########################
 
+    # if brillouin zone not empty, plot it as well
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
+    end
+
     # scatter the points
     invalid_indices = collect(1:length(constraint_values))[constraint_values .>= constraint]
     valid_indices   = collect(1:length(constraint_values))[constraint_values  .< constraint]
@@ -1386,11 +1391,6 @@ function plotLTGroundstateKSpace2D(
 
     # add a legend
     legend()
-
-    # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone.points) > 0
-        plotBrillouinZone(brillouin_zone, new_figure=false)
-    end
 
 
 
@@ -1455,7 +1455,7 @@ function plotLTGroundstateKSpace2D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(2),
             bounds_upper::Array{Float64,1}=2*pi.*ones(2),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1464,6 +1464,11 @@ function plotLTGroundstateKSpace2D(
             save_filename::String="NONE",
             constraint::Float64=1e-6
         )
+
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
+    end
 
     # calculate the Ground state manifold first
     (groundstate_points, groundstate_constraints) = getLTGroundstateKSpace2D(
@@ -1501,7 +1506,7 @@ end
 function plotLTGroundstateKSpace3D(
             k_values::Array{Float64, 2},
             constraint_values::Array{Float64, 1};
-            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1527,6 +1532,11 @@ function plotLTGroundstateKSpace3D(
     ###########################
     #   PLOT FERMI SURFACE
     ###########################
+
+    # if brillouin zone not empty, plot it as well
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
+    end
 
     # scatter the points
     invalid_indices = collect(1:length(constraint_values))[constraint_values .>= constraint]
@@ -1554,10 +1564,6 @@ function plotLTGroundstateKSpace3D(
     # add a legend
     legend()
 
-    # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone.points) > 0
-        plotBrillouinZone(brillouin_zone, new_figure=false)
-    end
 
 
 
@@ -1622,7 +1628,7 @@ function plotLTGroundstateKSpace3D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color_valid="b",
             plot_color_invalid="r",
@@ -1631,6 +1637,11 @@ function plotLTGroundstateKSpace3D(
             save_filename::String="NONE",
             constraint::Float64=1e-6
         )
+
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
+    end
 
     # calculate the Ground state manifold first
     (groundstate_points, groundstate_constraints) = getLTGroundstateKSpace3D(
@@ -1670,7 +1681,7 @@ end
     plotLTGroundstateKSpace(
                 k_values::Array{Float64, 2},
                 constraint_values::Array{Float64, 1}
-             [; brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+             [; brillouin_zone::BrillouinZone=BrillouinZone(),
                 plot_title::String="",
                 plot_color_valid="b",
                 plot_color_invalid="r",
@@ -1691,7 +1702,7 @@ end
                 bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
                 bounds_upper::Array{Float64,1}=2*pi.*ones(4),
                 refold_to_first_BZ::Bool=true,
-                brillouin_zone::BrillouinZone=BrillouinZone(Array{Float64,1}[], Array{Int64,1}[], Array{Int64,1}[]),
+                brillouin_zone::BrillouinZone=BrillouinZone(),
                 plot_title::String="",
                 plot_color_valid="b",
                 plot_color_invalid="r",
@@ -1798,6 +1809,10 @@ function plotLTGroundstateKSpace(
             constraint::Float64=1e-6
         )
 
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
+    end
     # check if the unitcell can be put in either method
     if length(unitcell.basis[1]) != length(unitcell.lattice_vectors)
         println("Unitcell has not the same number of lattice vectors as dimensions")

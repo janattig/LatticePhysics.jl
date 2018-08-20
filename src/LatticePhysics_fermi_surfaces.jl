@@ -357,7 +357,7 @@ export getFermiSurface
 
 
 
-# plot the Fermi surface
+# plot the Fermi surface (2D)
 function plotFermiSurface2D(
             k_values::Array{Float64, 2};
             brillouin_zone::BrillouinZone=BrillouinZone(),
@@ -462,6 +462,11 @@ function plotFermiSurface2D(
             save_filename::String="NONE"
         )
 
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
+    end
+
     # calculate the Fermi surface first
     fermi_surface = getFermiSurface2D(
             unitcell,
@@ -489,6 +494,7 @@ function plotFermiSurface2D(
 end
 
 
+# plot the Fermi surface (3D)
 function plotFermiSurface3D(
             k_values::Array{Float64, 2};
             brillouin_zone::BrillouinZone=BrillouinZone(),
@@ -592,6 +598,11 @@ function plotFermiSurface3D(
             showPlot::Bool=true,
             save_filename::String="NONE"
         )
+
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
+    end
 
     # calculate the Fermi surface first
     fermi_surface = getFermiSurface3D(
