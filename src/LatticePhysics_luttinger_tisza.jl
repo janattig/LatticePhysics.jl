@@ -28,6 +28,8 @@
 #
 #   NOTE: Constraint has to be check with exp(ikr) factors on other sites as well
 #
+#   NOTE: Factor of 1/2 is missing for correct minimal energy
+#
 ################################################################################
 
 

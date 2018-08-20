@@ -584,9 +584,11 @@ include("LatticePhysics_fermi_surfaces.jl")
 #
 #   NOTE: Constraint has to be check with exp(ikr) factors on other sites as well
 #
+#   NOTE: Factor of 1/2 is missing for correct minimal energy
+#
 ################################################################################
 
-# included in subfile (1869 lines)
+# included in subfile (1871 lines)
 include("LatticePhysics_luttinger_tisza.jl")
 
 
@@ -598,6 +600,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 603 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 743 + 2094 + 450 + 529 + 788 + 1869
-# = 17833 lines
+# total lines: 605 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 743 + 2094 + 450 + 529 + 788 + 1871
+# = 17837 lines
 end
