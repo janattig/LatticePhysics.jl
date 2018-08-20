@@ -450,7 +450,7 @@ include("LatticePhysics_paths.jl")
 #
 ################################################################################
 
-# included in subfile (744 lines)
+# included in subfile (743 lines)
 include("LatticePhysics_brillouin_zones.jl")
 
 
@@ -546,7 +546,7 @@ include("LatticePhysics_bandstructures.jl")
 #
 ################################################################################
 
-# included in subfile (777 lines)
+# included in subfile (788 lines)
 include("LatticePhysics_fermi_surfaces.jl")
 
 
@@ -585,7 +585,7 @@ include("LatticePhysics_fermi_surfaces.jl")
 #
 ################################################################################
 
-# included in subfile (1854 lines)
+# included in subfile (1869 lines)
 include("LatticePhysics_luttinger_tisza.jl")
 
 
@@ -597,6 +597,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 744 + 2094 + 450 + 529 + 777 + 1854
-# = 17807 lines
+# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 743 + 2094 + 450 + 529 + 788 + 1869
+# = 17832 lines
 end
