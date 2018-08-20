@@ -265,7 +265,7 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
         if abs(delta) > 1e-8
             push!(intersections,[
                 (d1[1]*delta_2 - d2[1]*delta_1) / delta,
-                (d1[2]*delta_2 + d2[2]*delta_1) / delta
+                (d1[2]*delta_2 - d2[2]*delta_1) / delta
             ])
         end
     end
