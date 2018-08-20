@@ -41,6 +41,8 @@
 #   9) BRILLOUIN ZONES
 #       - type definition
 #       - pre-implemented BZs
+#       - TODO construction of default BZs (2D)
+#       - TODO construction of default BZs (3D)
 #       - plotting of BZ
 #
 #  10) SVG PLOTTING
@@ -441,12 +443,14 @@ include("LatticePhysics_paths.jl")
 #       - getDefaultBZFCC
 #
 #   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#       - TODO for 2D unitcells
+#       - TODO for 3D unitcells
 #
 #   4) PLOTTING OF A BZ
 #
 ################################################################################
 
-# included in subfile (511 lines)
+# included in subfile (512 lines)
 include("LatticePhysics_brillouin_zones.jl")
 
 
@@ -574,9 +578,14 @@ include("LatticePhysics_fermi_surfaces.jl")
 #       - plotting from points
 #       - plotting from unitcell
 #
+#   BUG: So far, the constraint in all calculation ONLY works for k=0
+#        For all other k values, the constraint is checked also for k=0
+#
+#   NOTE: Constraint has to be check with exp(ikr) factors on other sites as well
+#
 ################################################################################
 
-# included in subfile (1849 lines)
+# included in subfile (1854 lines)
 include("LatticePhysics_luttinger_tisza.jl")
 
 
@@ -588,6 +597,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 593 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 511 + 2094 + 450 + 529 + 773 + 1849
-# = 17556 lines
+# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 512 + 2094 + 450 + 529 + 773 + 1854
+# = 17571 lines
 end

@@ -23,6 +23,11 @@
 #       - plotting from points
 #       - plotting from unitcell
 #
+#   BUG: So far, the constraint in all calculation ONLY works for k=0
+#        For all other k values, the constraint is checked also for k=0
+#
+#   NOTE: Constraint has to be check with exp(ikr) factors on other sites as well
+#
 ################################################################################
 
 

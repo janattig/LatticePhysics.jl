@@ -13,6 +13,8 @@
 #       - getDefaultBZFCC
 #
 #   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#       - TODO for 2D unitcells
+#       - TODO for 3D unitcells
 #
 #   4) PLOTTING OF A BZ
 #
@@ -36,8 +38,7 @@ The type that contains information on a Brillouin zone (of a `Unitcell` object).
 
 whereas `edges` and `faces` contain lists of indices of points given in the `points` field.
 
-New `BrillouinZone` object
-s can be created only with the default constructor of giving all field values explicitly.
+New `BrillouinZone` objects can be created only with the default constructor of giving all field values explicitly.
 
 
 
