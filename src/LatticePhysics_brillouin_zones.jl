@@ -232,7 +232,7 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
 
     # list of normals
     normals = Array{Float64,1}[
-        [k[2], -k[1]] for k in mid_points
+        [k[2], -k[1]] ./ (k[1]*k[1] + k[2]*k[2]) for k in mid_points
     ]
 
 
@@ -271,15 +271,93 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
     end
     end
 
+    ##########
+    # STEP 5 - Find closest intersection points --> points of BZ
+    ##########
 
-    # list of points
+    # list of distances
+    intersection_distances = Float64[
+        sum(isec.*isec) for isec in intersections
+    ]
+
+    # find the minimal intersection distance
+    min_distance = minimum(intersection_distances)
+
+    # list of points which are only the minimal intersection distance away
     points = Array{Float64, 1}[]
-    # list of edges
-    edges = Array{Int64, 1}[]
+
+    # check all points
+    for i in 1:length(intersections)
+        # check the relative deviation to the calculated minimal distance
+        if intersection_distances[i] < min_distance * (1.0 + 1e-8)
+            # check if not inserted already
+            inserted_already = false
+            for p in points
+                if sum((p.-intersections[i]).*(p.-intersections[i])) < 1e-8
+                    inserted_already = true
+                end
+            end
+            # found a new point
+            if !inserted_already
+                push!(points, intersections[i])
+            end
+        end
+    end
+
+
+
+    ##########
+    # STEP 6 - Connect the points of the BZ --> edges of BZ
+    ##########
+
+    # list of points if they are contained in the loop
+    in_loop = Bool[false for p in points]
+
+    # the list of the loop (to bring the points in correct order)
+    loop = Int64[]
+
+    # start with the first point
+    push!(loop, 1)
+    in_loop[1] = true
+
+    # look for next point (which is closest to the given point in all remaing ones)
+    while length(loop) < length(points)
+        # check for the closest
+        closest_distance = sum(points[1].*points[1]) * 1000
+        closest_point = -1
+        # check all other points
+        for i in 1:length(points)
+            # if already in loop, continue
+            if in_loop[i]
+                continue
+            end
+            # compare to the nearest one
+            if sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]])) < closest_distance
+                closest_point    = i
+                closest_distance = sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]]))
+            end
+        end
+        # insert the closest point as the next in line
+        println(closest_point)
+        push!(loop, closest_point)
+        in_loop[closest_point] = true
+    end
+
+    # push the starting point into the loop to wrap up and make a closed line
+    push!(loop, loop[1])
+
+    # list of edges (only contains this one loop)
+    edges = Array{Int64, 1}[loop]
+
+
+
+    ##########
+    # STEP 7 - Finish up
+    ##########
 
     # return the finished BZ
     return BrillouinZone(
-        intersections,
+        points,
         edges,
         Array{Int64, 1}[]
     )
