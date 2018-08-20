@@ -390,7 +390,7 @@ function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=5)
         return createBrillouinZone2D(unitcell, max_ij=max_ij)
     elseif length(unitcell.lattice_vectors) == 3 && length(unitcell.basis[1]) == 3
         # return the 3D case
-        return createBrillouinZone2D(unitcell, max_ij=max_ij)
+        return createBrillouinZone3D(unitcell, max_ij=max_ij)
     else
         # print an error and return an empty BZ
         println("dimensions not fitting for BZ calculation")
