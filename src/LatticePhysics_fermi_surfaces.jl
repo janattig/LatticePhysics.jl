@@ -385,13 +385,13 @@ function plotFermiSurface2D(
     #   PLOT FERMI SURFACE
     ###########################
 
-    # scatter the points
-    scatter(k_values[:,1], k_values[:,2], color=plot_color)
-
     # if brillouin zone not empty, plot it as well
     if length(brillouin_zone.points) > 0
         plotBrillouinZone(brillouin_zone, new_figure=false)
     end
+
+    # scatter the points
+    scatter(k_values[:,1], k_values[:,2], color=plot_color)
 
 
 
@@ -516,13 +516,13 @@ function plotFermiSurface3D(
     #   PLOT FERMI SURFACE
     ###########################
 
-    # scatter the points
-    scatter3D(k_values[:,1], k_values[:,2], k_values[:,3], color=plot_color)
-
     # if brillouin zone not empty, plot it as well
     if length(brillouin_zone.points) > 0
         plotBrillouinZone(brillouin_zone, new_figure=false)
     end
+
+    # scatter the points
+    scatter3D(k_values[:,1], k_values[:,2], k_values[:,3], color=plot_color)
 
 
 
