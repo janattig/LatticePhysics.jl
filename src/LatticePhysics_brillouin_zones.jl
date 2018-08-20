@@ -64,14 +64,14 @@ struct BrillouinZone
     faces::Array{Array{Int64,1}, 1}
 
 
+    # DEFAULT BRILLOUIN ZONE
+    function BrillouinZone(points::Array{Array{Float64, 1}, 1}, edges::Array{Array{Int64,1}, 1}, faces::Array{Array{Int64,1}, 1})
+        return new(points, edges, faces)
+    end
 
     # EMPTY BRILLOUIN ZONE
     function BrillouinZone()
-        return new(
-            Array{Float64, 1}[],
-            Array{Int64, 1}[],
-            Array{Int64, 1}[]
-        )
+        return new(Array{Float64, 1}[], Array{Int64, 1}[], Array{Int64, 1}[])
     end
 
 end
@@ -227,7 +227,7 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
     for i in -max_ij:max_ij
     for j in -max_ij:max_ij
         # add to the list
-        push!(k_points, a1.*i .+ a2.*j)
+        push!(k_points, b1.*i .+ b2.*j)
     end
     end
 
@@ -349,7 +349,6 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
             end
         end
         # insert the closest point as the next in line
-        println(closest_point)
         push!(loop, closest_point)
         in_loop[closest_point] = true
     end
@@ -520,8 +519,8 @@ function plotBrillouinZone2D(
 
     # maybe zoom
     if zoom_to_BZ
-        xlim(-max_dim, max_dim)
-        ylim(-max_dim, max_dim)
+        xlim(-max_dim*1.05, max_dim*1.05)
+        ylim(-max_dim*1.05, max_dim*1.05)
     end
 
     # tighten the layout
@@ -647,9 +646,9 @@ function plotBrillouinZone3D(
 
     # maybe zoom
     if zoom_to_BZ
-        xlim(-max_dim, max_dim)
-        ylim(-max_dim, max_dim)
-        zlim(-max_dim, max_dim)
+        xlim(-max_dim*1.05, max_dim*1.05)
+        ylim(-max_dim*1.05, max_dim*1.05)
+        zlim(-max_dim*1.05, max_dim*1.05)
     end
 
     # tighten the layout
