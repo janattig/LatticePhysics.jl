@@ -181,11 +181,153 @@ export getDefaultBZFCC
 
 
 
+################################################################################
+#
+#   CONSTRUCTION OF BRILLOUIN ZONES
+#
+################################################################################
+
+# CONSTRUCT 2D (not exported)
+function createBrillouinZone2D(unitcell::Unitcell, max_ij::Int64=5)
+
+    ##########
+    # STEP 1 - Construct the reciprocal lattice vectors b1 and b2
+    ##########
+
+    # get the lattice vectors
+    a1 = unitcell.lattice_vectors[1]
+    a2 = unitcell.lattice_vectors[2]
+    # get the reciprocal lattice vectors
+    b1 = [a2[2], -a2[1]]
+    b2 = [a1[2], -a1[1]]
+    # normalize the vectors
+    b1 .*= 2*pi/sum(b1.*a1)
+    b2 .*= 2*pi/sum(b2.*a2)
+
+
+    ##########
+    # STEP 2 - Construct the reciprocal lattice points that are relevant
+    ##########
+
+    # list of reciprocal points
+    k_points = Array{Float64, 1}[]
+
+    # build list of points
+    for i in -max_ij:max_ij
+    for j in -max_ij:max_ij
+        # add to the list
+        push!(k_points, a1.*i .+ a2.*j)
+    end
+    end
+
+
+    ##########
+    # STEP 3 - Construct all mid points as well as directions of normals
+    ##########
+
+    # list of mid points
+    mid_points = Array{Float64,1}[
+        k.*0.5  for k in k_points if sum(k.*k) > 1e-5
+    ]
+
+    # list of normals
+    normals = Array{Float64,1}[
+        [k[2], -k[1]] for k in mid_points
+    ]
+
+
+    ##########
+    # STEP 4 - Find all intersection points of lines
+    ##########
+
+    # list of intersection points
+    intersections = Array{Float64, 1}[]
+
+    # find the intersections
+    for i in 1:length(mid_points)
+    for j in 1:length(mid_points)
+        # continue if same index
+        if i==j
+            continue
+        end
+        # found in https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
+        # get data for point 1
+        p1 = mid_points[i]
+        d1 = normals[1]
+        # get data for point 2
+        p1 = mid_points[i]
+        d2 = normals[1]
+        # check the interesection point
+        delta_1 =  d1[2]*p1[1] - d1[1]*p1[2]
+        delta_2 =  d2[2]*p2[1] - d2[1]*p2[2]
+        delta   = -d1[2]*d2[1] + d2[1]*d1[2]
+        # push to the intersections (if not devided by zero)
+        if abs(delta) > 1e-8
+            push!(intersections,[
+                (d1[1]*delta_2 - d2[1]*delta_1) / delta,
+                (d1[2]*delta_2 + d2[2]*delta_1) / delta
+            ])
+        end
+    end
+    end
+
+
+    # list of points
+    points = Array{Float64, 1}[]
+    # list of edges
+    edges = Array{Int64, 1}[]
+
+    # return the finished BZ
+    return BrillouinZone(
+        intersections,
+        edges,
+        Array{Int64, 1}[]
+    )
+end
+
+# TODO CONSTRUCT 3D (not exported)
+function createBrillouinZone3D(unitcell::Unitcell, max_ij::Int64=5)
+    # TODO so far only an empty BZ is returned
+    return BrillouinZone(
+        Array{Float64, 1}[],
+        Array{Int64, 1}[],
+        Array{Int64, 1}[]
+    )
+end
+
+
+
+
+# CONSTRUCT IN ANY DIMENSION
+function createBrillouinZone(unitcell::Unitcell, max_ij::Int64=5)
+    # distinguish the number of dimensions
+    if length(unitcell.lattice_vectors) == 2 && length(unitcell.basis[1]) == 2
+        # return the 2D case
+        return createBrillouinZone2D(unitcell, max_ij=max_ij)
+    elseif length(unitcell.lattice_vectors) == 3 && length(unitcell.basis[1]) == 3
+        # return the 3D case
+        return createBrillouinZone2D(unitcell, max_ij=max_ij)
+    else
+        # print an error and return an empty BZ
+        println("dimensions not fitting for BZ calculation")
+        return BrillouinZone(
+            Array{Float64, 1}[],
+            Array{Int64, 1}[],
+            Array{Int64, 1}[]
+        )
+    end
+end
+export createBrillouinZone
 
 
 
 
 
+################################################################################
+#
+#   PLOTTING OF BRILLOUIN ZONES
+#
+################################################################################
 
 
 
@@ -271,7 +413,7 @@ function plotBrillouinZone2D(
             )
     end
 
-    # STEP 3 - plot all surfaces (does not apply for 3D)
+    # STEP 3 - plot all surfaces (does not apply for 2D)
 
 
 
