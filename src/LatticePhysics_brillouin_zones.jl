@@ -188,7 +188,7 @@ export getDefaultBZFCC
 ################################################################################
 
 # CONSTRUCT 2D (not exported)
-function createBrillouinZone2D(unitcell::Unitcell, max_ij::Int64=5)
+function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1 and b2
@@ -253,14 +253,14 @@ function createBrillouinZone2D(unitcell::Unitcell, max_ij::Int64=5)
         # found in https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
         # get data for point 1
         p1 = mid_points[i]
-        d1 = normals[1]
+        d1 = normals[i]
         # get data for point 2
-        p1 = mid_points[i]
-        d2 = normals[1]
+        p2 = mid_points[j]
+        d2 = normals[j]
         # check the interesection point
         delta_1 =  d1[2]*p1[1] - d1[1]*p1[2]
         delta_2 =  d2[2]*p2[1] - d2[1]*p2[2]
-        delta   = -d1[2]*d2[1] + d2[1]*d1[2]
+        delta   = -d1[2]*d2[1] + d2[2]*d1[1]
         # push to the intersections (if not devided by zero)
         if abs(delta) > 1e-8
             push!(intersections,[
@@ -286,7 +286,7 @@ function createBrillouinZone2D(unitcell::Unitcell, max_ij::Int64=5)
 end
 
 # TODO CONSTRUCT 3D (not exported)
-function createBrillouinZone3D(unitcell::Unitcell, max_ij::Int64=5)
+function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     # TODO so far only an empty BZ is returned
     return BrillouinZone(
         Array{Float64, 1}[],
@@ -299,7 +299,7 @@ end
 
 
 # CONSTRUCT IN ANY DIMENSION
-function createBrillouinZone(unitcell::Unitcell, max_ij::Int64=5)
+function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=5)
     # distinguish the number of dimensions
     if length(unitcell.lattice_vectors) == 2 && length(unitcell.basis[1]) == 2
         # return the 2D case
@@ -354,7 +354,7 @@ function plotBrillouinZone2D(
         rc("font", family="serif")
 
         # create a new figure
-        fig = figure(figsize=figsize)
+        fig = figure()
 
     end
 
@@ -370,7 +370,7 @@ function plotBrillouinZone2D(
     y_values = Float64[p[2] for p in brillouin_zone.points]
 
     # STEP 1 - scatter the points (maybe filter)
-    if filter_points
+    if filter_points && (length(brillouin_zone.edges)>0 && length(brillouin_zone.faces)>0)
         # check all indices for usage
         used = Bool[false for x in x_values]
         # iterate over all faces and edges
@@ -492,7 +492,7 @@ function plotBrillouinZone3D(
     z_values = Float64[p[3] for p in brillouin_zone.points]
 
     # STEP 1 - scatter the points (maybe filter)
-    if filter_points
+    if filter_points && (length(brillouin_zone.edges)>0 && length(brillouin_zone.faces)>0)
         # check all indices for usage
         used = Bool[false for x in x_values]
         # iterate over all faces and edges
@@ -627,6 +627,11 @@ function plotBrillouinZone(
             zoom_to_BZ::Bool=true,
             showPlot::Bool=true
         )
+    # check if it contains points at all
+    if length(brillouin_zone.points) == 0
+        println("BZ does not contain points")
+        return
+    end
     # check if points are 3D or 2D
     if length(brillouin_zone.points[1]) == 2
         return plotBrillouinZone2D(
