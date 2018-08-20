@@ -37,11 +37,12 @@
 #       - type definition
 #       - modification of paths
 #       - pre-implemented paths
+#       - TODO create paths based on unitcell
 #
 #   9) BRILLOUIN ZONES
 #       - type definition
 #       - pre-implemented BZs
-#       - TODO construction of default BZs (2D)
+#       - construction of default BZs (2D)
 #       - TODO construction of default BZs (3D)
 #       - plotting of BZ
 #
@@ -597,6 +598,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 743 + 2094 + 450 + 529 + 788 + 1869
-# = 17832 lines
+# total lines: 603 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 743 + 2094 + 450 + 529 + 788 + 1869
+# = 17833 lines
 end
