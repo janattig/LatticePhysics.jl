@@ -442,15 +442,15 @@ include("LatticePhysics_paths.jl")
 #       - TODO getDefaultBZSquare
 #       - getDefaultBZFCC
 #
-#   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
-#       - TODO for 2D unitcells
+#   3) FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#       - for 2D unitcells
 #       - TODO for 3D unitcells
 #
 #   4) PLOTTING OF A BZ
 #
 ################################################################################
 
-# included in subfile (654 lines)
+# included in subfile (744 lines)
 include("LatticePhysics_brillouin_zones.jl")
 
 
@@ -546,7 +546,7 @@ include("LatticePhysics_bandstructures.jl")
 #
 ################################################################################
 
-# included in subfile (773 lines)
+# included in subfile (777 lines)
 include("LatticePhysics_fermi_surfaces.jl")
 
 
@@ -597,6 +597,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 654 + 2094 + 450 + 529 + 773 + 1854
-# = 17713 lines
+# total lines: 602 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 744 + 2094 + 450 + 529 + 777 + 1854
+# = 17807 lines
 end

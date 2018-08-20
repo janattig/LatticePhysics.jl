@@ -12,8 +12,8 @@
 #       - TODO getDefaultBZSquare
 #       - getDefaultBZFCC
 #
-#   3) TODO FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
-#       - TODO for 2D unitcells
+#   3) FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
+#       - for 2D unitcells
 #       - TODO for 3D unitcells
 #
 #   4) PLOTTING OF A BZ
@@ -62,6 +62,17 @@ struct BrillouinZone
 
     # faces of the BZ (lists with combination of point indices)
     faces::Array{Array{Int64,1}, 1}
+
+
+
+    # EMPTY BRILLOUIN ZONE
+    function BrillouinZone()
+        return new(
+            Array{Float64, 1}[],
+            Array{Int64, 1}[],
+            Array{Int64, 1}[]
+        )
+    end
 
 end
 
@@ -366,11 +377,7 @@ end
 # TODO CONSTRUCT 3D (not exported)
 function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     # TODO so far only an empty BZ is returned
-    return BrillouinZone(
-        Array{Float64, 1}[],
-        Array{Int64, 1}[],
-        Array{Int64, 1}[]
-    )
+    return BrillouinZone()
 end
 
 

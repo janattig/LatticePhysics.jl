@@ -360,7 +360,7 @@ export getFermiSurface
 # plot the Fermi surface
 function plotFermiSurface2D(
             k_values::Array{Float64, 2};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -389,8 +389,8 @@ function plotFermiSurface2D(
     scatter(k_values[:,1], k_values[:,2], color=plot_color)
 
     # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone) > 1
-        plot([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], "-k")
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
     end
 
 
@@ -454,7 +454,7 @@ function plotFermiSurface2D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -491,7 +491,7 @@ end
 
 function plotFermiSurface3D(
             k_values::Array{Float64, 2};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -520,8 +520,8 @@ function plotFermiSurface3D(
     scatter3D(k_values[:,1], k_values[:,2], k_values[:,3], color=plot_color)
 
     # if brillouin zone not empty, plot it as well
-    if length(brillouin_zone) > 1
-        plot3D([b[1] for b in brillouin_zone], [b[2] for b in brillouin_zone], "-k")
+    if length(brillouin_zone.points) > 0
+        plotBrillouinZone(brillouin_zone, new_figure=false)
     end
 
 
@@ -585,7 +585,7 @@ function plotFermiSurface3D(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(3),
             bounds_upper::Array{Float64,1}=2*pi.*ones(3),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -634,7 +634,7 @@ end
                 bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
                 bounds_upper::Array{Float64,1}=2*pi.*ones(4),
                 refold_to_first_BZ::Bool=true,
-                brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+                brillouin_zone::BrillouinZone=BrillouinZone(),
                 plot_title::String="",
                 plot_color="b",
                 figsize::Tuple=(6,6),
@@ -671,7 +671,7 @@ PyPlot.Figure(...)
 """
 function plotFermiSurface(
             k_values::Array{Float64, 2};
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -715,7 +715,7 @@ function plotFermiSurface(
             bounds_lower::Array{Float64,1}=-2*pi.*ones(4),
             bounds_upper::Array{Float64,1}=2*pi.*ones(4),
             refold_to_first_BZ::Bool=true,
-            brillouin_zone::Array{Array{Float64,1},1}=Array{Float64,1}[],
+            brillouin_zone::BrillouinZone=BrillouinZone(),
             plot_title::String="",
             plot_color="b",
             figsize::Tuple=(6,6),
@@ -727,6 +727,10 @@ function plotFermiSurface(
     if length(unitcell.basis[1]) != length(unitcell.lattice_vectors)
         println("Unitcell has not the same number of lattice vectors as dimensions")
         return zeros(1,1)
+    end
+    # check if BZ should be calculated
+    if length(brillouin_zone.points) == 0
+        brillouin_zone = createBrillouinZone(unitcell)
     end
     # check which function to pass to
     if length(unitcell.lattice_vectors) == 2
