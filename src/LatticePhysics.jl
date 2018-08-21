@@ -26,6 +26,7 @@
 #       - Adding / Removing sites
 #       - Interaction Strengths
 #       - Scaling / Rotating / Shifting in real space
+#       - Lattice vector optimization
 #
 #   6) PLAQUETTE RELATED FUNCTIONS
 #       - obtaining plaquettes of lattice
