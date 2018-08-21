@@ -401,6 +401,56 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
         println("b3 = $(b3)")
     end
 
+
+    # build the unitcell of the reciprocal lattice
+    rec_unit = Unitcell(
+            Array{Float64,1}[b1,b2,b3],
+            Array{Float64,1}[
+                [0.0,0.0,0.0]
+            ],
+            Array{Any,1}[
+                [1,1,1.0,(1,0,0)],
+                [1,1,1.0,(-1,0,0)],
+                [1,1,1.0,(0,1,0)],
+                [1,1,1.0,(0,-1,0)],
+                [1,1,1.0,(0,0,1)],
+                [1,1,1.0,(0,0,-1)],
+            ],
+            UNITCELL_DUMMY_FILENAME
+        )
+
+    # print reciprocal vectors
+    if verbose
+        println("Shifting reciprocal lattice vectors for optimization...")
+    end
+
+    # optimize the lattice vectors
+    optimizeLatticeVectors!(rec_unit, verbose=verbose)
+
+    # reset the connections of the reciprocal lattice
+    rec_unit.connections = Array{Any,1}[
+                                [1,1,1.0,(1,0,0)],
+                                [1,1,1.0,(-1,0,0)],
+                                [1,1,1.0,(0,1,0)],
+                                [1,1,1.0,(0,-1,0)],
+                                [1,1,1.0,(0,0,1)],
+                                [1,1,1.0,(0,0,-1)],
+                            ]
+
+    # set the lattice vectors back
+    b1 = rec_unit.lattice_vectors[1]
+    b2 = rec_unit.lattice_vectors[2]
+    b3 = rec_unit.lattice_vectors[3]
+
+    # print reciprocal vectors
+    if verbose
+        println("b1 = $(b1)")
+        println("b2 = $(b2)")
+        println("b3 = $(b3)")
+    end
+
+
+
     ##########
     # STEP 2 - Construct the reciprocal lattice points that are relevant
     ##########
@@ -434,23 +484,6 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
 
     # clear list of reciprocal points
     k_points = Array{Float64, 1}[]
-
-    # build the unitcell of the reciprocal lattice
-    rec_unit = Unitcell(
-            Array{Float64,1}[b1,b2,b3],
-            Array{Float64,1}[
-                [0.0,0.0,0.0]
-            ],
-            Array{Any,1}[
-                [1,1,1.0,(1,0,0)],
-                [1,1,1.0,(-1,0,0)],
-                [1,1,1.0,(0,1,0)],
-                [1,1,1.0,(0,-1,0)],
-                [1,1,1.0,(0,0,1)],
-                [1,1,1.0,(0,0,-1)],
-            ],
-            UNITCELL_DUMMY_FILENAME
-        )
 
     # get a finite patch of reciprocal lattice
     lattice = getLatticeInSphere(rec_unit, sqrt(max_distance)*1.001)
