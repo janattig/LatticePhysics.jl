@@ -623,8 +623,8 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     end
 
     # print how many points
-    println("$(length(points)) corners of Brillouin zone found")
-    println("$(length(planes_p)) planes of Brillouin zone found")
+    #println("$(length(points)) corners of Brillouin zone found")
+    #println("$(length(planes_p)) planes of Brillouin zone found")
 
 
     ##########
@@ -646,7 +646,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
 
         # use the 2D loop finding within the plane
         point_indices = collect(1:length(points))[in_plane]
-        println(point_indices)
+        #println(point_indices)
 
         # check if there are enough points to form a loop
         if length(point_indices) < 3
@@ -711,7 +711,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     end
 
     # print how many edges
-    println("$(length(edges)) edgees of Brillouin zone found")
+    #println("$(length(edges)) edgees of Brillouin zone found")
 
 
 
