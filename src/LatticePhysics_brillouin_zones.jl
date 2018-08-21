@@ -200,10 +200,10 @@ export getDefaultBZFCC
 
 # CONSTRUCT 2D (not exported)
 # line intersection https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
-function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
+function createBrillouinZone2D(unitcell::Unitcell; max_r::Float64=1.001, verbose::Bool=false)
 
     ##########
-    # STEP 1 - Construct the reciprocal lattice vectors b1 and b2
+    # STEP 1 - Construct the reciprocal lattice vectors b1, b2 and b3
     ##########
 
     # get the lattice vectors
@@ -216,6 +216,55 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
     b1 .*= 2*pi/sum(b1.*a1)
     b2 .*= 2*pi/sum(b2.*a2)
 
+    # print reciprocal vectors
+    if verbose
+        println("b1 = $(b1)")
+        println("b2 = $(b2)")
+    end
+
+
+    # build the unitcell of the reciprocal lattice
+    rec_unit = Unitcell(
+            Array{Float64,1}[b1,b2],
+            Array{Float64,1}[
+                [0.0,0.0]
+            ],
+            Array{Any,1}[
+                [1,1,1.0,(1,0)],
+                [1,1,1.0,(-1,0)],
+                [1,1,1.0,(0,1)],
+                [1,1,1.0,(0,-1)]
+            ],
+            UNITCELL_DUMMY_FILENAME
+        )
+
+    # print reciprocal vectors
+    if verbose
+        println("Shifting reciprocal lattice vectors for optimization...")
+    end
+
+    # optimize the lattice vectors
+    optimizeLatticeVectors!(rec_unit, verbose=verbose)
+
+    # reset the connections of the reciprocal lattice
+    rec_unit.connections = Array{Any,1}[
+                                [1,1,1.0,(1,0)],
+                                [1,1,1.0,(-1,0)],
+                                [1,1,1.0,(0,1)],
+                                [1,1,1.0,(0,-1)]
+                            ]
+
+    # set the lattice vectors back
+    b1 = rec_unit.lattice_vectors[1]
+    b2 = rec_unit.lattice_vectors[2]
+
+    # print reciprocal vectors
+    if verbose
+        println("b1 = $(b1)")
+        println("b2 = $(b2)")
+    end
+
+
 
     ##########
     # STEP 2 - Construct the reciprocal lattice points that are relevant
@@ -225,12 +274,41 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
     k_points = Array{Float64, 1}[]
 
     # build list of points
-    for i in -max_ij:max_ij
-    for j in -max_ij:max_ij
+    for i in -1:1
+    for j in -1:1
+        # continue if gamma point
+        if i==j==0
+            continue
+        end
         # add to the list
         push!(k_points, b1.*i .+ b2.*j)
     end
     end
+
+    # find the minimal distance to a the Gamma point
+    max_distance = maximum([dot(k,k) for k in k_points])
+    min_distance = minimum([dot(k,k) for k in k_points])
+
+    # print
+    if verbose
+        println("maximum distance: $(max_distance)")
+        println("minimum distance: $(min_distance)")
+    end
+
+    # clear list of reciprocal points
+    k_points = Array{Float64, 1}[]
+
+    # get a finite patch of reciprocal lattice
+    lattice = getLatticeInSphere(rec_unit, sqrt(max_distance)*max_r)
+
+    # get the points on the reciprocal lattice
+    k_points = lattice.positions
+
+    # print how many points
+    if verbose
+        println("$(length(k_points)) points of reciprocal lattice considered")
+    end
+
 
 
     ##########
@@ -315,6 +393,11 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
         end
     end
 
+    # print how many points
+    if verbose
+        println("$(length(points)) corners of Brillouin zone found")
+    end
+
 
 
     ##########
@@ -359,6 +442,12 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
     # list of edges (only contains this one loop)
     edges = Array{Int64, 1}[loop]
 
+    # print how many edges
+    if verbose
+        println("$(length(edges)) edges of Brillouin zone found")
+        println("Edge is $(edges[1])")
+        println("No faces added (2D)")
+    end
 
 
     ##########
@@ -375,7 +464,7 @@ end
 
 # CONSTRUCT 3D (not exported)
 # plane intersection: http://www.ambrsoft.com/TrigoCalc/Plan3D/3PlanesIntersection_.htm
-function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
+function createBrillouinZone3D(unitcell::Unitcell; max_r::Float64=1.001, verbose::Bool=false)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1, b2 and b3
@@ -486,7 +575,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
     k_points = Array{Float64, 1}[]
 
     # get a finite patch of reciprocal lattice
-    lattice = getLatticeInSphere(rec_unit, sqrt(max_distance)*1.001)
+    lattice = getLatticeInSphere(rec_unit, sqrt(max_distance)*max_r)
 
     # get the points on the reciprocal lattice
     k_points = lattice.positions
@@ -785,7 +874,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Boo
 
     # print how many edges
     if verbose
-        println("$(length(edges)) edgees of Brillouin zone found")
+        println("$(length(edges)) edges of Brillouin zone found")
     end
 
 
@@ -816,14 +905,14 @@ end
 
 
 # CONSTRUCT IN ANY DIMENSION
-function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
+function createBrillouinZone(unitcell::Unitcell; max_r::Float64=1.001, verbose::Bool=false)
     # distinguish the number of dimensions
     if length(unitcell.lattice_vectors) == 2 && length(unitcell.basis[1]) == 2
         # return the 2D case
-        return createBrillouinZone2D(unitcell, max_ij=max_ij, verbose=verbose)
+        return createBrillouinZone2D(unitcell, max_r=max_r, verbose=verbose)
     elseif length(unitcell.lattice_vectors) == 3 && length(unitcell.basis[1]) == 3
         # return the 3D case
-        return createBrillouinZone3D(unitcell, max_ij=max_ij, verbose=verbose)
+        return createBrillouinZone3D(unitcell, max_r=max_r, verbose=verbose)
     else
         # print an error and return an empty BZ
         println("dimensions not fitting for BZ calculation")
