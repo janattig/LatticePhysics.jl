@@ -469,17 +469,20 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     # temp point
     point_tmp = zeros(Float64, 3)
 
+
+    # lists for all planes that aided in the construction
+    planes_n = Array{Float64,1}[]
+    planes_p = Array{Float64,1}[]
+
+
+
     # find the intersections
     for i in 1:length(mid_points)
         # get data for plane 1
         p1 = mid_points[i]
         n1 = normals[i]
         # get a second plane
-        for j in 1:length(mid_points)
-            # continue if two the planes already have the same index
-            if i==j
-                continue
-            end
+        for j in i+1:length(mid_points)
             # get data for plane 2
             p2 = mid_points[j]
             n2 = normals[j]
@@ -488,11 +491,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                 continue
             end
             # get a third plane
-            for l in 1:length(mid_points)
-                # continue if plane p3 has the same index as p1 or p2
-                if l==i || l==j
-                    continue
-                end
+            for l in j+1:length(mid_points)
                 # get data for plane 3
                 p3 = mid_points[l]
                 n3 = normals[l]
@@ -542,18 +541,94 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                 end
                 # insert point into list if no shorter distance found
                 if !shorter_distance_found
-                    push!(points, copy(point_tmp))
+                    # check if not inserted already
+                    inserted_already = false
+                    # check all points
+                    for p in points
+                        if dot(p.-point_tmp, p.-point_tmp) < 1e-4
+                            inserted_already = true
+                            break
+                        end
+                    end
+                    # if not inserted already, insert now
+                    if !inserted_already
+                        # insert the point into the list
+                        push!(points, copy(point_tmp))
+                        # see if the planes that cross here, have to be inserted as well
+
+                        # check plane 1
+                        insert_p1 = true
+                        # look through all planes that are inserted already
+                        for index in 1:length(planes_p)
+                            # check if the point lies in the plane
+                            if abs(dot(p1 .- planes_p[index], planes_n[index])) < 1e-8
+                                # point lies in this plane, check the direction of the normal
+                                if dot(cross(planes_n[index], n1), cross(planes_n[index], n1)) < 1e-8
+                                    # normals also match in direction
+                                    insert_p1 = false
+                                    break
+                                end
+                            end
+                        end
+                        # if not found, insert into lists
+                        if insert_p1
+                            push!(planes_p, p1)
+                            push!(planes_n, n1)
+                        end
+
+                        # check plane 2
+                        insert_p2 = true
+                        # look through all planes that are inserted already
+                        for index in 1:length(planes_p)
+                            # check if the point lies in the plane
+                            if abs(dot(p2 .- planes_p[index], planes_n[index])) < 1e-8
+                                # point lies in this plane, check the direction of the normal
+                                if dot(cross(planes_n[index], n2), cross(planes_n[index], n2)) < 1e-8
+                                    # normals also match in direction
+                                    insert_p2 = false
+                                    break
+                                end
+                            end
+                        end
+                        # if not found, insert into lists
+                        if insert_p2
+                            push!(planes_p, p2)
+                            push!(planes_n, n2)
+                        end
+
+                        # check plane 3
+                        insert_p3 = true
+                        # look through all planes that are inserted already
+                        for index in 1:length(planes_p)
+                            # check if the point lies in the plane
+                            if abs(dot(p3 .- planes_p[index], planes_n[index])) < 1e-8
+                                # point lies in this plane, check the direction of the normal
+                                if dot(cross(planes_n[index], n3), cross(planes_n[index], n3)) < 1e-8
+                                    # normals also match in direction
+                                    insert_p3 = false
+                                    break
+                                end
+                            end
+                        end
+                        # if not found, insert into lists
+                        if insert_p3
+                            push!(planes_p, p3)
+                            push!(planes_n, n3)
+                        end
+
+                    end
                 end
             end
         end
     end
 
     # print how many points
-    println("$(length(k_points)) corners of Brillouin zone found")
+    println("$(length(points)) corners of Brillouin zone found")
+    println("$(length(planes_p)) planes of Brillouin zone found")
 
 
     ##########
-    # STEP 5 - Connect the points of the BZ --> edges of BZ
+    # STEP 5 - Connect the points in planes of the BZ --> edges of BZ
     ##########
 
     # the list of all the loops (i.e. all edge loops of the BZ)
@@ -561,13 +636,82 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     # the list of all the loops but sorted without double point for the start+end
     edges_sorted = Array{Int64,1}[]
 
-    # find all loops of all points
-    for i in 1:length(points)
+    # find all loops of all points by constructing planes
 
-        # find all loops that contain point i
-        point_start = points[i]
+    # iterate over all planes
+    for i in 1:length(planes_n)
+
+        # find the subset of points that lie within the plane
+        in_plane = Bool[abs(dot(p .- planes_p[i], planes_n[i])) < 1e-8 for p in points]
+
+        # use the 2D loop finding within the plane
+        point_indices = collect(1:length(points))[in_plane]
+        println(point_indices)
+
+        # check if there are enough points to form a loop
+        if length(point_indices) < 3
+            # not enough points found
+            continue
+        end
+
+        # list of points if they are contained in the loop
+        in_loop = [false for i in point_indices]
+
+        # the list of the loop (to bring the points in correct order)
+        # with relative indices (have to be translated back)
+        loop = Int64[]
+
+        # start with the first (relative) point
+        push!(loop, 1)
+        in_loop[1] = true
+
+        # look for next point (which is closest to the given point in all remaing ones)
+        while length(loop) < length(point_indices)
+            # check for the closest
+            closest_distance = dot(points[point_indices[1]],points[point_indices[1]]) * 1000
+            closest_point = -1
+            # check all other points
+            for i in 1:length(point_indices)
+                # if already in loop, continue
+                if in_loop[i]
+                    continue
+                end
+                # compare to the nearest one
+                if dot(points[point_indices[i]].-points[point_indices[loop[end]]], points[point_indices[i]].-points[point_indices[loop[end]]]) < closest_distance
+                    closest_point    = i
+                    closest_distance = dot(points[point_indices[i]].-points[point_indices[loop[end]]], points[point_indices[i]].-points[point_indices[loop[end]]])
+                end
+            end
+            # insert the closest point as the next in line
+            push!(loop, closest_point)
+            in_loop[closest_point] = true
+        end
+
+        # get back the real indices and reconstruct loop
+        loop = point_indices[loop]
+        # get the sorted
+        loop_sorted = sort(loop)
+        # push the starting point into the loop
+        push!(loop, loop[1])
+
+        # loop not found yet
+        loop_found = false
+        # check if the loop already exists
+        for l in edges_sorted
+            if l==loop_sorted
+                loop_found = true
+                break
+            end
+        end
+        # if the loop is not found, insert the loop into the edges list
+        if !loop_found
+            push!(edges, loop)
+        end
 
     end
+
+    # print how many edges
+    println("$(length(edges)) edgees of Brillouin zone found")
 
 
 
@@ -584,7 +728,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     # return the finished BZ
     return BrillouinZone(
         points,
-        Array{Int64, 1}[],
+        edges,
         Array{Int64, 1}[]
     )
 end
