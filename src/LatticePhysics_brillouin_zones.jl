@@ -199,6 +199,7 @@ export getDefaultBZFCC
 ################################################################################
 
 # CONSTRUCT 2D (not exported)
+# line intersection https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
 function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
 
     ##########
@@ -261,7 +262,6 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
         if i==j
             continue
         end
-        # found in https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
         # get data for point 1
         p1 = mid_points[i]
         d1 = normals[i]
@@ -374,7 +374,181 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
 end
 
 # TODO CONSTRUCT 3D (not exported)
+# plane intersection: http://www.ambrsoft.com/TrigoCalc/Plan3D/3PlanesIntersection_.htm
 function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
+
+    ##########
+    # STEP 1 - Construct the reciprocal lattice vectors b1, b2 and b3
+    ##########
+
+    # get the lattice vectors
+    a1 = unitcell.lattice_vectors[1]
+    a2 = unitcell.lattice_vectors[2]
+    a3 = unitcell.lattice_vectors[3]
+    # get the reciprocal lattice vectors
+    b1 = cross(a2, a3)
+    b2 = cross(a3, a1)
+    b3 = cross(a1, a2)
+    # normalize the vectors
+    b1 .*= 2*pi/sum(b1.*a1)
+    b2 .*= 2*pi/sum(b2.*a2)
+    b3 .*= 2*pi/sum(b3.*a3)
+
+
+    ##########
+    # STEP 2 - Construct the reciprocal lattice points that are relevant
+    ##########
+
+    # list of reciprocal points
+    k_points = Array{Float64, 1}[]
+
+    # build list of points
+    for i in -max_ij:max_ij
+    for j in -max_ij:max_ij
+    for l in -max_ij:max_ij
+        # add to the list
+        push!(k_points, b1.*i .+ b2.*j .+ b3.*l)
+    end
+    end
+    end
+
+
+    ##########
+    # STEP 3 - Construct all mid points as well as directions of normals
+    ##########
+
+    # list of mid points
+    mid_points = Array{Float64,1}[
+        k.*0.5  for k in k_points if sum(k.*k) > 1e-5
+    ]
+
+    # list of normals
+    normals = deepcopy(mid_points)
+
+
+    ##########
+    # STEP 4 - Find all intersection points of lines
+    ##########
+
+    # list of intersection points
+    intersections = Array{Float64, 1}[]
+
+    # find the intersections
+    for i in 1:length(mid_points)
+    for j in 1:length(mid_points)
+        # continue if same index
+        if i==j
+            continue
+        end
+        # get data for point 1
+        p1 = mid_points[i]
+        d1 = normals[i]
+        # get data for point 2
+        p2 = mid_points[j]
+        d2 = normals[j]
+        # check the interesection point
+        delta_1 =  d1[2]*p1[1] - d1[1]*p1[2]
+        delta_2 =  d2[2]*p2[1] - d2[1]*p2[2]
+        delta   = -d1[2]*d2[1] + d2[2]*d1[1]
+        # push to the intersections (if not devided by zero)
+        if abs(delta) > 1e-8
+            push!(intersections,[
+                (d1[1]*delta_2 - d2[1]*delta_1) / delta,
+                (d1[2]*delta_2 - d2[2]*delta_1) / delta
+            ])
+        end
+    end
+    end
+
+    ##########
+    # STEP 5 - Find closest intersection points --> points of BZ
+    ##########
+
+    # list of distances
+    intersection_distances = Float64[
+        sum(isec.*isec) for isec in intersections
+    ]
+
+    # find the minimal intersection distance
+    min_distance = minimum(intersection_distances)
+
+    # list of points which are only the minimal intersection distance away
+    points = Array{Float64, 1}[]
+
+    # check all points
+    for i in 1:length(intersections)
+        # check the relative deviation to the calculated minimal distance
+        if intersection_distances[i] < min_distance * (1.0 + 1e-8)
+            # check if not inserted already
+            inserted_already = false
+            for p in points
+                if sum((p.-intersections[i]).*(p.-intersections[i])) < 1e-8
+                    inserted_already = true
+                end
+            end
+            # found a new point
+            if !inserted_already
+                push!(points, intersections[i])
+            end
+        end
+    end
+
+
+
+    ##########
+    # STEP 6 - Connect the points of the BZ --> edges of BZ
+    ##########
+
+    # list of points if they are contained in the loop
+    in_loop = Bool[false for p in points]
+
+    # the list of the loop (to bring the points in correct order)
+    loop = Int64[]
+
+    # start with the first point
+    push!(loop, 1)
+    in_loop[1] = true
+
+    # look for next point (which is closest to the given point in all remaing ones)
+    while length(loop) < length(points)
+        # check for the closest
+        closest_distance = sum(points[1].*points[1]) * 1000
+        closest_point = -1
+        # check all other points
+        for i in 1:length(points)
+            # if already in loop, continue
+            if in_loop[i]
+                continue
+            end
+            # compare to the nearest one
+            if sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]])) < closest_distance
+                closest_point    = i
+                closest_distance = sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]]))
+            end
+        end
+        # insert the closest point as the next in line
+        push!(loop, closest_point)
+        in_loop[closest_point] = true
+    end
+
+    # push the starting point into the loop to wrap up and make a closed line
+    push!(loop, loop[1])
+
+    # list of edges (only contains this one loop)
+    edges = Array{Int64, 1}[loop]
+
+
+
+    ##########
+    # STEP 7 - Finish up
+    ##########
+
+    # return the finished BZ
+    return BrillouinZone(
+        points,
+        edges,
+        Array{Int64, 1}[]
+    )
     # TODO so far only an empty BZ is returned
     return BrillouinZone()
 end
