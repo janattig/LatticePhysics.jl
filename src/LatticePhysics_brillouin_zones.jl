@@ -720,6 +720,11 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     # STEP 6 - faces of BZ
     ##########
 
+    # faces are also build on edges in this algorithm
+    faces = deepcopy(edges)
+
+    
+
 
     ##########
     # STEP 7 - Finish up
@@ -729,7 +734,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     return BrillouinZone(
         points,
         edges,
-        Array{Int64, 1}[]
+        faces
     )
 end
 
