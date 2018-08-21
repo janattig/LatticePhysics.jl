@@ -1989,14 +1989,14 @@ function getLatticeInSphere(unitcell::Unitcell, radius::Float64; origin::Int64=1
         # determine the shape name
         shapename = "sphere_$(radius)"
         # determine the shape function
-        shape_circle(point) = sum(point.*point) < radius
+        shape_circle(point) = sum(point.*point) < radius*radius
         # call the general shape function
         return getLatticeInShape2D(unitcell, shape_circle, shapename, origin=origin, load=load, save=save)
     elseif N_dims == 3
         # determine the shape name
         shapename = "sphere_$(radius)"
         # determine the shape function
-        shape_sphere(point) = sum(point.*point) < radius
+        shape_sphere(point) = sum(point.*point) < radius*radius
         # call the general shape function
         return getLatticeInShape3D(unitcell, shape_sphere, shapename, origin=origin, load=load, save=save)
     else
