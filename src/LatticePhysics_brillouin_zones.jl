@@ -403,74 +403,131 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     k_points = Array{Float64, 1}[]
 
     # build list of points
-    for i in -max_ij:max_ij
-    for j in -max_ij:max_ij
-    for l in -max_ij:max_ij
+    for i in -1:1
+    for j in -1:1
+    for l in -1:1
+        # continue if gamma point
+        if i==j==l==0
+            continue
+        end
         # add to the list
         push!(k_points, b1.*i .+ b2.*j .+ b3.*l)
     end
     end
     end
 
+    # find the minimal distance to a the Gamma point
+    max_distance = maximum([dot(k,k) for k in k_points])
+
+    # clear list of reciprocal points
+    k_points = Array{Float64, 1}[]
+
+    # build new list of points
+    for i in -max_ij:max_ij
+    for j in -max_ij:max_ij
+    for l in -max_ij:max_ij
+        # continue if gamma point
+        if i==j==l==0
+            continue
+        end
+        # point to check
+        point = b1.*i .+ b2.*j .+ b3.*l
+        # check against min_distance
+        if dot(point, point) < max_distance * 1.5
+            # add to the list
+            push!(k_points, b1.*i .+ b2.*j .+ b3.*l)
+        end
+    end
+    end
+    end
 
     ##########
     # STEP 3 - Construct all mid points as well as directions of normals
     ##########
 
-    # list of mid points
+    # list of mid points (achors of planes)
     mid_points = Array{Float64,1}[
         k.*0.5  for k in k_points if sum(k.*k) > 1e-5
     ]
 
-    # list of normals
+    # list of normals of planes
     normals = deepcopy(mid_points)
 
 
     ##########
-    # STEP 4 - Find all intersection points of lines
+    # STEP 4 - Find all intersection points of 3 planes
     ##########
 
     # list of intersection points
     intersections = Array{Float64, 1}[]
 
+    # list of distances
+    intersection_distances = Float64[]
+    # find the minimal intersection distance (squared)
+    min_distance = ((dot(b1, b1) + dot(b2, b2) + dot(b3, b3)) * 1000)^2
+
+    # temp point
+    point_tmp = zeros(Float64, 3)
+
     # find the intersections
     for i in 1:length(mid_points)
-    for j in 1:length(mid_points)
-        # continue if same index
-        if i==j
-            continue
-        end
-        # get data for point 1
+        # get data for plane 1
         p1 = mid_points[i]
-        d1 = normals[i]
-        # get data for point 2
-        p2 = mid_points[j]
-        d2 = normals[j]
-        # check the interesection point
-        delta_1 =  d1[2]*p1[1] - d1[1]*p1[2]
-        delta_2 =  d2[2]*p2[1] - d2[1]*p2[2]
-        delta   = -d1[2]*d2[1] + d2[2]*d1[1]
-        # push to the intersections (if not devided by zero)
-        if abs(delta) > 1e-8
-            push!(intersections,[
-                (d1[1]*delta_2 - d2[1]*delta_1) / delta,
-                (d1[2]*delta_2 - d2[2]*delta_1) / delta
-            ])
+        n1 = normals[i]
+        # get a second plane
+        for j in 1:length(mid_points)
+            # continue if two already same index
+            if i==j
+                continue
+            end
+            # get data for plane 2
+            p2 = mid_points[j]
+            n2 = normals[j]
+            # continue if they are parallel
+            if dot(cross(n1,n2), cross(n1,n2)) < 1e-6
+                continue
+            end
+            # get a third plane
+            for l in 1:length(mid_points)
+                # continue it has the same index
+                if l==i || l==j
+                    continue
+                end
+                # get data for plane 3
+                p3 = mid_points[l]
+                n3 = normals[l]
+                # calculate the determinant
+                determinant = dot(n1, cross(n2, n3))
+                # check if they intersect in a point
+                if abs(determinant) < 1e-12
+                    # there will not be one point of intersection
+                    continue
+                end
+                # calculate the other relevant determinants
+                A = Float64[n1[1], n2[1], n3[1]]
+                B = Float64[n1[2], n2[2], n3[2]]
+                C = Float64[n1[3], n2[3], n3[3]]
+                D = Float64[-dot(n1,p1), -dot(n2,p2), -dot(n3,p3)]
+                det_x = dot(D, cross(B, C))
+                det_y = dot(A, cross(D, C))
+                det_z = dot(A, cross(B, D))
+                # get the interesection point
+                point_tmp[1] = det_x / determinant
+                point_tmp[2] = det_y / determinant
+                point_tmp[3] = det_z / determinant
+                # check if the distance is worth putting in the list
+                if dot(point_tmp, point_tmp) < min_distance * (1.000001)
+                    push!(intersections,copy(point_tmp))
+                    push!(intersection_distances,dot(point_tmp, point_tmp))
+                    min_distance = intersection_distances[end]
+                end
+            end
         end
-    end
     end
 
     ##########
     # STEP 5 - Find closest intersection points --> points of BZ
     ##########
-
-    # list of distances
-    intersection_distances = Float64[
-        sum(isec.*isec) for isec in intersections
-    ]
-
-    # find the minimal intersection distance
-    min_distance = minimum(intersection_distances)
 
     # list of points which are only the minimal intersection distance away
     points = Array{Float64, 1}[]
@@ -478,11 +535,11 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     # check all points
     for i in 1:length(intersections)
         # check the relative deviation to the calculated minimal distance
-        if intersection_distances[i] < min_distance * (1.0 + 1e-8)
+        if intersection_distances[i] < min_distance * (1.0 + 1e-4)
             # check if not inserted already
             inserted_already = false
             for p in points
-                if sum((p.-intersections[i]).*(p.-intersections[i])) < 1e-8
+                if sum((p.-intersections[i]).*(p.-intersections[i])) < 1e-4
                     inserted_already = true
                 end
             end
@@ -499,6 +556,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     # STEP 6 - Connect the points of the BZ --> edges of BZ
     ##########
 
+"""
     # list of points if they are contained in the loop
     in_loop = Bool[false for p in points]
 
@@ -536,7 +594,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
 
     # list of edges (only contains this one loop)
     edges = Array{Int64, 1}[loop]
-
+"""
 
 
     ##########
@@ -546,11 +604,9 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
     # return the finished BZ
     return BrillouinZone(
         points,
-        edges,
+        Array{Int64, 1}[],
         Array{Int64, 1}[]
     )
-    # TODO so far only an empty BZ is returned
-    return BrillouinZone()
 end
 
 
