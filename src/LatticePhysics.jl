@@ -335,9 +335,11 @@ include("LatticePhysics_lattice_construction.jl")
 #       - Shifting along some lattice vector
 #       - Shifting center of lattice to origin
 #
+#   5) LATTICE VECTOR OPTIMIZATION
+#
 ################################################################################
 
-# included in subfile (1278 lines)
+# included in subfile (1451 lines)
 include("LatticePhysics_lattice_modification.jl")
 
 
@@ -451,7 +453,7 @@ include("LatticePhysics_paths.jl")
 #
 ################################################################################
 
-# included in subfile (1102 lines)
+# included in subfile (1176 lines)
 include("LatticePhysics_brillouin_zones.jl")
 
 
@@ -600,6 +602,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 605 + 1153 + 4315 + 554 + 2079 + 1278 + 333 + 246 + 799 + 1102 + 2094 + 450 + 529 + 788 + 1871
-# = 18196 lines
+# total lines: 607 + 1153 + 4315 + 554 + 2079 + 1451 + 333 + 246 + 799 + 1176 + 2094 + 450 + 529 + 788 + 1871
+# = 18445 lines
 end
