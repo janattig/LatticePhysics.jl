@@ -44,7 +44,7 @@
 #       - type definition
 #       - pre-implemented BZs
 #       - construction of default BZs (2D)
-#       - TODO construction of default BZs (3D)
+#       - construction of default BZs (3D)
 #       - plotting of BZ
 #
 #  10) SVG PLOTTING
