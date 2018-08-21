@@ -14,7 +14,7 @@
 #
 #   3) FUNCTION TO CREATE A DEFAULT BZ BASED ON A UNITCELL OBJECT
 #       - for 2D unitcells
-#       - TODO for 3D unitcells
+#       - for 3D unitcells
 #
 #   4) PLOTTING OF A BZ
 #
@@ -442,7 +442,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     end
 
     # print how many points
-    println("$(length(k_points)) points of reciprocal lattice considered")
+    #println("$(length(k_points)) points of reciprocal lattice considered")
 
 
 
@@ -723,7 +723,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     # faces are also build on edges in this algorithm
     faces = deepcopy(edges)
 
-    
+
 
 
     ##########
