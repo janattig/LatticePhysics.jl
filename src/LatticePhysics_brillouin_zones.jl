@@ -200,7 +200,7 @@ export getDefaultBZFCC
 
 # CONSTRUCT 2D (not exported)
 # line intersection https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
-function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
+function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1 and b2
@@ -373,9 +373,9 @@ function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=5)
     )
 end
 
-# TODO CONSTRUCT 3D (not exported)
+# CONSTRUCT 3D (not exported)
 # plane intersection: http://www.ambrsoft.com/TrigoCalc/Plan3D/3PlanesIntersection_.htm
-function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
+function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1, b2 and b3
@@ -433,13 +433,18 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
         # point to check
         point = b1.*i .+ b2.*j .+ b3.*l
         # check against min_distance
-        if dot(point, point) < max_distance * 1.5
+        if dot(point, point) < max_distance * 1.1
             # add to the list
-            push!(k_points, b1.*i .+ b2.*j .+ b3.*l)
+            push!(k_points, point)
         end
     end
     end
     end
+
+    # print how many points
+    println("$(length(k_points)) points of reciprocal lattice considered")
+
+
 
     ##########
     # STEP 3 - Construct all mid points as well as directions of normals
@@ -455,16 +460,11 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
 
 
     ##########
-    # STEP 4 - Find all intersection points of 3 planes
+    # STEP 4 - Find all intersection points of 3 planes and check that they are closest to the Gamma point
     ##########
 
-    # list of intersection points
-    intersections = Array{Float64, 1}[]
-
-    # list of distances
-    intersection_distances = Float64[]
-    # find the minimal intersection distance (squared)
-    min_distance = ((dot(b1, b1) + dot(b2, b2) + dot(b3, b3)) * 1000)^2
+    # list of points which are only the minimal intersection distance to Gamma point
+    points = Array{Float64, 1}[]
 
     # temp point
     point_tmp = zeros(Float64, 3)
@@ -476,7 +476,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
         n1 = normals[i]
         # get a second plane
         for j in 1:length(mid_points)
-            # continue if two already same index
+            # continue if two the planes already have the same index
             if i==j
                 continue
             end
@@ -489,7 +489,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
             end
             # get a third plane
             for l in 1:length(mid_points)
-                # continue it has the same index
+                # continue if plane p3 has the same index as p1 or p2
                 if l==i || l==j
                     continue
                 end
@@ -497,7 +497,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
                 p3 = mid_points[l]
                 n3 = normals[l]
                 # calculate the determinant
-                determinant = dot(n1, cross(n2, n3))
+                determinant = dot(n3, cross(n1, n2))
                 # check if they intersect in a point
                 if abs(determinant) < 1e-12
                     # there will not be one point of intersection
@@ -508,93 +508,73 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=5)
                 B = Float64[n1[2], n2[2], n3[2]]
                 C = Float64[n1[3], n2[3], n3[3]]
                 D = Float64[-dot(n1,p1), -dot(n2,p2), -dot(n3,p3)]
-                det_x = dot(D, cross(B, C))
-                det_y = dot(A, cross(D, C))
-                det_z = dot(A, cross(B, D))
+                #det_x = dot(D, cross(B, C))
+                #det_y = dot(A, cross(D, C))
+                #det_z = dot(A, cross(B, D))
+                det_x = det([
+                    D[1] B[1] C[1]
+                    D[2] B[2] C[2]
+                    D[3] B[3] C[3]
+                ])
+                det_y = det([
+                    A[1] D[1] C[1]
+                    A[2] D[2] C[2]
+                    A[3] D[3] C[3]
+                ])
+                det_z = det([
+                    A[1] B[1] D[1]
+                    A[2] B[2] D[2]
+                    A[3] B[3] D[3]
+                ])
                 # get the interesection point
                 point_tmp[1] = det_x / determinant
                 point_tmp[2] = det_y / determinant
                 point_tmp[3] = det_z / determinant
-                # check if the distance is worth putting in the list
-                if dot(point_tmp, point_tmp) < min_distance * (1.000001)
-                    push!(intersections,copy(point_tmp))
-                    push!(intersection_distances,dot(point_tmp, point_tmp))
-                    min_distance = intersection_distances[end]
+                # check if the distance to any other k point in the lattice is shorter than to the Gamma point
+                shorter_distance_found = false
+                distance_to_Gamma = dot(point_tmp, point_tmp)
+                # check all points
+                for k in k_points
+                    if dot(point_tmp .- k, point_tmp .- k)*1.00000001 < distance_to_Gamma
+                        shorter_distance_found = true
+                        break
+                    end
+                end
+                # insert point into list if no shorter distance found
+                if !shorter_distance_found
+                    push!(points, copy(point_tmp))
                 end
             end
         end
     end
 
+    # print how many points
+    println("$(length(k_points)) corners of Brillouin zone found")
+
+
     ##########
-    # STEP 5 - Find closest intersection points --> points of BZ
+    # STEP 5 - Connect the points of the BZ --> edges of BZ
     ##########
 
-    # list of points which are only the minimal intersection distance away
-    points = Array{Float64, 1}[]
+    # the list of all the loops (i.e. all edge loops of the BZ)
+    edges        = Array{Int64,1}[]
+    # the list of all the loops but sorted without double point for the start+end
+    edges_sorted = Array{Int64,1}[]
 
-    # check all points
-    for i in 1:length(intersections)
-        # check the relative deviation to the calculated minimal distance
-        if intersection_distances[i] < min_distance * (1.0 + 1e-4)
-            # check if not inserted already
-            inserted_already = false
-            for p in points
-                if sum((p.-intersections[i]).*(p.-intersections[i])) < 1e-4
-                    inserted_already = true
-                end
-            end
-            # found a new point
-            if !inserted_already
-                push!(points, intersections[i])
-            end
-        end
+    # find all loops of all points
+    for i in 1:length(points)
+
+        # find all loops that contain point i
+        point_start = points[i]
+
     end
 
 
 
+
     ##########
-    # STEP 6 - Connect the points of the BZ --> edges of BZ
+    # STEP 6 - faces of BZ
     ##########
-
-"""
-    # list of points if they are contained in the loop
-    in_loop = Bool[false for p in points]
-
-    # the list of the loop (to bring the points in correct order)
-    loop = Int64[]
-
-    # start with the first point
-    push!(loop, 1)
-    in_loop[1] = true
-
-    # look for next point (which is closest to the given point in all remaing ones)
-    while length(loop) < length(points)
-        # check for the closest
-        closest_distance = sum(points[1].*points[1]) * 1000
-        closest_point = -1
-        # check all other points
-        for i in 1:length(points)
-            # if already in loop, continue
-            if in_loop[i]
-                continue
-            end
-            # compare to the nearest one
-            if sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]])) < closest_distance
-                closest_point    = i
-                closest_distance = sum((points[i].-points[loop[end]]).*(points[i].-points[loop[end]]))
-            end
-        end
-        # insert the closest point as the next in line
-        push!(loop, closest_point)
-        in_loop[closest_point] = true
-    end
-
-    # push the starting point into the loop to wrap up and make a closed line
-    push!(loop, loop[1])
-
-    # list of edges (only contains this one loop)
-    edges = Array{Int64, 1}[loop]
-"""
 
 
     ##########
@@ -613,7 +593,7 @@ end
 
 
 # CONSTRUCT IN ANY DIMENSION
-function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=5)
+function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=2)
     # distinguish the number of dimensions
     if length(unitcell.lattice_vectors) == 2 && length(unitcell.basis[1]) == 2
         # return the 2D case
