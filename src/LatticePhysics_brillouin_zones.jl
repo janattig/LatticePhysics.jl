@@ -200,7 +200,7 @@ export getDefaultBZFCC
 
 # CONSTRUCT 2D (not exported)
 # line intersection https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Julia
-function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2)
+function createBrillouinZone2D(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1 and b2
@@ -375,7 +375,7 @@ end
 
 # CONSTRUCT 3D (not exported)
 # plane intersection: http://www.ambrsoft.com/TrigoCalc/Plan3D/3PlanesIntersection_.htm
-function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
+function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
 
     ##########
     # STEP 1 - Construct the reciprocal lattice vectors b1, b2 and b3
@@ -394,6 +394,12 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     b2 .*= 2*pi/sum(b2.*a2)
     b3 .*= 2*pi/sum(b3.*a3)
 
+    # print reciprocal vectors
+    if verbose
+        println("b1 = $(b1)")
+        println("b2 = $(b2)")
+        println("b3 = $(b3)")
+    end
 
     ##########
     # STEP 2 - Construct the reciprocal lattice points that are relevant
@@ -418,31 +424,44 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
 
     # find the minimal distance to a the Gamma point
     max_distance = maximum([dot(k,k) for k in k_points])
+    min_distance = minimum([dot(k,k) for k in k_points])
+
+    # print
+    if verbose
+        println("maximum distance: $(max_distance)")
+        println("minimum distance: $(min_distance)")
+    end
 
     # clear list of reciprocal points
     k_points = Array{Float64, 1}[]
 
-    # build new list of points
-    for i in -max_ij:max_ij
-    for j in -max_ij:max_ij
-    for l in -max_ij:max_ij
-        # continue if gamma point
-        if i==j==l==0
-            continue
-        end
-        # point to check
-        point = b1.*i .+ b2.*j .+ b3.*l
-        # check against min_distance
-        if dot(point, point) < max_distance * 1.1
-            # add to the list
-            push!(k_points, point)
-        end
-    end
-    end
-    end
+    # build the unitcell of the reciprocal lattice
+    rec_unit = Unitcell(
+            Array{Float64,1}[b1,b2,b3],
+            Array{Float64,1}[
+                [0.0,0.0,0.0]
+            ],
+            Array{Any,1}[
+                [1,1,1.0,(1,0,0)],
+                [1,1,1.0,(-1,0,0)],
+                [1,1,1.0,(0,1,0)],
+                [1,1,1.0,(0,-1,0)],
+                [1,1,1.0,(0,0,1)],
+                [1,1,1.0,(0,0,-1)],
+            ],
+            UNITCELL_DUMMY_FILENAME
+        )
+
+    # get a finite patch of reciprocal lattice
+    lattice = getLatticeInSphere(rec_unit, sqrt(max_distance)*1.001)
+
+    # get the points on the reciprocal lattice
+    k_points = lattice.positions
 
     # print how many points
-    #println("$(length(k_points)) points of reciprocal lattice considered")
+    if verbose
+        println("$(length(k_points)) points of reciprocal lattice considered")
+    end
 
 
 
@@ -456,7 +475,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     ]
 
     # list of normals of planes
-    normals = deepcopy(mid_points)
+    normals = [m ./ dot(m,m) for m in mid_points]
 
 
     ##########
@@ -487,7 +506,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
             p2 = mid_points[j]
             n2 = normals[j]
             # continue if they are parallel
-            if dot(cross(n1,n2), cross(n1,n2)) < 1e-6
+            if dot(cross(n1,n2), cross(n1,n2)) < 1e-8
                 continue
             end
             # get a third plane
@@ -498,32 +517,32 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                 # calculate the determinant
                 determinant = dot(n3, cross(n1, n2))
                 # check if they intersect in a point
-                if abs(determinant) < 1e-12
+                if abs(determinant) < 1e-8
                     # there will not be one point of intersection
                     continue
                 end
                 # calculate the other relevant determinants
-                A = Float64[n1[1], n2[1], n3[1]]
-                B = Float64[n1[2], n2[2], n3[2]]
-                C = Float64[n1[3], n2[3], n3[3]]
+                #A = Float64[n1[1], n2[1], n3[1]]
+                #B = Float64[n1[2], n2[2], n3[2]]
+                #C = Float64[n1[3], n2[3], n3[3]]
                 D = Float64[-dot(n1,p1), -dot(n2,p2), -dot(n3,p3)]
                 #det_x = dot(D, cross(B, C))
                 #det_y = dot(A, cross(D, C))
                 #det_z = dot(A, cross(B, D))
                 det_x = det([
-                    D[1] B[1] C[1]
-                    D[2] B[2] C[2]
-                    D[3] B[3] C[3]
+                    D[1] n1[2] n1[3]
+                    D[2] n2[2] n2[3]
+                    D[3] n3[2] n3[3]
                 ])
                 det_y = det([
-                    A[1] D[1] C[1]
-                    A[2] D[2] C[2]
-                    A[3] D[3] C[3]
+                    n1[1] D[1] n1[3]
+                    n2[1] D[2] n2[3]
+                    n3[1] D[3] n3[3]
                 ])
                 det_z = det([
-                    A[1] B[1] D[1]
-                    A[2] B[2] D[2]
-                    A[3] B[3] D[3]
+                    n1[1] n1[2] D[1]
+                    n2[1] n2[2] D[2]
+                    n3[1] n3[2] D[3]
                 ])
                 # get the interesection point
                 point_tmp[1] = det_x / determinant
@@ -534,7 +553,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                 distance_to_Gamma = dot(point_tmp, point_tmp)
                 # check all points
                 for k in k_points
-                    if dot(point_tmp .- k, point_tmp .- k)*1.00000001 < distance_to_Gamma
+                    if dot(point_tmp .- k, point_tmp .- k)*(1 + 1e-8) < distance_to_Gamma
                         shorter_distance_found = true
                         break
                     end
@@ -545,7 +564,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                     inserted_already = false
                     # check all points
                     for p in points
-                        if dot(p.-point_tmp, p.-point_tmp) < 1e-4
+                        if dot(p.-point_tmp, p.-point_tmp) < 1e-6
                             inserted_already = true
                             break
                         end
@@ -561,9 +580,9 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                         # look through all planes that are inserted already
                         for index in 1:length(planes_p)
                             # check if the point lies in the plane
-                            if abs(dot(p1 .- planes_p[index], planes_n[index])) < 1e-8
+                            if abs(dot(p1 .- planes_p[index], planes_n[index])) < 1e-6
                                 # point lies in this plane, check the direction of the normal
-                                if dot(cross(planes_n[index], n1), cross(planes_n[index], n1)) < 1e-8
+                                if dot(cross(planes_n[index], n1), cross(planes_n[index], n1)) < 1e-6
                                     # normals also match in direction
                                     insert_p1 = false
                                     break
@@ -581,9 +600,9 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                         # look through all planes that are inserted already
                         for index in 1:length(planes_p)
                             # check if the point lies in the plane
-                            if abs(dot(p2 .- planes_p[index], planes_n[index])) < 1e-8
+                            if abs(dot(p2 .- planes_p[index], planes_n[index])) < 1e-6
                                 # point lies in this plane, check the direction of the normal
-                                if dot(cross(planes_n[index], n2), cross(planes_n[index], n2)) < 1e-8
+                                if dot(cross(planes_n[index], n2), cross(planes_n[index], n2)) < 1e-6
                                     # normals also match in direction
                                     insert_p2 = false
                                     break
@@ -601,9 +620,9 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                         # look through all planes that are inserted already
                         for index in 1:length(planes_p)
                             # check if the point lies in the plane
-                            if abs(dot(p3 .- planes_p[index], planes_n[index])) < 1e-8
+                            if abs(dot(p3 .- planes_p[index], planes_n[index])) < 1e-6
                                 # point lies in this plane, check the direction of the normal
-                                if dot(cross(planes_n[index], n3), cross(planes_n[index], n3)) < 1e-8
+                                if dot(cross(planes_n[index], n3), cross(planes_n[index], n3)) < 1e-6
                                     # normals also match in direction
                                     insert_p3 = false
                                     break
@@ -623,8 +642,10 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     end
 
     # print how many points
-    #println("$(length(points)) corners of Brillouin zone found")
-    #println("$(length(planes_p)) planes of Brillouin zone found")
+    if verbose
+        println("$(length(points)) corners of Brillouin zone found")
+        println("$(length(planes_p)) planes of Brillouin zone found")
+    end
 
 
     ##########
@@ -642,16 +663,20 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     for i in 1:length(planes_n)
 
         # find the subset of points that lie within the plane
-        in_plane = Bool[abs(dot(p .- planes_p[i], planes_n[i])) < 1e-8 for p in points]
+        in_plane = Bool[abs(dot(p .- planes_p[i], planes_n[i])) < 1e-6 for p in points]
 
         # use the 2D loop finding within the plane
         point_indices = collect(1:length(points))[in_plane]
-        #println(point_indices)
 
         # check if there are enough points to form a loop
         if length(point_indices) < 3
             # not enough points found
             continue
+        end
+
+        # print the points within the plane
+        if verbose
+            print("- points in plane $(i): $(point_indices)  ---  Loop: 1")
         end
 
         # list of points if they are contained in the loop
@@ -668,7 +693,7 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
         # look for next point (which is closest to the given point in all remaing ones)
         while length(loop) < length(point_indices)
             # check for the closest
-            closest_distance = dot(points[point_indices[1]],points[point_indices[1]]) * 1000
+            closest_distance = 1e32
             closest_point = -1
             # check all other points
             for i in 1:length(point_indices)
@@ -682,9 +707,24 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
                     closest_distance = dot(points[point_indices[i]].-points[point_indices[loop[end]]], points[point_indices[i]].-points[point_indices[loop[end]]])
                 end
             end
+            # print the closest point
+            if verbose
+                print("- $(closest_point)")
+            end
+            # security check
+            if closest_point == -1
+                println()
+                println(closest_distance)
+                println(points[in_plane])
+            end
             # insert the closest point as the next in line
             push!(loop, closest_point)
             in_loop[closest_point] = true
+        end
+
+        # close the line
+        if verbose
+            println("")
         end
 
         # get back the real indices and reconstruct loop
@@ -711,8 +751,9 @@ function createBrillouinZone3D(unitcell::Unitcell; max_ij::Int64=2)
     end
 
     # print how many edges
-    #println("$(length(edges)) edgees of Brillouin zone found")
-
+    if verbose
+        println("$(length(edges)) edgees of Brillouin zone found")
+    end
 
 
 
@@ -742,14 +783,14 @@ end
 
 
 # CONSTRUCT IN ANY DIMENSION
-function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=2)
+function createBrillouinZone(unitcell::Unitcell; max_ij::Int64=2, verbose::Bool=false)
     # distinguish the number of dimensions
     if length(unitcell.lattice_vectors) == 2 && length(unitcell.basis[1]) == 2
         # return the 2D case
-        return createBrillouinZone2D(unitcell, max_ij=max_ij)
+        return createBrillouinZone2D(unitcell, max_ij=max_ij, verbose=verbose)
     elseif length(unitcell.lattice_vectors) == 3 && length(unitcell.basis[1]) == 3
         # return the 3D case
-        return createBrillouinZone3D(unitcell, max_ij=max_ij)
+        return createBrillouinZone3D(unitcell, max_ij=max_ij, verbose=verbose)
     else
         # print an error and return an empty BZ
         println("dimensions not fitting for BZ calculation")
