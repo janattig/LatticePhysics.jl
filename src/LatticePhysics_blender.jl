@@ -5,7 +5,7 @@
 #
 #   STRUCTURE OF THE FILE
 #
-#   1) SAVING LATTICE DATA TO FILE
+#   1) SAVING LATTICE DATA TO TEXT FILE FOR BLENDER USE
 #
 ################################################################################
 

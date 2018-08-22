@@ -500,7 +500,7 @@ include("LatticePhysics_SVG_plotting.jl")
 #
 #   STRUCTURE OF THE FILE
 #
-#   1) SAVING LATTICE DATA TO FILE
+#   1) SAVING LATTICE DATA TO TEXT FILE FOR BLENDER USE
 #
 ################################################################################
 
@@ -603,6 +603,6 @@ include("LatticePhysics_luttinger_tisza.jl")
 
 
 # MODULE END
-# total lines: 607 + 1153 + 4315 + 554 + 2079 + 1451 + 333 + 246 + 799 + 1265 + 2094 + 450 + 529 + 788 + 1871
-# = 18534 lines
+# total lines: 608 + 1153 + 4315 + 554 + 2079 + 1451 + 333 + 246 + 799 + 1265 + 2094 + 450 + 529 + 788 + 1871
+# = 18535 lines
 end
