@@ -3,7 +3,7 @@
 #   The unified Module for all different sorts of lattices
 #   and lattice based calculations.
 #
-#   Module structure (mostly included in subfiles):
+#   Module structure (mostly included in subfiles see below)
 #
 ################################################################################
 ################################################################################
@@ -40,7 +40,7 @@
 #           - Unitcell{D,N,L}
 #           - Lattice{D,N,L}
 #
-#   --> INTERACING JULIA.BASE FUNCTIONS
+#   --> IMPLEMENTING JULIA.BASE FUNCTIONS
 #           - show
 #           - print
 #
@@ -79,28 +79,55 @@
 ################################################################################
 ################################################################################
 #
+#   module LatticePhysics_UnitcellConstruction
+#
+#   --> CONSTRUCTION OF UNITCELLS FROM SITES
+#
+#   --> CONSTRUCTION HELPER
+#
+################################################################################
+################################################################################
+#
 #   module LatticePhysics_LatticeConstruction
 #
-#   --> CONSTRUCTION OF LATTICES
+#   --> NAIVE CONSTRUCTION OF LATTICES
 #           - periodic pattern of unitcells
 #           - semi-periodic pattern of unitcells
 #           - open pattern of unitcells
 #           - by bond distance to an origin site
 #           - in a shape around an origin site
 #
+#   --> ADDING NNN TO LATTICE
+#
+#   --> LATTICE CONSTRUCTION ALGORITHM FROM SPIN SPIRALS PAPER
+#
 ################################################################################
 ################################################################################
 #
+#   module LatticePhysics_LatticeModification
 #
-#   3) CONSTRUCTION OF UNITCELLS FROM SITES / CONSTRUCTION HELPER
-#
-#
-#   5) MODIFICATION OF LATTICES
+#   --> MODIFICATION OF LATTICES COMPONENTS
 #       - Adding / Removing Connections
 #       - Adding / Removing sites
-#       - Interaction Strengths
-#       - Scaling / Rotating / Shifting in real space
-#       - Lattice vector optimization
+#
+#   --> RELABELING BONDS / SITES
+#       - relabeling bonds
+#       - relabeling sites
+#
+#   --> SPATIAL MODIFICATIONS
+#       - Scaling  in space
+#       - Rotating in space
+#       - Shifting in space
+#       - Lattice vector optimization (relabeling unitcells)
+#
+################################################################################
+
+
+
+
+
+
+################################################################################
 #
 #   6) PLAQUETTE RELATED FUNCTIONS
 #       - obtaining plaquettes of lattice
