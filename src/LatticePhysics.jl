@@ -84,6 +84,7 @@
 #   --> CONSTRUCTION OF UNITCELLS FROM SITES
 #
 #   --> CONSTRUCTION HELPER
+#           - print the generating code for a Unitcell
 #
 ################################################################################
 ################################################################################
@@ -121,18 +122,25 @@
 #       - Lattice vector optimization (relabeling unitcells)
 #
 ################################################################################
-
-
-
-
-
-
 ################################################################################
 #
-#   6) PLAQUETTE RELATED FUNCTIONS
-#       - obtaining plaquettes of lattice
-#       - printing plaquette statistics
+#   module LatticePhysics_Plaquettes
 #
+#   --> TYPE DEFINITION OF PLAQUETTE TYPE
+#
+#   --> PLAQUETTE OBTAINING FUNCTIONS
+#           - get plaquettes of a site
+#           - get plaquettes of a unitcell / lattice
+#
+#   --> PLAQUETTE INFORMATION FUNCTIONS
+#           - obtain / print plaquette statistics
+#
+################################################################################
+
+
+
+
+
 #
 #   8) PATHS (IN MOMENTUM SPACE)
 #       - type definition
