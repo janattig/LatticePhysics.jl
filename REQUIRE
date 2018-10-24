@@ -1,5 +1,4 @@
-julia 0.6
-JLD
+julia 1.0
 Optim
 PyCall
 PyPlot
