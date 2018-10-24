@@ -163,7 +163,7 @@
 #   --> PATHS IN MOMENTUM SPACE
 #           - modification of paths
 #           - pre-implemented paths
-#           - TODO create paths based on unitcell
+#           - paths based on Unitcells
 #
 #   --> BRILLOUIN ZONES
 #           - type definition
@@ -188,38 +188,115 @@
 #           - 3D Brillouin zones
 #
 ################################################################################
+################################################################################
+#
+#   module LatticePhysics_SVGBase
+#
+#   --> SVG STRINGS FOR FILES
+#           - svg header
+#           - svg footer
+#
+#   --> SVG STRINGS FOR GEOMETRIC OBJECTS
+#           - ellipsoids
+#           - rectangles
+#           - paths
+#           - text
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_Plotting_SVG
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_SVGBase
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF LATTICES TO SVG FILES
+#           - 2D lattices
+#           - 3D lattices
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_PlaquettePlotting_SVG
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_Plaquettes
+#   -> LatticePhysics_SVGBase
+#   -> LatticePhysics_Plotting_SVG
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF PLAQUETTES AND LATTICES TO SVG FILES
+#           - 2D plaquettes and lattices
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_Plotting_Blender
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF LATTICES TO TEXT FILES TO BE READ BY BLENDER
+#           - 2D lattices
+#           - 3D lattices
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_Plotting_PyPlot
+#   -> PyPlot
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF LATTICES WITH PYPLOT
+#           - 2D lattices
+#           - 3D lattices
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_FreeFermion_Calculations
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_ReciprocalSpace
+#   -> LinearAlgebra
+#
+#   --> TYPE DEFINITIONS
+#           - FermionBandstructure
+#           - FermiSurface
+#
+#   --> IO OF TYPES
+#
+#   --> CALCULATION OF BANDSTRUCTURES AND EIGENVALUES
+#           - in real space (pure eigenvalues)
+#           - in momentum space (along cardinal directions)
+#           - in momentum space (along reciprocal lattice directions)
+#           - in momentum space (along path)
+#
+#   --> CALCULATION OF FERMI SURFACES
+#           - calculation for 2D unitcells
+#           - calculation for 3D unitcells
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_FreeFermion_Plotting
+#   -> PyPlot
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_ReciprocalSpace
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF BANDSTRUCTURES AND EIGENVALUES
+#           - in real space (pure eigenvalues)
+#           - in momentum space (along cardinal directions)
+#           - in momentum space (along reciprocal lattice directions)
+#           - in momentum space (along path)
+#
+#   --> PLOTTING OF FERMI SURFACES
+#           - for 1D fermi surfaces in 2D
+#           - for 2D fermi surfaces in 3D
+#
+################################################################################
 
 
 
-
-
-
-#
-#   8) PATHS (IN MOMENTUM SPACE)
-#       - type definition
-#       - modification of paths
-#       - pre-implemented paths
-#       - TODO create paths based on unitcell
-#
-#   9) BRILLOUIN ZONES
-#       - type definition
-#       - pre-implemented BZs
-#       - construction of default BZs (2D)
-#       - construction of default BZs (3D)
-#       - plotting of BZ
-#
-#  10) SVG PLOTTING
-#       - 2D lattices
-#       - TODO 3D lattices
-#       - 2D plaquettes
-#
-#  11) BLENDER PLOTTING
-#
-#  12) BANDSTRUCTURES (CALCULATION AND PLOTTING)
-#
-#  13) FERMI SURFACES (CALCULATION AND PLOTTING)
-#       - 2D unitcells
-#       - 3D unitcells
 #
 #  14) LUTTINGER TISZA (CALCULATION AND PLOTTING)
 #       - LTBandstructure type
