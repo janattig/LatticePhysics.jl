@@ -6,6 +6,7 @@
 #   Module structure (mostly included in subfiles):
 #
 ################################################################################
+################################################################################
 #
 #   module LatticePhysics_Base
 #
@@ -44,6 +45,7 @@
 #           - print
 #
 ################################################################################
+################################################################################
 #
 #   module LatticePhysics_IO
 #
@@ -51,6 +53,7 @@
 #           - save to xml ??
 #           - JLD ??
 #
+################################################################################
 ################################################################################
 #
 #   module LatticePhysics_ConnectionRepresentation
@@ -65,16 +68,29 @@
 #           - real space / momentum space?
 #
 ################################################################################
-
-
-#   --> 2) CONSTRUCTION OF LATTICES
-#           - Building Lattices as (periodic/open/semiperiodic) repeated patterns of Unitcells
-#           - Building Lattices by bond distance to an origin site
-#           - Building Lattices in a shape around an origin site
-
-
-
-#   2) PRE-IMPLEMENTED UNITCELLS (various 2D and 3D stuff)
+################################################################################
+#
+#   module LatticePhysics_UnitcellDefinitions
+#
+#   --> PRE-IMPLEMENTED UNITCELLS 2D
+#
+#   --> PRE-IMPLEMENTED UNITCELLS 3D
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_LatticeConstruction
+#
+#   --> CONSTRUCTION OF LATTICES
+#           - periodic pattern of unitcells
+#           - semi-periodic pattern of unitcells
+#           - open pattern of unitcells
+#           - by bond distance to an origin site
+#           - in a shape around an origin site
+#
+################################################################################
+################################################################################
+#
 #
 #   3) CONSTRUCTION OF UNITCELLS FROM SITES / CONSTRUCTION HELPER
 #
