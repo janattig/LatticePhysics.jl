@@ -48,6 +48,8 @@
 ################################################################################
 #
 #   module LatticePhysics_IO
+#   -> LatticePhysics_Base
+#   -> JLD2
 #
 #   --> IO FOR UNITCELLS / LATTICES
 #           - save to xml ??
@@ -57,6 +59,8 @@
 ################################################################################
 #
 #   module LatticePhysics_ConnectionRepresentation
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> STATIC LOOKUP TABLES
 #           - connectivity information
@@ -71,6 +75,8 @@
 ################################################################################
 #
 #   module LatticePhysics_UnitcellDefinitions
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> PRE-IMPLEMENTED UNITCELLS 2D
 #
@@ -80,6 +86,8 @@
 ################################################################################
 #
 #   module LatticePhysics_UnitcellConstruction
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> CONSTRUCTION OF UNITCELLS FROM SITES
 #
@@ -90,6 +98,8 @@
 ################################################################################
 #
 #   module LatticePhysics_LatticeConstruction
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> NAIVE CONSTRUCTION OF LATTICES
 #           - periodic pattern of unitcells
@@ -106,6 +116,8 @@
 ################################################################################
 #
 #   module LatticePhysics_LatticeModification
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> MODIFICATION OF LATTICES COMPONENTS
 #       - Adding / Removing Connections
@@ -125,6 +137,8 @@
 ################################################################################
 #
 #   module LatticePhysics_Plaquettes
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
 #
 #   --> TYPE DEFINITION OF PLAQUETTE TYPE
 #
@@ -136,6 +150,45 @@
 #           - obtain / print plaquette statistics
 #
 ################################################################################
+################################################################################
+#
+#   module LatticePhysics_ReciprocalSpace
+#   -> LatticePhysics_Base
+#   -> LinearAlgebra
+#
+#   --> TYPE DEFINITIONS
+#           - Path
+#           - BrillouinZone
+#
+#   --> PATHS IN MOMENTUM SPACE
+#           - modification of paths
+#           - pre-implemented paths
+#           - TODO create paths based on unitcell
+#
+#   --> BRILLOUIN ZONES
+#           - type definition
+#           - pre-implemented BZs
+#           - construction of default BZs (2D)
+#           - construction of default BZs (3D)
+#
+################################################################################
+################################################################################
+#
+#   module LatticePhysics_ReciprocalSpace_Plotting
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_ReciprocalSpace
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF PATHS
+#           - 2D paths
+#           - 3D paths
+#
+#   --> PLOTTING OF BRILLOUIN ZONES
+#           - 2D Brillouin zones
+#           - 3D Brillouin zones
+#
+################################################################################
+
 
 
 
