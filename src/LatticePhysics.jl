@@ -281,6 +281,7 @@
 #   -> PyPlot
 #   -> LatticePhysics_Base
 #   -> LatticePhysics_ReciprocalSpace
+#   -> LatticePhysics_FreeFermion_Calculations
 #   -> LinearAlgebra
 #
 #   --> PLOTTING OF BANDSTRUCTURES AND EIGENVALUES
@@ -294,17 +295,55 @@
 #           - for 2D fermi surfaces in 3D
 #
 ################################################################################
-
-
-
+################################################################################
 #
-#  14) LUTTINGER TISZA (CALCULATION AND PLOTTING)
-#       - LTBandstructure type
-#       - Spin interaction matrices
-#       - calculation and plotting of LT Bandstructures (along path in k space)
-#       - calculation and plotting of LT Groundstates (in k space)
+#   module LatticePhysics_LuttingerTisza_Calculations
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_ReciprocalSpace
+#   -> LinearAlgebra
+#
+#   --> TYPE DEFINITIONS
+#           - LTBandstructure
+#           - LTGroundstateManifold
+#
+#   --> IO OF TYPES
+#
+#   --> SPIN INTERACTION MATRICES
+#
+#   --> CALCULATION OF LT CONSTRAINTS
+#
+#   --> CALCULATION OF LT BANDSTRUCTURES AND EIGENVALUES
+#           - in real space (pure eigenvalues)
+#           - in momentum space (along cardinal directions)
+#           - in momentum space (along reciprocal lattice directions)
+#           - in momentum space (along path)
+#
+#   --> CALCULATION OF LT GROUNDSTATE MANIFOLDS
+#           - calculation for 2D unitcells
+#           - calculation for 3D unitcells
 #
 ################################################################################
+################################################################################
+#
+#   module LatticePhysics_LuttingerTisza_Plotting
+#   -> PyPlot
+#   -> LatticePhysics_Base
+#   -> LatticePhysics_ReciprocalSpace
+#   -> LatticePhysics_LuttingerTisza_Calculations
+#   -> LinearAlgebra
+#
+#   --> PLOTTING OF LT BANDSTRUCTURES AND EIGENVALUES
+#           - in real space (pure eigenvalues)
+#           - in momentum space (along cardinal directions)
+#           - in momentum space (along reciprocal lattice directions)
+#           - in momentum space (along path)
+#
+#   --> PLOTTING OF LT GROUNDSTATE MANIFOLDS
+#           - plotting of manifolds in 2D
+#           - plotting of manifolds in 3D
+#
+################################################################################
+
 
 
 # Start of module
