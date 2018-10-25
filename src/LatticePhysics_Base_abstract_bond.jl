@@ -52,6 +52,7 @@ end
 
 
 
+
 # UIDs of sites between which the bond is located
 
 # from index / UID (Int64)
@@ -71,9 +72,6 @@ function to(
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'indexTo' for bond type " * string(typeof(b)))
 end
-
-
-
 
 
 
@@ -129,6 +127,7 @@ function testInterface(
 		wrap(b)
     end
     end
+
 	# return true to indicate the test passed
 	return true
 end
