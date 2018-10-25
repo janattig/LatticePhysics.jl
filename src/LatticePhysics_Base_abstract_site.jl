@@ -81,7 +81,7 @@ end
 #
 ################################################################################
 
-# TESTING THE BOND INTERFACE
+# TESTING THE SITE INTERFACE
 function testInterface(
             ::Type{T}
         ) :: Bool where {T<:AbstractSite}
