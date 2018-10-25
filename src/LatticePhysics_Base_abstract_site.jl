@@ -76,7 +76,7 @@ end
 
 ################################################################################
 #
-#	INTERFACING / ACCESSING BONDS
+#	TESTING THE INTERFACE OF SITES
 #	(should never be overwritten by concrete types)
 #
 ################################################################################

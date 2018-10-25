@@ -101,7 +101,7 @@ end
 
 ################################################################################
 #
-#	INTERFACING / ACCESSING BONDS
+#	TESTING THE INTERFACE OF BONDS
 #	(should never be overwritten by concrete types)
 #
 ################################################################################
