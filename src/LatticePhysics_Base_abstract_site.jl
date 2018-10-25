@@ -38,7 +38,7 @@ abstract type AbstractSite{L,D} end
 # used for creation of new sites
 function newSite(
             point   :: Vector{<:Real},
-            label   :: L
+            label   :: L,
             :: Type{S}
         ) :: S where {L,S<:AbstractSite{L,D} where D}
 
