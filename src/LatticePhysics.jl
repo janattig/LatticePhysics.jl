@@ -13,8 +13,8 @@
 #   --> ABSTRACT TYPE DEFINITION
 #           - AbstractSite{D,L}
 #           - AbstractBond{N,L}
-#           - AbstractUnitcell{D,N,L}
-#           - AbstractLattice{D,N,L}
+#           - AbstractUnitcell{D,N,L, S,B}
+#           - AbstractLattice{D,N,L, S,B}
 #
 #   --> INTERFACING ABSTRACT TYPES
 #           - AbstractSite{D,L}
@@ -34,7 +34,7 @@
 #               - sites
 #               - bonds
 #
-#   --> STRUCT DEFINITIONS
+#   --> NAIVE STRUCT DEFINITIONS
 #           - Site{D,L}
 #           - Bond{N,L}
 #           - Unitcell{D,N,L}
