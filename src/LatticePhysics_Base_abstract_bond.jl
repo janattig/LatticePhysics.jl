@@ -116,19 +116,19 @@ function testInterface(
 	# get the parameterless constructor
 	B = Base.typename(T).wrapper
 
-	# get a new bond
-	bond_1 = newBond(1, 1, 1.0, (1,1), B{Float64, 2})
-	bond_2 = newBond(1, 1, "tx", (1,1), B{String, 2})
-	bond_3 = newBond(1, 1, 2, (1,1,1), B{Int64, 3})
-
-	# get the indices and labels and wraps
-	for b in [bond_1, bond_2, bond_3]
+    # iterate over some standard wraps
+    for w in [(1,), (0,0), (0,0,0), (1,2,0,0)]
+    # iterate over some standard labels
+    for l in ["t", 1, 1.0]
+        # create a new bond
+        bond = newBond(1, 1, l, w, B{typeof(l), length(w)})
+        # test the interface
 		indexFrom(b)
 		indexTo(b)
 		label(b)
 		wrap(b)
-	end
-
+    end
+    end
 	# return true to indicate the test passed
 	return true
 end
