@@ -37,10 +37,10 @@ abstract type AbstractBond{L,N} end
 # default constructor interface
 # used for creation of new bonds
 function newBond(
-            from    :: Int64,
-            to      :: Int64,
+            from    :: Integer,
+            to      :: Integer,
             label   :: L,
-            wrap    :: NTuple{N,Int64},
+            wrap    :: NTuple{N,<:Integer},
             :: Type{B}
         ) :: B where {L,N,B<:AbstractBond{L,N}}
 

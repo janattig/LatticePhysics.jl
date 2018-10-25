@@ -2,9 +2,9 @@
 #
 #	ABSTRACT TYPE
 #
-#   Bond{L,N}
+#   Site{L,D}
 #   --> L is the label type
-#   --> N is the dimension of the Bravais lattice that the bond is located in
+#   --> D is the dimension of embedding space
 #
 #   FILE CONTAINS
 #       - abstract type definition
@@ -22,7 +22,7 @@
 #   ABSTRACT TYPE DEFINITION
 #
 ################################################################################
-abstract type AbstractSite{L,N} end
+abstract type AbstractSite{L,D} end
 
 
 
@@ -35,65 +35,40 @@ abstract type AbstractSite{L,N} end
 ################################################################################
 
 # default constructor interface
-# used for creation of new bonds
-function newBond(
-            from    :: Int64,
-            to      :: Int64,
-            label   :: L,
-            wrap    :: NTuple{N,Int64},
-            :: Type{B}
-        ) :: B where {L,N,B<:AbstractBond{L,N}}
+# used for creation of new sites
+function newSite(
+            point   :: Vector{<:Real},
+            label   :: L
+            :: Type{S}
+        ) :: S where {L,S<:AbstractSite{L,D} where D}
 
     # print an error because implementation for concrete type is missing
-    error(  "not implemented function 'newBond' for concrete bond type " *
-            string(B) * " with label type " * string(L) *
-            " and wrap length " * string(N)   )
+    error(  "not implemented function 'newSite' for concrete site type " *
+            string(S) * " with label type " * string(L) )
 end
 
-
-
-
-# UIDs of sites between which the bond is located
-
-# from index / UID (Int64)
-function from(
-            b :: AbstractBond{L,N}
-        ) :: Int64 where {L,N}
-
-    # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexFrom' for bond type " * string(typeof(b)))
-end
-
-# to index / UID (Int64)
-function to(
-            b :: AbstractBond{L,N}
-        ) :: Int64 where {L,N}
-
-    # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexTo' for bond type " * string(typeof(b)))
-end
 
 
 
 
 # label
 function label(
-            b :: AbstractBond{L,N}
-        ) :: L where {L,N}
+            s :: AbstractSite{L,D}
+        ) :: L where {L,D}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'label' for bond type " * string(typeof(b)))
+    error("not implemented interface function 'label' for site type " * string(typeof(s)))
 end
 
 
 
-# wrap
-function wrap(
-            b :: AbstractBond{L,N}
-        ) :: NTuple{N,Int64} where {L,N}
+# point
+function point(
+            s :: AbstractSite{L,D}
+        ) :: Vector{Float64} where {L,D}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'wrap' for bond type " * string(typeof(b)))
+    error("not implemented interface function 'point' for site type " * string(typeof(s)))
 end
 
 
@@ -109,22 +84,20 @@ end
 # TESTING THE BOND INTERFACE
 function testInterface(
             ::Type{T}
-        ) :: Bool where {T<:AbstractBond}
+        ) :: Bool where {T<:AbstractSite}
 
 	# get the parameterless constructor
-	B = Base.typename(T).wrapper
+	S = Base.typename(T).wrapper
 
-    # iterate over some standard wraps
-    for w in [(1,), (0,0), (0,0,0), (1,2,0,0)]
+    # iterate over some standard points
+    for p in Vector{Float64}[[1.0,], [1.0, 1.0], [0.0, 0.0, 0.0, 0.0]]
     # iterate over some standard labels
     for l in ["t", 1, 1.0]
-        # create a new bond
-        bond = newBond(1, 1, l, w, B{typeof(l), length(w)})
+        # create a new site
+        s = newSite(p,l, S{typeof(l), length(p)})
         # test the interface
-		indexFrom(b)
-		indexTo(b)
-		label(b)
-		wrap(b)
+		label(s)
+		point(s)
     end
     end
 
