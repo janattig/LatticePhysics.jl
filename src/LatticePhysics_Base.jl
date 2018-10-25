@@ -48,6 +48,8 @@ module LatticePhysics_Base
 
 # Bonds
 include("LatticePhysics_Base_abstract_bonds.jl")
+# Sites
+include("LatticePhysics_Base_abstract_sites.jl")
 
 
 
