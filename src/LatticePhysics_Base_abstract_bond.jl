@@ -45,7 +45,9 @@ function newBond(
         ) :: B where {L,N,B<:AbstractBond{L,N}}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented function 'newBond' for concrete bond type $(B) with label type $(L) and wrap length $(N)")
+    error(  "not implemented function 'newBond' for concrete bond type " *
+            string(B) * " with label type " * string(L) *
+            " and wrap length " * string(N)   )
 end
 
 
@@ -58,7 +60,7 @@ function from(
         ) :: Int64 where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexFrom' for bond type $(typeof(b))")
+    error("not implemented interface function 'indexFrom' for bond type " * string(typeof(b)))
 end
 
 # to index / UID (Int64)
@@ -67,7 +69,7 @@ function to(
         ) :: Int64 where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexTo' for bond type $(typeof(b))")
+    error("not implemented interface function 'indexTo' for bond type " * string(typeof(b)))
 end
 
 
@@ -82,7 +84,7 @@ function label(
         ) :: L where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'label' for bond type $(typeof(b))")
+    error("not implemented interface function 'label' for bond type " * string(typeof(b)))
 end
 
 
@@ -93,7 +95,7 @@ function wrap(
         ) :: NTuple{N,Int64} where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'wrap' for bond type $(typeof(b))")
+    error("not implemented interface function 'wrap' for bond type " * string(typeof(b)))
 end
 
 
