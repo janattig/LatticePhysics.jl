@@ -44,6 +44,12 @@ module LatticePhysics_Base
 
 
 
+# ABSTRACT TYPES INCLUDING INTERFACES
+
+# Bonds
+include("LatticePhysics_Base_abstract_bonds.jl")
+
+
 
 
 
