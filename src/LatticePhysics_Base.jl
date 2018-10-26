@@ -58,6 +58,11 @@ include("LatticePhysics_Base_abstract_unitcell.jl")
 
 # CONCRETE TYPES INCLUDING INTERFACE IMPLEMENTATION
 
+# Sites
+include("LatticePhysics_Base_concrete_site.jl")
+# Bonds
+include("LatticePhysics_Base_concrete_bond.jl")
+
 
 
 # module end
