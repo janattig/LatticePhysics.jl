@@ -29,7 +29,7 @@ abstract type AbstractSite{L,D} end
 
 ################################################################################
 #
-#	INTERFACING / ACCESSING BONDS
+#	INTERFACING / ACCESSING SITES
 #	(functions have to be overwritten by concrete types)
 #
 ################################################################################
