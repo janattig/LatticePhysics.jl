@@ -8,7 +8,7 @@
 #
 #   FILE CONTAINS
 #       - concrete struct definition
-#       - interface definition
+#       - interface implementation
 #
 ################################################################################
 
