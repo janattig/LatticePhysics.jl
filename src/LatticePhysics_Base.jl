@@ -47,9 +47,11 @@ module LatticePhysics_Base
 # ABSTRACT TYPES INCLUDING INTERFACE DEFINITION
 
 # Bonds
-include("LatticePhysics_Base_abstract_bonds.jl")
+include("LatticePhysics_Base_abstract_bond.jl")
 # Sites
-include("LatticePhysics_Base_abstract_sites.jl")
+include("LatticePhysics_Base_abstract_site.jl")
+# Unitcells
+include("LatticePhysics_Base_abstract_unitcell.jl")
 
 
 
