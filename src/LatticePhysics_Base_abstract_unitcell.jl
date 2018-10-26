@@ -40,7 +40,7 @@ abstract type AbstractUnitcell{D,N,L,S<:AbstractSite{L,D},B<:AbstractBond{L,N}} 
 # default constructor interface
 # used for creation of new unitcells
 function newUnitcell(
-            lattice_vectors :: Vector{Vector{<:Real}},
+            lattice_vectors :: Vector{<:Vector{<:Real}},
             sites           :: Vector{S},
             bonds           :: Vector{B},
             ::Type{U}
