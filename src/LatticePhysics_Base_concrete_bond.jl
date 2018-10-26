@@ -41,7 +41,7 @@ end
 
 ################################################################################
 #
-#	IMPLEMENTATION OF INTERFACE
+#	IMPLEMENTATION OF INTERFACE FOR CONCRETE BOND TYPE
 #	(functions that had to be overwritten by concrete type)
 #
 ################################################################################
