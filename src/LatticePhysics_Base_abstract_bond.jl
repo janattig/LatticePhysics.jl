@@ -61,7 +61,7 @@ function from(
         ) :: Int64 where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexFrom' for bond type " * string(typeof(b)))
+    error("not implemented interface function 'from' for bond type " * string(typeof(b)))
 end
 
 # to index / UID (Int64)
@@ -70,7 +70,7 @@ function to(
         ) :: Int64 where {L,N}
 
     # print an error because implementation for concrete type is missing
-    error("not implemented interface function 'indexTo' for bond type " * string(typeof(b)))
+    error("not implemented interface function 'to' for bond type " * string(typeof(b)))
 end
 
 
@@ -121,10 +121,10 @@ function testInterface(
         # create a new bond
         bond = newBond(1, 1, l, w, B{typeof(l), length(w)})
         # test the interface
-		indexFrom(b)
-		indexTo(b)
-		label(b)
-		wrap(b)
+		from(bond)
+		to(bond)
+		label(bond)
+		wrap(bond)
     end
     end
 
