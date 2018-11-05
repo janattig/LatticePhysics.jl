@@ -65,6 +65,8 @@ include("LatticePhysics_Base/concrete_site.jl")
 include("LatticePhysics_Base/concrete_bond.jl")
 # Unitcells
 include("LatticePhysics_Base/concrete_unitcell.jl")
+# Lattices
+include("LatticePhysics_Base/concrete_lattice.jl")
 
 
 
