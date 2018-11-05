@@ -9,6 +9,7 @@
 ################################################################################
 #
 #   module LatticePhysics_Base
+include("LatticePhysics_Base.jl")
 #
 #   --> ABSTRACT TYPE DEFINITION
 #           - AbstractSite{D,L}
@@ -75,6 +76,7 @@
 ################################################################################
 #
 #   module LatticePhysics_UnitcellDefinitions
+include("LatticePhysics_UnitcellDefinitions.jl")
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
@@ -347,9 +349,9 @@
 
 
 # Start of module
-module LatticePhysics
+# module LatticePhysics
 
 
 
 # End of module
-end
+# end
