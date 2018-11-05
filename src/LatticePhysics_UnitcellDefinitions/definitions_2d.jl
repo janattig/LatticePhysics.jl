@@ -1,7 +1,6 @@
 # SQUARE LATTICE
 
 
-
 # Implementation with any other label type (Fallback)
 function getUnitcellSquare(
             unitcell_type :: Type{U};
@@ -79,7 +78,6 @@ function getUnitcellSquare(
         error("Version " * string(version) * " of square lattice unitcell for label type " * string(L) * " not implemented yet")
     end
 end
-
 
 
 # wrapper function for only passing the label type (DEFAULT: Int64)
