@@ -70,5 +70,9 @@ include("LatticePhysics_Base/concrete_lattice.jl")
 
 
 
+# CUSTOM NICE PRINTING
+include("LatticePhysics_Base/custom_show.jl")
+
+
 # module end
 # end
