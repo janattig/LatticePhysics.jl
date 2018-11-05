@@ -16,10 +16,10 @@ module LatticePhysics_UnitcellDefinitions
 
 
 # include 2d stuff
-include("LatticePhysics_UnitcellDefinitions_2d.jl")
+include("LatticePhysics_UnitcellDefinitions/definitions_2d.jl")
 
 # include 3d stuff
-include("LatticePhysics_UnitcellDefinitions_3d.jl")
+include("LatticePhysics_UnitcellDefinitions/definitions_3d.jl")
 
 
 
