@@ -20,3 +20,8 @@ end
 function Base.show(io::IO, u::U) where {D,L,N,S<:AbstractSite{L,D},B<:AbstractBond{L,N},U<:AbstractUnitcell{D,N,L,S,B}}
     print(io, "Unitcell object\n--> type ", U, "\n--> ", length(sites(u)), " sites of type ", S, "\n--> ", length(bonds(u)), " bonds of type ", B)
 end
+
+# single LATTICE
+function Base.show(io::IO, la::LA) where {D,L,N,S<:AbstractSite{L,D},B<:AbstractBond{L,N},LA<:AbstractLattice{D,N,L,S,B}}
+    print(io, "Lattice object\n--> type ", U, "\n--> ", length(sites(la)), " sites of type ", S, "\n--> ", length(bonds(la)), " bonds of type ", B)
+end
