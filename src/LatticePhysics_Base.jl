@@ -47,11 +47,11 @@ module LatticePhysics_Base
 # ABSTRACT TYPES INCLUDING INTERFACE DEFINITION
 
 # Sites
-include("LatticePhysics_Base_abstract_site.jl")
+include("LatticePhysics_Base/abstract_site.jl")
 # Bonds
-include("LatticePhysics_Base_abstract_bond.jl")
+include("LatticePhysics_Base/abstract_bond.jl")
 # Unitcells
-include("LatticePhysics_Base_abstract_unitcell.jl")
+include("LatticePhysics_Base/abstract_unitcell.jl")
 
 
 
@@ -59,11 +59,11 @@ include("LatticePhysics_Base_abstract_unitcell.jl")
 # CONCRETE TYPES INCLUDING INTERFACE IMPLEMENTATION
 
 # Sites
-include("LatticePhysics_Base_concrete_site.jl")
+include("LatticePhysics_Base/concrete_site.jl")
 # Bonds
-include("LatticePhysics_Base_concrete_bond.jl")
+include("LatticePhysics_Base/concrete_bond.jl")
 # Unitcells
-include("LatticePhysics_Base_concrete_unitcell.jl")
+include("LatticePhysics_Base/concrete_unitcell.jl")
 
 
 
