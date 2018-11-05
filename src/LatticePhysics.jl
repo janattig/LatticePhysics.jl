@@ -100,6 +100,7 @@ include("LatticePhysics_UnitcellDefinitions.jl")
 ################################################################################
 #
 #   module LatticePhysics_LatticeConstruction
+include("LatticePhysics_LatticeConstruction.jl")
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
