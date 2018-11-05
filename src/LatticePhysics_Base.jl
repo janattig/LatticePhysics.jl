@@ -52,7 +52,8 @@ include("LatticePhysics_Base/abstract_site.jl")
 include("LatticePhysics_Base/abstract_bond.jl")
 # Unitcells
 include("LatticePhysics_Base/abstract_unitcell.jl")
-
+# Lattices
+include("LatticePhysics_Base/abstract_lattice.jl")
 
 
 
