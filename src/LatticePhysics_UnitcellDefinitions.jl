@@ -12,7 +12,7 @@
 
 
 # module start
-module LatticePhysics_UnitcellDefinitions
+# module LatticePhysics_UnitcellDefinitions
 
 
 # include 2d stuff
@@ -24,4 +24,4 @@ include("LatticePhysics_UnitcellDefinitions/definitions_3d.jl")
 
 
 # module end
-module end
+# module end
