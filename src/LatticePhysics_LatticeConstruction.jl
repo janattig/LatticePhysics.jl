@@ -20,6 +20,8 @@
 # module start
 # module LatticePhysics_LatticeConstruction
 
+# FUNCTIONS TO DEFINE INDICES IN ARRAYS
+include("LatticePhysics_LatticeConstruction/index_functions.jl")
 
 # CONSTRUCTION OF LATTICES FROM UNITCELLS
 # BY PUTTING TOGETHER UNITCELLS

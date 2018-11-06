@@ -23,5 +23,5 @@ end
 
 # single LATTICE
 function Base.show(io::IO, la::LA) where {D,L,N,S<:AbstractSite{L,D},B<:AbstractBond{L,N},LA<:AbstractLattice{D,N,L,S,B}}
-    print(io, "Lattice object\n--> type ", U, "\n--> ", length(sites(la)), " sites of type ", S, "\n--> ", length(bonds(la)), " bonds of type ", B)
+    print(io, "Lattice object\n--> type ", LA, "\n--> ", length(sites(la)), " sites of type ", S, "\n--> ", length(bonds(la)), " bonds of type ", B)
 end
