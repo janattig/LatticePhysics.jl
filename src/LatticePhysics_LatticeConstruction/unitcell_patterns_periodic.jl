@@ -90,7 +90,7 @@ function getLatticePeriodic(
     # extract the cardinal directions of the lattice from the array
     N_a1	= abs(extent[1])           :: Int64
     N_a2	= abs(extent[2])           :: Int64
-    N_a2	= abs(extent[3])           :: Int64
+    N_a3	= abs(extent[3])           :: Int64
 	N_sites = length(sites(unitcell))  :: Int64
 	N_bonds = length(bonds(unitcell))  :: Int64
 
@@ -125,7 +125,7 @@ function getLatticePeriodic(
 			# get the respective bond
 			bond = bonds(unitcell)[b] :: B
 			# calculate the site index from where the connection goes
-			index_from = index(i,j,k,from(bond), N_a1,N_a2,N_a3,N_sites)
+			index_from = index(i,j,k, from(bond), N_a1,N_a2,N_a3,N_sites)
 			# calculate the aimed unitcell
 			i_to = i + wrap(bond)[1]
 			j_to = j + wrap(bond)[2]
