@@ -41,12 +41,7 @@ end
 
 ################################################################################
 #
-#   Versions currently implemented:
-#
-#   --> 1 (Number, AbstractString)
-#       - 1 site per unitcell
-#       - nearest neighbors (6)
-#       - isotropic couplingss
+#   VERSION IMPLEMENTATIONS FROM HERE ON
 #
 ################################################################################
 
