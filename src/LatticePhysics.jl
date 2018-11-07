@@ -3,13 +3,20 @@
 #   The unified Module for all different sorts of lattices
 #   and lattice based calculations.
 #
-#   Module structure (mostly included in subfiles see below)
+#   Module structure mostly included in subfiles see below
 #
 ################################################################################
+
+
+# Start of module
+# module LatticePhysics
+
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_Base
-include("LatticePhysics_Base.jl")
 #
 #   --> ABSTRACT TYPE DEFINITION
 #           - AbstractSite{D,L}
@@ -46,6 +53,13 @@ include("LatticePhysics_Base.jl")
 #           - print
 #
 ################################################################################
+
+# include the relevant subfile
+include("LatticePhysics_Base.jl")
+
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_IO
@@ -57,6 +71,9 @@ include("LatticePhysics_Base.jl")
 #           - JLD ??
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_ConnectionRepresentation
@@ -73,10 +90,12 @@ include("LatticePhysics_Base.jl")
 #           - real space / momentum space?
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_UnitcellDefinitions
-include("LatticePhysics_UnitcellDefinitions.jl")
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
@@ -85,6 +104,12 @@ include("LatticePhysics_UnitcellDefinitions.jl")
 #   --> PRE-IMPLEMENTED UNITCELLS 3D
 #
 ################################################################################
+
+# include the relevant subfile
+include("LatticePhysics_UnitcellDefinitions.jl")
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_UnitcellConstruction
@@ -97,10 +122,12 @@ include("LatticePhysics_UnitcellDefinitions.jl")
 #           - print the generating code for a Unitcell
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_LatticeConstruction
-include("LatticePhysics_LatticeConstruction.jl")
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
@@ -116,6 +143,11 @@ include("LatticePhysics_LatticeConstruction.jl")
 #   --> LATTICE CONSTRUCTION ALGORITHM FROM SPIN SPIRALS PAPER
 #
 ################################################################################
+
+# include the relevant subfile
+include("LatticePhysics_LatticeConstruction.jl")
+
+
 ################################################################################
 #
 #   module LatticePhysics_LatticeModification
@@ -137,6 +169,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #       - Lattice vector optimization (relabeling unitcells)
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_Plaquettes
@@ -153,6 +188,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - obtain / print plaquette statistics
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_ReciprocalSpace
@@ -175,6 +213,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - construction of default BZs (3D)
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_ReciprocalSpace_Plotting
@@ -191,6 +232,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - 3D Brillouin zones
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_SVGBase
@@ -206,6 +250,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - text
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_Plotting_SVG
@@ -218,6 +265,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - 3D lattices
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_PlaquettePlotting_SVG
@@ -231,6 +281,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - 2D plaquettes and lattices
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_Plotting_Blender
@@ -242,6 +295,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - 3D lattices
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_Plotting_PyPlot
@@ -254,6 +310,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - 3D lattices
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_FreeFermion_Calculations
@@ -278,6 +337,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - calculation for 3D unitcells
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_FreeFermion_Plotting
@@ -298,6 +360,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - for 2D fermi surfaces in 3D
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_LuttingerTisza_Calculations
@@ -326,6 +391,9 @@ include("LatticePhysics_LatticeConstruction.jl")
 #           - calculation for 3D unitcells
 #
 ################################################################################
+
+
+
 ################################################################################
 #
 #   module LatticePhysics_LuttingerTisza_Plotting
@@ -349,8 +417,6 @@ include("LatticePhysics_LatticeConstruction.jl")
 
 
 
-# Start of module
-# module LatticePhysics
 
 
 
