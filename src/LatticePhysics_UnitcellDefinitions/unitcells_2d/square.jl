@@ -26,7 +26,7 @@ function getUnitcellSquare(
     end
 end
 
-# wrapper function for only passing the label type (DEFAULT: Int64)
+# wrapper function for passing the label type (DEFAULT: Int64)
 function getUnitcellSquare(
             label_type  :: Type{L}  = Int64;
             version     :: Int64    = 1,
@@ -45,7 +45,7 @@ end
 #
 #   --> 1 (Number, AbstractString)
 #       - 1 site per unitcell
-#       - nearest neighbors
+#       - nearest neighbors (4)
 #       - isotropic couplingss
 #
 ################################################################################
