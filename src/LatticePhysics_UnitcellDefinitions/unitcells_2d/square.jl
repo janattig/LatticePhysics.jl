@@ -26,7 +26,7 @@ function getUnitcellSquare(
     end
 end
 
-# wrapper function for passing the label type (DEFAULT: Int64)
+# wrapper function for passing a common label type (DEFAULT: Int64)
 function getUnitcellSquare(
             label_type  :: Type{L}  = Int64;
             version     :: Int64    = 1,
@@ -34,6 +34,17 @@ function getUnitcellSquare(
     # create a suitable unitcell of the given type
     return getUnitcellSquare(Unitcell{Site{L,2},Bond{L,2}}, version=version)
 end
+
+# wrapper function for passing both label types
+function getUnitcellSquare(
+            label_type_site :: Type{LS},
+            label_type_bond :: Type{LB};
+            version         :: Int64 = 1,
+        ) :: Unitcell{Site{LS,2},Bond{LB,2}} where {LS,LB}
+    # create a suitable unitcell of the given type
+    return getUnitcellSquare(Unitcell{Site{LS,2},Bond{LB,2}}, version=version)
+end
+
 
 
 

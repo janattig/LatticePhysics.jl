@@ -26,13 +26,23 @@ function getUnitcellCubic(
     end
 end
 
-# wrapper function for passing the label type (DEFAULT: Int64)
+# wrapper function for passing a common label type (DEFAULT: Int64)
 function getUnitcellCubic(
             label_type  :: Type{L}  = Int64;
             version     :: Int64    = 1,
         ) :: Unitcell{Site{L,3},Bond{L,3}} where L
     # create a suitable unitcell of the given type
     return getUnitcellCubic(Unitcell{Site{L,3},Bond{L,3}}, version=version)
+end
+
+# wrapper function for passing both label types
+function getUnitcellCubic(
+            label_type_site :: Type{LS},
+            label_type_bond :: Type{LB};
+            version         :: Int64 = 1,
+        ) :: Unitcell{Site{LS,3},Bond{LB,3}} where {LS,LB}
+    # create a suitable unitcell of the given type
+    return getUnitcellCubic(Unitcell{Site{LS,3},Bond{LB,3}}, version=version)
 end
 
 
