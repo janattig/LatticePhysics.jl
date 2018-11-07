@@ -3,34 +3,34 @@
 #   module LatticePhysics_Base
 #
 #   --> ABSTRACT TYPE DEFINITION
-#           - AbstractSite{D,L}
-#           - AbstractBond{N,L}
-#           - AbstractUnitcell{D,N,L, S,B}
-#           - AbstractLattice{D,N,L, S,B}
+#           - AbstractSite{L,D}
+#           - AbstractBond{L,N}
+#           - AbstractUnitcell{S,B}
+#           - AbstractLattice{S,B,U}
 #
 #   --> INTERFACING ABSTRACT TYPES
-#           - AbstractSite{D,L}
+#           - AbstractSite{L,D}
 #               - positions
 #               - label
-#           - AbstractBond{N,L}
+#           - AbstractBond{L,N}
 #               - connecting identifiers
 #               - label
 #               - wrap
-#           - AbstractUnitcell{D,N,L}
+#           - AbstractUnitcell{S,B}
 #               - Bravais lattice vectors
 #               - sites
 #               - bonds
-#           - AbstractLattice{D,N,L}
+#           - AbstractLattice{S,B,U}
 #               - Unitcell
 #               - Bravais lattice vectors
 #               - sites
 #               - bonds
 #
 #   --> NAIVE STRUCT DEFINITIONS
-#           - Site{D,L}
-#           - Bond{N,L}
-#           - Unitcell{D,N,L}
-#           - Lattice{D,N,L}
+#           - Site{L,D}
+#           - Bond{L,N}
+#           - Unitcell{S,B}
+#           - Lattice{S,B,U}
 #
 #   --> IMPLEMENTING JULIA.BASE FUNCTIONS
 #           - show

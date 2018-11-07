@@ -5,17 +5,17 @@
 function getUnitcellSquare(
             unitcell_type :: Type{U};
             version :: Int64 = 1,
-        ) :: U where {L,S<:AbstractSite{L,2},B<:AbstractBond{L,2},U<:AbstractUnitcell{2,2,L,S,B}}
+        ) :: U where {LS,LB,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
 
     # give an error
-    error("Label type " * string(L) * " of square lattice unitcell not implemented yet")
+    error("Label types " * string(LS) * " / " * string(LB) * " for square lattice not implemented yet")
 end
 
 # Implementation with String label types
 function getUnitcellSquare(
             unitcell_type :: Type{U};
             version :: Int64 = 1,
-        ) :: U where {L<:AbstractString,S<:AbstractSite{L,2},B<:AbstractBond{L,2},U<:AbstractUnitcell{2,2,L,S,B}}
+        ) :: U where {LS<:AbstractString,LB<:AbstractString,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
     # return a different unitcell depending on version
     if version == 1
         # return a new Unitcell
@@ -27,21 +27,21 @@ function getUnitcellSquare(
             ],
             # sites
             S[
-                newSite(Float64[0,0], L("1"), S)
+                newSite(Float64[0,0], LS("1"), S)
             ],
             # bonds
             B[
-                newBond(1,1, L("1"), (+1,0), B),
-                newBond(1,1, L("1"), (-1,0), B),
-                newBond(1,1, L("1"), (0,+1), B),
-                newBond(1,1, L("1"), (0,-1), B)
+                newBond(1,1, LB("1"), (+1,0), B),
+                newBond(1,1, LB("1"), (-1,0), B),
+                newBond(1,1, LB("1"), (0,+1), B),
+                newBond(1,1, LB("1"), (0,-1), B)
             ],
             # give the unitcell type
             U
         )
     else
         # give an error
-        error("Version " * string(version) * " of square lattice unitcell for label type " * string(L) * " not implemented yet")
+        error("Version " * string(version) * " of square lattice unitcell for label type " * string(LS) * " / " * string(LB) * " not implemented yet")
     end
 end
 
@@ -49,7 +49,7 @@ end
 function getUnitcellSquare(
             unitcell_type :: Type{U};
             version :: Int64 = 1,
-        ) :: U where {L<:Number,S<:AbstractSite{L,2},B<:AbstractBond{L,2},U<:AbstractUnitcell{2,2,L,S,B}}
+        ) :: U where {LS<:Number,LB<:Number,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
     # return a different unitcell depending on version
     if version == 1
         # return a new Unitcell
@@ -61,21 +61,21 @@ function getUnitcellSquare(
             ],
             # sites
             S[
-                newSite(Float64[0,0], L(1), S)
+                newSite(Float64[0,0], LS(1), S)
             ],
             # bonds
             B[
-                newBond(1,1, L(1), (+1,0), B),
-                newBond(1,1, L(1), (-1,0), B),
-                newBond(1,1, L(1), (0,+1), B),
-                newBond(1,1, L(1), (0,-1), B)
+                newBond(1,1, LB(1), (+1,0), B),
+                newBond(1,1, LB(1), (-1,0), B),
+                newBond(1,1, LB(1), (0,+1), B),
+                newBond(1,1, LB(1), (0,-1), B)
             ],
             # give the unitcell type
             U
         )
     else
         # give an error
-        error("Version " * string(version) * " of square lattice unitcell for label type " * string(L) * " not implemented yet")
+        error("Version " * string(version) * " of square lattice unitcell for label type " * string(LS) * " / " * string(LB) * " not implemented yet")
     end
 end
 
@@ -84,7 +84,7 @@ end
 function getUnitcellSquare(
             label_type  :: Type{L}  = Int64;
             version     :: Int64    = 1,
-        ) :: Unitcell{2,2,L,Site{L,2},Bond{L,2}} where L
+        ) :: Unitcell{Site{L,2},Bond{L,2}} where L
     # create a suitable unitcell of the given type
-    return getUnitcellSquare(Unitcell{2,2,L,Site{L,2},Bond{L,2}}, version=version)
+    return getUnitcellSquare(Unitcell{Site{L,2},Bond{L,2}}, version=version)
 end
