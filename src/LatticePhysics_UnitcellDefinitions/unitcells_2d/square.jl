@@ -1,5 +1,8 @@
-# SQUARE LATTICE
-
+################################################################################
+#
+#   SQUARE LATTICE
+#
+################################################################################
 
 # Implementation with any unitcell type and version (Fallback)
 function getUnitcellSquare(
@@ -34,6 +37,18 @@ end
 
 
 
+
+
+################################################################################
+#
+#   Versions currently implemented:
+#
+#   --> 1 (Number, AbstractString)
+#       - 1 site per unitcell
+#       - nearest neighbors
+#       - isotropic couplingss
+#
+################################################################################
 
 # Implementation
 # - version 1
