@@ -10,10 +10,16 @@ function getUnitcellSquare(
     # this might fail due to missing implementation
     try
         # try to call the respective subfunction
-        return getUnitcellSquare(unitcell_type, Val{version})
-    catch Error
-        # give an error
-        error("Version " * string(version) * " of square lattice unitcell for label type " * string(LS) * " / " * string(LB) * " not implemented yet")
+        return getUnitcellSquare(unitcell_type, Val(version))
+    catch error_caught
+        # check and possibliy give the error directly
+        if isa(error_caught, MethodError)
+            # print that there is a missing function
+            error("Version " * string(version) * " of square lattice unitcell (label types " * string(LS) * " / " * string(LB) * ") not implemented yet")
+        else
+            # throw the error again
+            throw(error_caught)
+        end
     end
 end
 
@@ -31,10 +37,23 @@ end
 
 # Implementation
 # - version 1
+# - labels <: Any
+# --> Fallback (raises error)
+function getUnitcellSquare(
+            unitcell_type :: Type{U},
+            version :: Val{1}
+        ) :: U where {LS,LB,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
+
+    # return a new Unitcell
+    error("Version 1 of square lattice unitcell has no implementation for label types " * string(LS) * " / " * string(LB) * " yet")
+end
+
+# Implementation
+# - version 1
 # - labels <: AbstractString
 function getUnitcellSquare(
             unitcell_type :: Type{U},
-            version :: Type{Val{1}}
+            version :: Val{1}
         ) :: U where {LS<:AbstractString,LB<:AbstractString,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
 
     # return a new Unitcell
@@ -65,7 +84,7 @@ end
 # - labels <: Number
 function getUnitcellSquare(
             unitcell_type :: Type{U},
-            version :: Type{Val{1}}
+            version :: Val{1}
         ) :: U where {LS<:Number,LB<:Number,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2},U<:AbstractUnitcell{S,B}}
 
     # return a new Unitcell
