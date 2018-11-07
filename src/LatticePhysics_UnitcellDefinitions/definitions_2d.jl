@@ -2,9 +2,6 @@
 #
 #   DEFINITION OF 2D UNITCELLS
 #
-#   FOLLOWING UNITCELLS ARE IMPLEMENTED
-#   - square
-#
 #   Code is included in subfiles
 #
 ################################################################################
