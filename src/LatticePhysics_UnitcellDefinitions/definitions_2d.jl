@@ -11,3 +11,6 @@
 
 # Square lattice
 include("unitcells_2d/square.jl")
+
+# Triangular lattice
+include("unitcells_2d/triangular.jl")
