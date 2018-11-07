@@ -27,7 +27,7 @@ function getLatticePeriodic(
 	# set all positions to their correct values
 	for i in 1:N_a1
 	for j in 1:N_a2
-	    @simd for a in 1:N_sites
+	    for a in 1:N_sites
 			# calculate the site index
 			site_index             = index(i,j,a, N_a1,N_a2,N_sites)
 			# calculate the position
@@ -45,7 +45,7 @@ function getLatticePeriodic(
 	for i in 1:N_a1
 	for j in 1:N_a2
 		# add all connections for unitcell (i,j)
-		@simd for b in 1:N_bonds
+		for b in 1:N_bonds
 			# get the respective bond
 			current_bond = bond(unitcell,b) :: BL
 			# calculate the site index from where the connection goes
@@ -117,7 +117,7 @@ function getLatticePeriodic(
 	for i in 1:N_a1
 	for j in 1:N_a2
 	for k in 1:N_a3
-	    @simd for a in 1:N_sites
+	    for a in 1:N_sites
 			# calculate the site index
 			site_index             = index(i,j,k,a, N_a1,N_a2,N_a3,N_sites)
 			# calculate the position
@@ -137,7 +137,7 @@ function getLatticePeriodic(
 	for j in 1:N_a2
 	for k in 1:N_a3
 		# add all connections for unitcell (i,j)
-		@simd for b in 1:N_bonds
+		for b in 1:N_bonds
 			# get the respective bond
 			current_bond = bond(unitcell, b) :: BL
 			# calculate the site index from where the connection goes
