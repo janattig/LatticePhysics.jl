@@ -1,7 +1,7 @@
 # SQUARE LATTICE
 
 
-# Implementation with any other label type (Fallback)
+# Implementation with any unitcell type and version (Fallback)
 function getUnitcellSquare(
             unitcell_type   :: Type{U};
             version         :: Int64 = 1,
@@ -31,7 +31,7 @@ end
 
 # Implementation
 # - version 1
-# - String labels
+# - labels <: AbstractString
 function getUnitcellSquare(
             unitcell_type :: Type{U},
             version :: Type{Val{1}}
@@ -62,7 +62,7 @@ end
 
 # Implementation
 # - version 1
-# - Number labels
+# - labels <: Number
 function getUnitcellSquare(
             unitcell_type :: Type{U},
             version :: Type{Val{1}}
