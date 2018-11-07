@@ -99,6 +99,35 @@ end
 
 
 
+
+
+
+
+# ADDITIONAL FANCY SYNTAX
+# does not have to be overwritten as it uses interface from above
+
+# check if the bond is periodic
+function isPeriodic(
+            b :: AbstractBond{L,N}
+        ) :: Bool where {L,N}
+
+    # check all wraps explicitly
+    for w in wrap(b)
+        if w!=0
+            # it is periodic if there is a single non-zero wrap
+            return true
+        end
+    end
+    # it is not periodic if there is no non-zero wrap
+    return false
+end
+
+
+
+
+
+
+
 ################################################################################
 #
 #	TESTING THE INTERFACE OF BONDS
