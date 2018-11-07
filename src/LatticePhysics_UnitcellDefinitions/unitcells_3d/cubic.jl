@@ -18,7 +18,7 @@ function getUnitcellCubic(
         # check and possibliy give the error directly
         if isa(error_caught, MethodError)
             # print that there is a missing function
-            error("Version " * string(version) * " of cubic lattice unitcell (label types " * string(LS) * " / " * string(LB) * ") not implemented yet")
+            error("Version " * string(version) * " of cubic unitcell (label types " * string(LS) * " / " * string(LB) * ") not implemented yet")
         else
             # throw the error again
             throw(error_caught)
@@ -63,7 +63,7 @@ function getUnitcellCubic(
         ) :: U where {LS,LB,S<:AbstractSite{LS,3},B<:AbstractBond{LB,3},U<:AbstractUnitcell{S,B}}
 
     # return a new Unitcell
-    error("Version 1 of cubic lattice unitcell has no implementation for label types " * string(LS) * " / " * string(LB) * " yet")
+    error("Version 1 of cubic unitcell has no implementation for label types " * string(LS) * " / " * string(LB) * " yet")
 end
 
 # Implementation
