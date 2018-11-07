@@ -59,7 +59,6 @@ include("LatticePhysics_Base.jl")
 
 
 
-
 ################################################################################
 #
 #   module LatticePhysics_IO
@@ -146,6 +145,7 @@ include("LatticePhysics_UnitcellDefinitions.jl")
 
 # include the relevant subfile
 include("LatticePhysics_LatticeConstruction.jl")
+
 
 
 ################################################################################
