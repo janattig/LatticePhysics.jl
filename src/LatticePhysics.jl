@@ -11,6 +11,13 @@
 # Start of module
 # module LatticePhysics
 
+# TODO CONVENTIONS
+# --> TYPES ALWAYS FIRST ARGUMENTS IN FUNCTIONS
+# --> TRY CATCH to DISPATCH AND FALLBACK for Val{T} where T
+# --> getUnitcell(:square)
+# --> version vs. implementation
+# --> version is not a keyword argument
+# --> UnitcellDefinitions -> UnitcellLibrary
 
 
 
