@@ -79,6 +79,8 @@ include("LatticePhysics_Base.jl")
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
+#   --> FUNCTIONS FOR IDENTIFYING NEIGHBOURS
+#
 #   --> STATIC LOOKUP TABLES
 #           - connectivity information
 #           - lists of identifiers for every site
@@ -121,6 +123,9 @@ include("LatticePhysics_UnitcellDefinitions.jl")
 #           - print the generating code for a Unitcell
 #
 ################################################################################
+
+# include the relevant subfile
+include("LatticePhysics_UnitcellConstruction.jl")
 
 
 
