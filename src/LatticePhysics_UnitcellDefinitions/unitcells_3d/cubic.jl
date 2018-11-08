@@ -4,45 +4,59 @@
 #
 ################################################################################
 
-# Implementation with any unitcell type and version (Fallback)
+
+
+# REFERENCE / FALLBACK (for generic AbstractUnitcell type)
+
+# referencing to individual functions by wrapping in Val()
 function getUnitcellCubic(
-            unitcell_type   :: Type{U};
-            version         :: Int64 = 1,
+            unitcell_type   :: Type{U},
+            version         :: Int64 = 1
         ) :: U where {LS,LB,S<:AbstractSite{LS,3},B<:AbstractBond{LB,3},U<:AbstractUnitcell{S,B}}
 
-    # this might fail due to missing implementation
-    try
-        # try to call the respective subfunction
-        return getUnitcellCubic(unitcell_type, Val(version))
-    catch error_caught
-        # check and possibliy give the error directly
-        if isa(error_caught, MethodError)
-            # print that there is a missing function
-            error("Version " * string(version) * " of cubic unitcell (label types " * string(LS) * " / " * string(LB) * ") not implemented yet")
-        else
-            # throw the error again
-            throw(error_caught)
-        end
-    end
+    # call the respective subfunction by converting to val type
+    return getUnitcellCubic(unitcell_type, Val(version))
 end
 
-# wrapper function for passing a common label type (DEFAULT: Int64)
+# Fallback for all implementations (if Val{V} is not found)
 function getUnitcellCubic(
-            label_type  :: Type{L}  = Int64;
-            version     :: Int64    = 1,
+            unitcell_type   :: Type{U},
+            version         :: Val{V}
+        ) :: U where {LS,LB,S<:AbstractSite{LS,3},B<:AbstractBond{LB,3},U<:AbstractUnitcell{S,B},V}
+
+    # fallback / fail due to missing implementation
+    error("Version " * string(V) * " of cubic unitcell (label types " * string(LS) * " / " * string(LB) * ") not implemented yet")
+end
+
+
+
+# WRAPPER FUNCTIONS (for concrete Unitcell type) call general function
+
+# wrapper function for passing no label types (and version) (DEFAULT)
+function getUnitcellCubic(
+            version     :: Int64    = 1
+        ) :: Unitcell{Site{Int64,3},Bond{Int64,3}}
+    # create a suitable unitcell of the given type
+    return getUnitcellCubic(Unitcell{Site{Int64,3},Bond{Int64,3}}, version)
+end
+
+# wrapper function for passing common label type (and version)
+function getUnitcellCubic(
+            label_type  :: Type{L},
+            version     :: Int64    = 1
         ) :: Unitcell{Site{L,3},Bond{L,3}} where L
     # create a suitable unitcell of the given type
-    return getUnitcellCubic(Unitcell{Site{L,3},Bond{L,3}}, version=version)
+    return getUnitcellCubic(Unitcell{Site{L,3},Bond{L,3}}, version)
 end
 
-# wrapper function for passing both label types
+# wrapper function for passing site / bond label types (and version)
 function getUnitcellCubic(
             label_type_site :: Type{LS},
-            label_type_bond :: Type{LB};
-            version         :: Int64 = 1,
+            label_type_bond :: Type{LB},
+            version         :: Int64 = 1
         ) :: Unitcell{Site{LS,3},Bond{LB,3}} where {LS,LB}
     # create a suitable unitcell of the given type
-    return getUnitcellCubic(Unitcell{Site{LS,3},Bond{LB,3}}, version=version)
+    return getUnitcellCubic(Unitcell{Site{LS,3},Bond{LB,3}}, version)
 end
 
 
@@ -56,7 +70,7 @@ end
 # Implementation
 # - version 1
 # - labels <: Any
-# --> Fallback (raises error)
+# --> FALLBACK (raises error)
 function getUnitcellCubic(
             unitcell_type :: Type{U},
             version :: Val{1}
