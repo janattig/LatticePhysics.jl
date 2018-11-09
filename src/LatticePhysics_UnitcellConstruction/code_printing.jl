@@ -1,7 +1,7 @@
 # PRINT  THE CODE THAT GENERATES A UNITCELL
 
 # code for a specific unitcell version
-function getUnitcellGeneratingCode(
+function getUnitcellVersionCode(
             unitcell    :: U,
             name        :: String,
             version     :: Int64 = 1;
@@ -86,7 +86,7 @@ function getUnitcellGeneratingCode(
 end
 
 # print the code
-function printUnitcellGeneratingCode(
+function printUnitcellVersionCode(
             io          :: IO,
             unitcell    :: U,
             name        :: String,
@@ -102,7 +102,7 @@ function printUnitcellGeneratingCode(
     # print the code
     print(io, code)
 end
-function printUnitcellGeneratingCode(
+function printUnitcellVersionCode(
             unitcell    :: U,
             name        :: String,
             version     :: Int64 = 1;
