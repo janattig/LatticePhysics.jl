@@ -171,15 +171,101 @@ end
 
 
 
-#=
 # write a complete file for a unitcell
 function writeUnitcellFile(
-            filename    :: String,
             unitcell    :: U,
-            name        :: String,
-            version     :: Int64
-        )
-    #...
+            name        :: String = "myunitcell",
+            folder      :: String = "./",
+            version     :: Int64  = 1
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # compile the string
+    complete_code = ""
+
+    # add the main comment to the top
+    complete_code *= "################################################################################\n"
+    complete_code *= "#\n"
+    complete_code *= "#   " * uppercase(name) * " LATTICE\n"
+    complete_code *= "#\n"
+    complete_code *= "################################################################################\n\n\n\n"
+
+    # FIRST big headline (fallback / reference)
+    complete_code *= "# REFERENCE / FALLBACK (for generic AbstractUnitcell type)\n\n"
+
+    # referencing function for abstract type
+    complete_code *= "# Referencing to individual functions by wrapping in Val()\n"
+    complete_code *= "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n"
+    complete_code *= "            unitcell_type   :: Type{U},\n"
+    complete_code *= "            version         :: Int64 = 1\n"
+    complete_code *= "        ) :: U where {LS,LB,S<:AbstractSite{LS," * string(D) * "},B<:AbstractBond{LB," * string(N) * "},U<:AbstractUnitcell{S,B}}\n"
+    complete_code *= "    \n"
+    complete_code *= "    # call the respective subfunction by converting to val type\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(unitcell_type, Val(version))\n"
+    complete_code *= "end\n\n"
+
+    # fallback function for abstract type
+    complete_code *= "# Fallback for all implementations (if Val{V} is not found)\n"
+    complete_code *= "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n"
+    complete_code *= "            unitcell_type   :: Type{U},\n"
+    complete_code *= "            version         :: Val{V}\n"
+    complete_code *= "        ) :: U where {LS,LB,S<:AbstractSite{LS," * string(D) * "},B<:AbstractBond{LB," * string(N) * "},U<:AbstractUnitcell{S,B},V}\n"
+    complete_code *= "    \n"
+    complete_code *= "    # fallback / fail due to missing implementation\n"
+    complete_code *= "    error(\"Version \" * string(V) * \" of " * name * " unitcell (label types \" * string(LS) * \" / \" * string(LB) * \") not implemented yet\")\n"
+    complete_code *= "end\n\n\n\n"
+
+
+    # SECOND big headline (wrapper for concrete type)
+    complete_code *= "# WRAPPER FUNCTIONS (for concrete Unitcell type) call general function\n\n"
+
+    # wrapper with only version (DEFAULT)
+    complete_code *= "# wrapper function for passing no label types (and version) (DEFAULT)\n"
+    complete_code *= "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n"
+    complete_code *= "            version :: Int64 = 1\n"
+    complete_code *= "        ) :: Unitcell{Site{Int64," * string(D) * "},Bond{Int64," * string(N) * "}}\n"
+    complete_code *= "    \n"
+    complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{Int64," * string(D) * "},Bond{Int64," * string(N) * "}, version)\n"
+    complete_code *= "end\n\n"
+
+    # wrapper with common label type and version
+    complete_code *= "# wrapper function for passing common label type (and version)\n"
+    complete_code *= "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n"
+    complete_code *= "            label_type :: Type{L},\n"
+    complete_code *= "            version    :: Int64 = 1\n"
+    complete_code *= "        ) :: Unitcell{Site{L," * string(D) * "},Bond{L," * string(N) * "}} where L\n"
+    complete_code *= "    \n"
+    complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{L," * string(D) * "},Bond{L," * string(N) * "}, version)\n"
+    complete_code *= "end\n\n"
+
+    # wrapper with common label type and version
+    complete_code *= "# wrapper function for passing site / bond label types (and version)\n"
+    complete_code *= "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n"
+    complete_code *= "            label_type_site :: Type{LS},\n"
+    complete_code *= "            label_type_bond :: Type{LB},\n"
+    complete_code *= "            version         :: Int64 = 1\n"
+    complete_code *= "        ) :: Unitcell{Site{LS," * string(D) * "},Bond{LB," * string(N) * "}} where {LS,LB}\n"
+    complete_code *= "    \n"
+    complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{LS," * string(D) * "},Bond{LB," * string(N) * "}, version)\n"
+    complete_code *= "end\n\n\n\n"
+
+
+
+    # add the distinction to version code
+    complete_code *= "################################################################################\n"
+    complete_code *= "#\n"
+    complete_code *= "#   VERSION IMPLEMENTATIONS FROM HERE ON\n"
+    complete_code *= "#\n"
+    complete_code *= "################################################################################\n\n\n\n"
+
+
+
+    # open the respective file and write the code into that file
+    filename = folder * (folder[end] == "/" ? "" : "/") * name * ".jl"
+    f = open(filename, "w")
+    write(f, complete_code)
+    close(f)
 
 end
-=#
