@@ -1,6 +1,6 @@
 # PRINT  THE CODE THAT GENERATES A UNITCELL
 
-# 2D unitcells (2 Bravais lattice vectors)
+# code for a specific unitcell version
 function getUnitcellGeneratingCode(
             unitcell    :: U,
             name        :: String,
@@ -83,4 +83,37 @@ function getUnitcellGeneratingCode(
 
     # print the generating code
     return generating_code
+end
+
+# print the code
+function printUnitcellGeneratingCode(
+            io          :: IO,
+            unitcell    :: U,
+            name        :: String,
+            version     :: Int64 = 1;
+            labeltype_site  :: DataType = Nothing,
+            labeltype_bond  :: DataType = Nothing,
+            print_fallback  :: Bool     = true
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # get the code
+    code = getUnitcellGeneratingCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+
+    # print the code
+    print(io, code)
+end
+function printUnitcellGeneratingCode(
+            unitcell    :: U,
+            name        :: String,
+            version     :: Int64 = 1;
+            labeltype_site  :: DataType = Nothing,
+            labeltype_bond  :: DataType = Nothing,
+            print_fallback  :: Bool     = true
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # get the code
+    code = getUnitcellGeneratingCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+
+    # print the code
+    print(code)
 end
