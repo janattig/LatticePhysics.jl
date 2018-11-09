@@ -313,7 +313,7 @@ function getCodeUnitcellFileHeader(
     complete_code *= "        ) :: Unitcell{Site{Int64," * string(D) * "},Bond{Int64," * string(N) * "}}\n"
     complete_code *= "    \n"
     complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
-    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{Int64," * string(D) * "},Bond{Int64," * string(N) * "}, version)\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{Int64," * string(D) * "},Bond{Int64," * string(N) * "}}, version)\n"
     complete_code *= "end\n\n"
 
     # wrapper with common label type and version
@@ -324,7 +324,7 @@ function getCodeUnitcellFileHeader(
     complete_code *= "        ) :: Unitcell{Site{L," * string(D) * "},Bond{L," * string(N) * "}} where L\n"
     complete_code *= "    \n"
     complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
-    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{L," * string(D) * "},Bond{L," * string(N) * "}, version)\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{L," * string(D) * "},Bond{L," * string(N) * "}}, version)\n"
     complete_code *= "end\n\n"
 
     # wrapper with common label type and version
@@ -336,7 +336,7 @@ function getCodeUnitcellFileHeader(
     complete_code *= "        ) :: Unitcell{Site{LS," * string(D) * "},Bond{LB," * string(N) * "}} where {LS,LB}\n"
     complete_code *= "    \n"
     complete_code *= "    # create a suitable unitcell of the Unitcell type\n"
-    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{LS," * string(D) * "},Bond{LB," * string(N) * "}, version)\n"
+    complete_code *= "    return getUnitcell" * uppercase(name[1]) * name[2:end] * "(Unitcell{Site{LS," * string(D) * "},Bond{LB," * string(N) * "}}, version)\n"
     complete_code *= "end\n\n\n\n"
 
 
