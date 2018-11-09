@@ -1,7 +1,7 @@
 # PRINT  THE CODE THAT GENERATES A UNITCELL
 
 # code for a specific unitcell version
-function getUnitcellVersionCode(
+function getCodeUnitcellVersion(
             unitcell    :: U,
             name        :: String = "myunitcell",
             version     :: Int64  = 1;
@@ -85,7 +85,7 @@ function getUnitcellVersionCode(
 end
 
 # print the unitcell version code
-function printUnitcellVersionCode(
+function printCodeUnitcellVersion(
             io          :: IO,
             unitcell    :: U,
             name        :: String = "myunitcell",
@@ -95,12 +95,12 @@ function printUnitcellVersionCode(
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
+    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
 
     # print the code
     print(io, code)
 end
-function printUnitcellVersionCode(
+function printCodeUnitcellVersion(
             unitcell    :: U,
             name        :: String = "myunitcell",
             version     :: Int64  = 1;
@@ -109,7 +109,7 @@ function printUnitcellVersionCode(
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
+    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
 
     # print the code
     print(code)
@@ -118,7 +118,7 @@ end
 
 
 # code for unitcell templates
-function getUnitcellTemplateCode()
+function getCodeUnitcellTemplate()
 
     # build the string of lattice vectors
     lattice_vector_string = ""
