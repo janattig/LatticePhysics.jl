@@ -85,12 +85,12 @@ function getUnitcellVersionCode(
     return generating_code
 end
 
-# print the code
+# print the unitcell version code
 function printUnitcellVersionCode(
             io          :: IO,
             unitcell    :: U,
-            name        :: String,
-            version     :: Int64 = 1;
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
             labeltype_bond  :: DataType = Nothing,
             print_fallback  :: Bool     = true
@@ -104,8 +104,8 @@ function printUnitcellVersionCode(
 end
 function printUnitcellVersionCode(
             unitcell    :: U,
-            name        :: String,
-            version     :: Int64 = 1;
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
             labeltype_bond  :: DataType = Nothing,
             print_fallback  :: Bool     = true
