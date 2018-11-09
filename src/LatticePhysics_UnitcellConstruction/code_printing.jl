@@ -6,8 +6,7 @@ function getUnitcellVersionCode(
             name        :: String = "myunitcell",
             version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
-            labeltype_bond  :: DataType = Nothing,
-            print_fallback  :: Bool     = true
+            labeltype_bond  :: DataType = Nothing
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # set the correct label type for sites and bonds
@@ -92,12 +91,11 @@ function printUnitcellVersionCode(
             name        :: String = "myunitcell",
             version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
-            labeltype_bond  :: DataType = Nothing,
-            print_fallback  :: Bool     = true
+            labeltype_bond  :: DataType = Nothing
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
 
     # print the code
     print(io, code)
@@ -107,13 +105,81 @@ function printUnitcellVersionCode(
             name        :: String = "myunitcell",
             version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
-            labeltype_bond  :: DataType = Nothing,
-            print_fallback  :: Bool     = true
+            labeltype_bond  :: DataType = Nothing
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
 
     # print the code
     print(code)
 end
+
+
+
+# code for unitcell templates
+function getUnitcellTemplateCode()
+
+    # build the string of lattice vectors
+    lattice_vector_string = ""
+    lattice_vector_string = lattice_vector_string * "            <A1>,\n"
+    lattice_vector_string = lattice_vector_string * "            <A2>,\n"
+    lattice_vector_string = lattice_vector_string * "            ...\n"
+
+    # build a string for all sites
+    site_string = ""
+    site_string = site_string * "            newSite(<POSITION>, LS(<LABEL>), S),\n"
+    site_string = site_string * "            newSite(<POSITION>, LS(<LABEL>), S),\n"
+    site_string = site_string * "            ...\n"
+
+    # build a string for all bonds
+    bond_string = ""
+    bond_string = bond_string * "            newBond(<FROM>, <TO>, LB(<LABEL>), <WRAP>, B),\n"
+    bond_string = bond_string * "            newBond(<FROM>, <TO>, LB(<LABEL>), <WRAP>, B),\n"
+    bond_string = bond_string * "            ...\n"
+
+    # generate the complete generating code as a string
+    generating_code = "function getUnitcell<UNITCELLNAME>(\n" *
+        "            unitcell_type :: Type{U},\n" *
+        "            version       :: Val{<VERSION>}\n" *
+        "        ) :: U where {LS<:<SITELABELTYPE>,LB<:<BONDLABELTYPE>, " *
+        "S<:AbstractSite{LS,<SPACEDIMENSION>},B<:AbstractBond{LB,<LATTICEDIMENSION>}, " *
+        "U<:AbstractUnitcell{S,B}}\n" *
+        "    \n" *
+        "    # return a new Unitcell\n" *
+        "    return newUnitcell(\n" *
+        "        # Bravais lattice vectors\n" *
+        "        Vector{Float64}[\n" *
+        lattice_vector_string *
+        "        ],\n" *
+        "        # Sites\n" *
+        "        S[\n" *
+        site_string *
+        "        ],\n" *
+        "        # Bonds\n" *
+        "        B[\n" *
+        bond_string *
+        "        ],\n" *
+        "        # Type of the unitcell\n" *
+        "        U\n" *
+        "    )\n" *
+        "end"
+
+    # print the generating code
+    return generating_code
+end
+
+
+
+#=
+# write a complete file for a unitcell
+function writeUnitcellFile(
+            filename    :: String,
+            unitcell    :: U,
+            name        :: String,
+            version     :: Int64
+        )
+    #...
+
+end
+=#
