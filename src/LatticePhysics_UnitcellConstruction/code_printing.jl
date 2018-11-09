@@ -97,7 +97,7 @@ function printUnitcellVersionCode(
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellGeneratingCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
 
     # print the code
     print(io, code)
@@ -112,7 +112,7 @@ function printUnitcellVersionCode(
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # get the code
-    code = getUnitcellGeneratingCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
+    code = getUnitcellVersionCode(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond, print_fallback=print_fallback)
 
     # print the code
     print(code)
