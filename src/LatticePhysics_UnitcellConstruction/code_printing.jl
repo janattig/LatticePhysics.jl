@@ -87,6 +87,93 @@ function getCodeUnitcellVersion(
     # print the generating code
     return generating_code
 end
+# code for a specific unitcell version but simplified
+function getCodeUnitcellSimplifiedVersion(
+            unitcell    :: U,
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
+            labeltype_site  :: DataType = Nothing,
+            labeltype_bond  :: DataType = Nothing
+        ) :: String where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # set the correct label type for sites and bonds
+    sitelabeltype = (labeltype_site == Nothing ? LS : labeltype_site) :: DataType
+    bondlabeltype = (labeltype_bond == Nothing ? LB : labeltype_bond) :: DataType
+
+    # build the string of lattice vectors
+    lattice_vector_string = ""
+    for l in latticeVectors(unitcell)
+        lattice_vector_string = lattice_vector_string * "            Float64" * string(l) * ",\n"
+    end
+    if length(lattice_vector_string) > 2
+        lattice_vector_string = lattice_vector_string[1:end-2] * "\n"
+    end
+
+    # build a string for all sites
+    site_string = ""
+    for (i,s) in enumerate(sites(unitcell))
+        if sitelabeltype <: AbstractString
+            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(\"" * string(i) *  "\"), S),\n"
+        else
+            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(" * string(i) *  "), S),\n"
+        end
+    end
+    if length(site_string) > 2
+        site_string = site_string[1:end-2] * "\n"
+    end
+
+    # build a string for all bonds
+    bond_string = ""
+    for b in bonds(unitcell)
+        if bondlabeltype <: AbstractString #newBond(1,1, LB("1"), (+1,0), B)
+            bond_string = bond_string * "            newBond(" *
+                string(from(b)) * ", " * string(to(b)) *
+                ", LB(\"1\"), " * string(wrap(b)) * ", B),\n"
+        else
+            bond_string = bond_string * "            newBond(" *
+                string(from(b)) * ", " * string(to(b)) *
+                ", LB(1), " * string(wrap(b)) * ", B),\n"
+        end
+    end
+    if length(bond_string) > 2
+        bond_string = bond_string[1:end-2] * "\n"
+    end
+
+    # generate the complete generating code as a string
+    generating_code = "" *
+        "# Implementation\n" *
+        "# - version " * string(version) * "\n" *
+        "# - labels <: " * string(sitelabeltype) * " / " * string(bondlabeltype) * "\n" *
+        "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n" *
+        "            unitcell_type :: Type{U},\n" *
+        "            version       :: Val{" * string(version) * "}\n" *
+        "        ) :: U where {LS<:" *
+        string(sitelabeltype) * ",LB<:" * string(bondlabeltype) *
+        ",S<:AbstractSite{LS," * string(D) * "},B<:AbstractBond{LB," * string(N) * "}, " *
+        "U<:AbstractUnitcell{S,B}}\n" *
+        "    \n" *
+        "    # return a new Unitcell\n" *
+        "    return newUnitcell(\n" *
+        "        # Bravais lattice vectors\n" *
+        "        Vector{Float64}[\n" *
+        lattice_vector_string *
+        "        ],\n" *
+        "        # Sites\n" *
+        "        S[\n" *
+        site_string *
+        "        ],\n" *
+        "        # Bonds\n" *
+        "        B[\n" *
+        bond_string *
+        "        ],\n" *
+        "        # Type of the unitcell\n" *
+        "        U\n" *
+        "    )\n" *
+        "end"
+
+    # print the generating code
+    return generating_code
+end
 
 # code for unitcell templates
 function getCodeUnitcellTemplate() :: String
@@ -157,6 +244,7 @@ function getCodeUnitcellVersionFallback(
         "# Implementation\n" *
         "# - version " * string(version) * "\n" *
         "# - labels <: Any\n" *
+        "# --> FALLBACK (raises error)\n" *
         "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n" *
         "            unitcell_type :: Type{U},\n" *
         "            version       :: Val{" * string(version) * "}\n" *
@@ -170,9 +258,6 @@ function getCodeUnitcellVersionFallback(
     # print the generating code
     return generating_code
 end
-
-
-
 
 
 
@@ -305,10 +390,16 @@ end
 # write a complete file for a unitcell
 function writeUnitcellFile(
             unitcell    :: U,
-            name        :: String = "myunitcell",
+            uc_name     :: String = "myunitcell",
             folder      :: String = "./",
             version     :: Int64  = 1
+            ;
+            generate_fallback :: Bool = true,
+            generate_default  :: Bool = true
         ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # get the name for the function
+    name = filter(c -> isletter(c), uc_name)
 
     # compile the string
     complete_code = ""
@@ -320,8 +411,43 @@ function writeUnitcellFile(
     complete_code *= "\n\n\n"
 
 
+    # DEFAULT VERSION
+
+    # check if defaults should be generated
+    if generate_default
+        # check if default needs a fallback
+        if generate_fallback
+            # add the fallback for version 1 to the code
+            complete_code *= getCodeUnitcellVersionFallback(unitcell, name, 1) * "\n\n"
+        end
+        # generate a default version for Number
+        complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=Number, labeltype_site=Number) * "\n\n"
+        # generate a default version for AbstractString
+        complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=AbstractString, labeltype_site=AbstractString) * "\n\n"
+    end
+
+
+    # CUSTOM VERSION
+
+    # maybe some space
+    if version != 1
+        complete_code *= "\n\n"
+    end
+
+    # check if custom version needs a fallback
+    if generate_fallback && version != 1
+        # add the fallback for version 1 to the code
+        complete_code *= getCodeUnitcellVersionFallback(unitcell, name, version) * "\n\n"
+    end
+    # generate a normal version code
+    complete_code *= getCodeUnitcellVersion(unitcell, name, version) * "\n\n"
+
+
+
+
+
     # open the respective file and write the code into that file
-    filename = folder * (folder[end] == "/" ? "" : "/") * name * ".jl"
+    filename = folder * (folder[end] == "/" ? "" : "/") * lowercase(filter(c -> isletter(c) || c=='-', uc_name)) * ".jl"
     f = open(filename, "w")
     write(f, complete_code)
     close(f)
