@@ -84,39 +84,6 @@ function getCodeUnitcellVersion(
     return generating_code
 end
 
-# print the unitcell version code
-function printCodeUnitcellVersion(
-            io          :: IO,
-            unitcell    :: U,
-            name        :: String = "myunitcell",
-            version     :: Int64  = 1;
-            labeltype_site  :: DataType = Nothing,
-            labeltype_bond  :: DataType = Nothing
-        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
-
-    # get the code
-    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
-
-    # print the code
-    print(io, code)
-end
-function printCodeUnitcellVersion(
-            unitcell    :: U,
-            name        :: String = "myunitcell",
-            version     :: Int64  = 1;
-            labeltype_site  :: DataType = Nothing,
-            labeltype_bond  :: DataType = Nothing
-        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
-
-    # get the code
-    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
-
-    # print the code
-    print(code)
-end
-
-
-
 # code for unitcell templates
 function getCodeUnitcellTemplate()
 
@@ -171,13 +138,13 @@ end
 
 
 
-# write a complete file for a unitcell
-function writeUnitcellFile(
-            unitcell    :: U,
-            name        :: String = "myunitcell",
-            folder      :: String = "./",
-            version     :: Int64  = 1
-        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+
+# get the code for Unitcell file header
+function getCodeUnitcellFileHeader(
+            name :: String,
+            D, N
+        )
 
     # compile the string
     complete_code = ""
@@ -258,9 +225,60 @@ function writeUnitcellFile(
     complete_code *= "#\n"
     complete_code *= "#   VERSION IMPLEMENTATIONS FROM HERE ON\n"
     complete_code *= "#\n"
-    complete_code *= "################################################################################\n\n\n\n"
+    complete_code *= "################################################################################"
+
+    # return the code
+    return complete_code
+end
 
 
+
+
+# print the unitcell version code
+function printCodeUnitcellVersion(
+            io          :: IO,
+            unitcell    :: U,
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
+            labeltype_site  :: DataType = Nothing,
+            labeltype_bond  :: DataType = Nothing
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # get the code
+    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
+
+    # print the code
+    print(io, code)
+end
+function printCodeUnitcellVersion(
+            unitcell    :: U,
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
+            labeltype_site  :: DataType = Nothing,
+            labeltype_bond  :: DataType = Nothing
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # get the code
+    code = getCodeUnitcellVersion(unitcell, name, version, labeltype_site=labeltype_site, labeltype_bond=labeltype_bond)
+
+    # print the code
+    print(code)
+end
+
+
+# write a complete file for a unitcell
+function writeUnitcellFile(
+            unitcell    :: U,
+            name        :: String = "myunitcell",
+            folder      :: String = "./",
+            version     :: Int64  = 1
+        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # compile the string
+    complete_code = ""
+
+    # add the main comment to the top
+    complete_code *= getCodeUnitcellFileHeader(name, D, N)
 
     # open the respective file and write the code into that file
     filename = folder * (folder[end] == "/" ? "" : "/") * name * ".jl"
