@@ -101,17 +101,17 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[       0.0 , 0.0], LS(1), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS(1), S)
+            newSite(Float64[0.0, 0.0],         LS(1), S),
+            newSite(Float64[1/sqrt(3.0), 0.0], LS(2), S)
         ],
         # Bonds
         B[
-            newBond(1, 2, LB(1), ( 0, 0), B),
+            newBond(1, 2, LB(1), (0, 0), B),
             newBond(1, 2, LB(1), (-1, 0), B),
-            newBond(1, 2, LB(1), ( 0,-1), B),
-            newBond(2, 1, LB(1), ( 0, 0), B),
-            newBond(2, 1, LB(1), (+1, 0), B),
-            newBond(2, 1, LB(1), ( 0,+1), B)
+            newBond(1, 2, LB(1), (0, -1), B),
+            newBond(2, 1, LB(1), (0, 0), B),
+            newBond(2, 1, LB(1), (1, 0), B),
+            newBond(2, 1, LB(1), (0, 1), B)
         ],
         # Type of the unitcell
         U
@@ -135,17 +135,100 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[       0.0 , 0.0], LS("1"), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS("1"), S)
+            newSite(Float64[0.0, 0.0],         LS("1"), S),
+            newSite(Float64[1/sqrt(3.0), 0.0], LS("2"), S)
         ],
         # Bonds
         B[
-            newBond(1, 2, LB("1"), ( 0, 0), B),
+            newBond(1, 2, LB("1"), (0, 0), B),
             newBond(1, 2, LB("1"), (-1, 0), B),
-            newBond(1, 2, LB("1"), ( 0,-1), B),
-            newBond(2, 1, LB("1"), ( 0, 0), B),
-            newBond(2, 1, LB("1"), (+1, 0), B),
-            newBond(2, 1, LB("1"), ( 0,+1), B)
+            newBond(1, 2, LB("1"), (0, -1), B),
+            newBond(2, 1, LB("1"), (0, 0), B),
+            newBond(2, 1, LB("1"), (1, 0), B),
+            newBond(2, 1, LB("1"), (0, 1), B)
+        ],
+        # Type of the unitcell
+        U
+    )
+end
+
+
+
+# Implementation
+# - version 4
+# - labels <: Any
+# --> FALLBACK (raises error)
+function getUnitcellHoneycomb(
+            unitcell_type :: Type{U},
+            version       :: Val{4}
+        ) :: U where {LS,LB,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2}, U<:AbstractUnitcell{S,B}}
+
+    # error since this version has no implementation yet
+    error("Version 4 of honeycomb unitcell has no implementation for label types " * string(LS) * " / " * string(LB) * " yet")
+end
+
+# Implementation
+# - version 4
+# - labels <: Number
+function getUnitcellHoneycomb(
+            unitcell_type :: Type{U},
+            version       :: Val{4}
+        ) :: U where {LS<:Number,LB<:Number,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2}, U<:AbstractUnitcell{S,B}}
+
+    # return a new Unitcell
+    return newUnitcell(
+        # Bravais lattice vectors
+        Vector{Float64}[
+            Float64[sqrt(3.0)/2, -0.5],
+            Float64[sqrt(3.0)/2, +0.5]
+        ],
+        # Sites
+        S[
+            newSite(Float64[0.0, 0.0],         LS(1), S),
+            newSite(Float64[1/sqrt(3.0), 0.0], LS(2), S)
+        ],
+        # Bonds
+        B[
+            newBond(1, 2, LB(1), (0, 0), B),
+            newBond(1, 2, LB(2), (-1, 0), B),
+            newBond(1, 2, LB(3), (0, -1), B),
+            newBond(2, 1, LB(1), (0, 0), B),
+            newBond(2, 1, LB(2), (1, 0), B),
+            newBond(2, 1, LB(3), (0, 1), B)
+        ],
+        # Type of the unitcell
+        U
+    )
+end
+
+# Implementation
+# - version 4
+# - labels <: AbstractString
+function getUnitcellHoneycomb(
+            unitcell_type :: Type{U},
+            version       :: Val{4}
+        ) :: U where {LS<:AbstractString,LB<:AbstractString,S<:AbstractSite{LS,2},B<:AbstractBond{LB,2}, U<:AbstractUnitcell{S,B}}
+
+    # return a new Unitcell
+    return newUnitcell(
+        # Bravais lattice vectors
+        Vector{Float64}[
+            Float64[sqrt(3.0)/2, -0.5],
+            Float64[sqrt(3.0)/2, +0.5]
+        ],
+        # Sites
+        S[
+            newSite(Float64[0.0, 0.0],         LS("1"), S),
+            newSite(Float64[1/sqrt(3.0), 0.0], LS("2"), S)
+        ],
+        # Bonds
+        B[
+            newBond(1, 2, LB("x"), (0, 0), B),
+            newBond(1, 2, LB("y"), (-1, 0), B),
+            newBond(1, 2, LB("z"), (0, -1), B),
+            newBond(2, 1, LB("x"), (0, 0), B),
+            newBond(2, 1, LB("y"), (1, 0), B),
+            newBond(2, 1, LB("z"), (0, 1), B)
         ],
         # Type of the unitcell
         U

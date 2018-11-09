@@ -400,30 +400,43 @@ function writeUnitcellFile(
 
     # get the name for the function
     name = filter(c -> isletter(c), uc_name)
+    # get the filename
+    filename = folder * (folder[end] == "/" ? "" : "/") * lowercase(filter(c -> isletter(c) || c=='-', uc_name)) * ".jl"
+
+    # mode for file opening
+    openmode = "a"
+
 
     # compile the string
     complete_code = ""
 
-    # add the main comment to the top
-    complete_code *= getCodeUnitcellFileHeader(name, D, N)
+    # check if the file already exists (then, leave out all header stuff)
+    if !isfile(filename)
 
-    # add space
-    complete_code *= "\n\n\n"
+        # other mode of opening the file
+        openmode = "w"
 
+        # add the main comment to the top
+        complete_code *= getCodeUnitcellFileHeader(name, D, N)
 
-    # DEFAULT VERSION
+        # add space
+        complete_code *= "\n\n\n"
 
-    # check if defaults should be generated
-    if generate_default
-        # check if default needs a fallback
-        if generate_fallback
-            # add the fallback for version 1 to the code
-            complete_code *= getCodeUnitcellVersionFallback(unitcell, name, 1) * "\n\n"
+        # DEFAULT VERSION
+
+        # check if defaults should be generated
+        if generate_default
+            # check if default needs a fallback
+            if generate_fallback
+                # add the fallback for version 1 to the code
+                complete_code *= getCodeUnitcellVersionFallback(unitcell, name, 1) * "\n\n"
+            end
+            # generate a default version for Number
+            complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=Number, labeltype_site=Number) * "\n\n"
+            # generate a default version for AbstractString
+            complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=AbstractString, labeltype_site=AbstractString) * "\n\n"
         end
-        # generate a default version for Number
-        complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=Number, labeltype_site=Number) * "\n\n"
-        # generate a default version for AbstractString
-        complete_code *= getCodeUnitcellSimplifiedVersion(unitcell, name, 1, labeltype_bond=AbstractString, labeltype_site=AbstractString) * "\n\n"
+
     end
 
 
@@ -447,8 +460,7 @@ function writeUnitcellFile(
 
 
     # open the respective file and write the code into that file
-    filename = folder * (folder[end] == "/" ? "" : "/") * lowercase(filter(c -> isletter(c) || c=='-', uc_name)) * ".jl"
-    f = open(filename, "w")
+    f = open(filename, openmode)
     write(f, complete_code)
     close(f)
 
