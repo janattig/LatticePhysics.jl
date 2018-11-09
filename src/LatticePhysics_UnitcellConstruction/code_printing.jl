@@ -7,7 +7,7 @@ function getCodeUnitcellVersion(
             version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
             labeltype_bond  :: DataType = Nothing
-        ) where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+        ) :: String where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
 
     # set the correct label type for sites and bonds
     sitelabeltype = (labeltype_site == Nothing ? LS : labeltype_site) :: DataType
@@ -53,7 +53,11 @@ function getCodeUnitcellVersion(
     end
 
     # generate the complete generating code as a string
-    generating_code = "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n" *
+    generating_code = "" *
+        "# Implementation\n" *
+        "# - version " * string(version) * "\n" *
+        "# - labels <: " * string(sitelabeltype) * " / " * string(bondlabeltype) * "\n" *
+        "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n" *
         "            unitcell_type :: Type{U},\n" *
         "            version       :: Val{" * string(version) * "}\n" *
         "        ) :: U where {LS<:" *
@@ -85,7 +89,7 @@ function getCodeUnitcellVersion(
 end
 
 # code for unitcell templates
-function getCodeUnitcellTemplate()
+function getCodeUnitcellTemplate() :: String
 
     # build the string of lattice vectors
     lattice_vector_string = ""
@@ -105,8 +109,13 @@ function getCodeUnitcellTemplate()
     bond_string = bond_string * "            newBond(<FROM>, <TO>, LB(<LABEL>), <WRAP>, B),\n"
     bond_string = bond_string * "            ...\n"
 
+
     # generate the complete generating code as a string
-    generating_code = "function getUnitcell<UNITCELLNAME>(\n" *
+    generating_code = "" *
+        "# Implementation\n" *
+        "# - version <VERSION>\n" *
+        "# - labels <: <SITELABELTYPE> / <BONDLABELTYPE>\n" *
+        "function getUnitcell<UNITCELLNAME>(\n" *
         "            unitcell_type :: Type{U},\n" *
         "            version       :: Val{<VERSION>}\n" *
         "        ) :: U where {LS<:<SITELABELTYPE>,LB<:<BONDLABELTYPE>, " *
@@ -135,6 +144,33 @@ function getCodeUnitcellTemplate()
     # print the generating code
     return generating_code
 end
+
+# code for unitcell version fallback
+function getCodeUnitcellVersionFallback(
+            unitcell    :: U,
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1
+        ) :: String where {D,LS,LB,N, S<:AbstractSite{LS,D}, B<:AbstractBond{LB,N}, U<:AbstractUnitcell{S,B}}
+
+    # generate the complete generating code as a string
+    generating_code = "" *
+        "# Implementation\n" *
+        "# - version " * string(version) * "\n" *
+        "# - labels <: Any\n" *
+        "function getUnitcell" * uppercase(name[1]) * name[2:end] * "(\n" *
+        "            unitcell_type :: Type{U},\n" *
+        "            version       :: Val{" * string(version) * "}\n" *
+        "        ) :: U where {LS,LB,S<:AbstractSite{LS," * string(D) * "},B<:AbstractBond{LB," * string(N) * "}, " *
+        "U<:AbstractUnitcell{S,B}}\n" *
+        "    \n" *
+        "    # error since this version has no implementation yet\n" *
+        "    error(\"Version " * string(version) * " of " * name * " unitcell has no implementation for label types \" * string(LS) * \" / \" * string(LB) * \" yet\")\n" *
+        "end"
+
+    # print the generating code
+    return generating_code
+end
+
 
 
 
@@ -279,6 +315,10 @@ function writeUnitcellFile(
 
     # add the main comment to the top
     complete_code *= getCodeUnitcellFileHeader(name, D, N)
+
+    # add space
+    complete_code *= "\n\n\n"
+
 
     # open the respective file and write the code into that file
     filename = folder * (folder[end] == "/" ? "" : "/") * name * ".jl"
