@@ -3,8 +3,8 @@
 # code for a specific unitcell version
 function getUnitcellVersionCode(
             unitcell    :: U,
-            name        :: String,
-            version     :: Int64 = 1;
+            name        :: String = "myunitcell",
+            version     :: Int64  = 1;
             labeltype_site  :: DataType = Nothing,
             labeltype_bond  :: DataType = Nothing,
             print_fallback  :: Bool     = true
