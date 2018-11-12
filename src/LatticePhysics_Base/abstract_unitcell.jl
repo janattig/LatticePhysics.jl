@@ -43,10 +43,10 @@ abstract type AbstractUnitcell{
 # default constructor interface
 # used for creation of new unitcells
 function newUnitcell(
+            ::Type{U},
             lattice_vectors :: Vector{<:Vector{<:Real}},
             sites           :: Vector{S},
-            bonds           :: Vector{B},
-            ::Type{U}
+            bonds           :: Vector{B}
         ) :: U where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
 
     # print an error because implementation for concrete type is missing
@@ -67,6 +67,15 @@ function latticeVectors(
     # print an error because implementation for concrete type is missing
     error(  "not implemented function 'latticeVectors' for concrete unitcell type " * string(U) )
 end
+# setting a list of lattice vectors
+function latticeVectors!(
+            unitcell        :: U,
+            lattice_vectors :: Vector{<:Vector{<:Real}}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'latticeVectors!' for concrete unitcell type " * string(U) )
+end
 
 
 # accessing a list of sites
@@ -78,6 +87,16 @@ function sites(
     error(  "not implemented function 'sites' for concrete unitcell type " *
             string(U) * " with site type " * string(S)   )
 end
+# setting a list of sites
+function sites!(
+            unitcell :: U,
+            sites    :: Vector{S}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'sites!' for concrete unitcell type " *
+            string(U) * " with site type " * string(S)   )
+end
 
 
 # accessing a list of bonds
@@ -87,6 +106,16 @@ function bonds(
 
     # print an error because implementation for concrete type is missing
     error(  "not implemented function 'bonds' for concrete unitcell type " *
+            string(U) * " with bond type " * string(B)   )
+end
+# setting a list of bonds
+function bonds!(
+            unitcell :: U,
+            bonds    :: Vector{B}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'bonds!' for concrete unitcell type " *
             string(U) * " with bond type " * string(B)   )
 end
 

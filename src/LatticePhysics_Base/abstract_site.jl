@@ -37,9 +37,9 @@ abstract type AbstractSite{L,D} end
 # default constructor interface
 # used for creation of new sites
 function newSite(
+            :: Type{S},
             point   :: Vector{<:Real},
-            label   :: L,
-            :: Type{S}
+            label   :: L
         ) :: S where {L,S<:AbstractSite{L,D} where D}
 
     # print an error because implementation for concrete type is missing
@@ -51,7 +51,7 @@ end
 
 
 
-# label
+# get label
 function label(
             s :: AbstractSite{L,D}
         ) :: L where {L,D}
@@ -59,16 +59,34 @@ function label(
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'label' for site type " * string(typeof(s)))
 end
+# set label
+function label!(
+            s :: AbstractSite{L,D},
+            l :: L
+        ) where {L,D}
+
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'label!' for site type " * string(typeof(s)))
+end
 
 
 
-# point
+# get point
 function point(
             s :: AbstractSite{L,D}
         ) :: Vector{Float64} where {L,D}
 
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'point' for site type " * string(typeof(s)))
+end
+# set point
+function point!(
+            s :: AbstractSite{L,D},
+            p :: Vector{<:Real}
+        ) where {L,D}
+
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'point!' for site type " * string(typeof(s)))
 end
 
 
@@ -94,10 +112,13 @@ function testInterface(
     # iterate over some standard labels
     for l in ["t", 1, 1.0]
         # create a new site
-        s = newSite(p,l, S{typeof(l), length(p)})
-        # test the interface
+        s = newSite(S{typeof(l), length(p)}, p,l)
+        # test the interface by getting label and point
 		label(s)
 		point(s)
+        # set both label and point
+        label!(s, l)
+        point!(s, p)
     end
     end
 

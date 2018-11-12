@@ -33,7 +33,7 @@ function getLatticePeriodic(
 			# calculate the position
 			site_position          = point(site(unitcell,a)) .+ (i.*a1(unitcell)) .+ (j.*a2(unitcell))
 			# set the site in the list
-	        site_list[site_index]  = newSite(site_position, label(site(unitcell,a)), SL)
+	        site_list[site_index]  = newSite(SL, site_position, label(site(unitcell,a)))
 		end
 	end
     end
@@ -60,7 +60,7 @@ function getLatticePeriodic(
 			# get the site index to where the connection goes
 			index_to = index(i_to, j_to, to(current_bond), N_a1,N_a2,N_sites)
             # generate a new connection and set it in the list
-			bond_list[index(i,j,b, N_a1,N_a2,N_bonds)] = newBond(index_from, index_to, label(current_bond), (offset_a1, offset_a2), BL)
+			bond_list[index(i,j,b, N_a1,N_a2,N_bonds)] = newBond(BL, index_from, index_to, label(current_bond), (offset_a1, offset_a2))
 		end
 	end
 	end
@@ -74,11 +74,11 @@ function getLatticePeriodic(
 
     # save everything to a Lattice object
     lattice = newLattice(
+            L,
         	lattice_vectors,
         	site_list,
         	bond_list,
-            unitcell,
-            L
+            unitcell
         )
 
     # return the lattice
@@ -123,7 +123,7 @@ function getLatticePeriodic(
 			# calculate the position
 			site_position          = point(site(unitcell,a)) .+ (i.*a1(unitcell)) .+ (j.*a2(unitcell)) .+ (k.*a3(unitcell))
 			# set the site in the list
-	        site_list[site_index]  = newSite(site_position, label(site(unitcell,a)), SL)
+	        site_list[site_index]  = newSite(SL, site_position, label(site(unitcell,a)))
 		end
 	end
     end
@@ -155,7 +155,7 @@ function getLatticePeriodic(
 			# get the site index to where the connection goes
 			index_to = index(i_to,j_to,k_to, to(current_bond), N_a1,N_a2,N_a3,N_sites)
             # generate a new connection and set it in the list
-			bond_list[index(i,j,k,b, N_a1,N_a2,N_a3,N_bonds)] = newBond(index_from, index_to, label(current_bond), (offset_a1, offset_a2, offset_a3), BL)
+			bond_list[index(i,j,k,b, N_a1,N_a2,N_a3,N_bonds)] = newBond(BL, index_from, index_to, label(current_bond), (offset_a1, offset_a2, offset_a3))
 		end
 	end
 	end
@@ -171,11 +171,11 @@ function getLatticePeriodic(
 
     # save everything to a Lattice object
     lattice = newLattice(
+            L,
         	lattice_vectors,
         	site_list,
         	bond_list,
-            unitcell,
-            L
+            unitcell
         )
 
     # return the lattice

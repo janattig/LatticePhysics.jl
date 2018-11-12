@@ -12,7 +12,6 @@
 # module LatticePhysics
 
 # TODO LIST
-# --> TODO TYPES ALWAYS FIRST ARGUMENTS IN FUNCTIONS
 
 
 

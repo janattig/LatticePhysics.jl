@@ -94,6 +94,8 @@ function getUnitcellHoneycomb(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -101,20 +103,18 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[0.0, 0.0],         LS(1), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS(2), S)
+            newSite(S, Float64[0.0, 0.0],         LS(1)),
+            newSite(S, Float64[1/sqrt(3.0), 0.0], LS(2))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB(1), (0, 0), B),
-            newBond(1, 2, LB(1), (-1, 0), B),
-            newBond(1, 2, LB(1), (0, -1), B),
-            newBond(2, 1, LB(1), (0, 0), B),
-            newBond(2, 1, LB(1), (1, 0), B),
-            newBond(2, 1, LB(1), (0, 1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB(1), (0, 0)),
+            newBond(B, 1, 2, LB(1), (-1, 0)),
+            newBond(B, 1, 2, LB(1), (0, -1)),
+            newBond(B, 2, 1, LB(1), (0, 0)),
+            newBond(B, 2, 1, LB(1), (1, 0)),
+            newBond(B, 2, 1, LB(1), (0, 1))
+        ]
     )
 end
 
@@ -128,6 +128,8 @@ function getUnitcellHoneycomb(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -135,20 +137,18 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[0.0, 0.0],         LS("1"), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS("2"), S)
+            newSite(S, Float64[0.0, 0.0],         LS("1")),
+            newSite(S, Float64[1/sqrt(3.0), 0.0], LS("2"))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB("1"), (0, 0), B),
-            newBond(1, 2, LB("1"), (-1, 0), B),
-            newBond(1, 2, LB("1"), (0, -1), B),
-            newBond(2, 1, LB("1"), (0, 0), B),
-            newBond(2, 1, LB("1"), (1, 0), B),
-            newBond(2, 1, LB("1"), (0, 1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB("1"), (0, 0)),
+            newBond(B, 1, 2, LB("1"), (-1, 0)),
+            newBond(B, 1, 2, LB("1"), (0, -1)),
+            newBond(B, 2, 1, LB("1"), (0, 0)),
+            newBond(B, 2, 1, LB("1"), (1, 0)),
+            newBond(B, 2, 1, LB("1"), (0, 1))
+        ]
     )
 end
 
@@ -177,6 +177,8 @@ function getUnitcellHoneycomb(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -184,20 +186,18 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[0.0, 0.0],         LS(1), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS(2), S)
+            newSite(S, Float64[0.0, 0.0],         LS(1)),
+            newSite(S, Float64[1/sqrt(3.0), 0.0], LS(2))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB(1), (0, 0), B),
-            newBond(1, 2, LB(2), (-1, 0), B),
-            newBond(1, 2, LB(3), (0, -1), B),
-            newBond(2, 1, LB(1), (0, 0), B),
-            newBond(2, 1, LB(2), (1, 0), B),
-            newBond(2, 1, LB(3), (0, 1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB(1), (0, 0)),
+            newBond(B, 1, 2, LB(2), (-1, 0)),
+            newBond(B, 1, 2, LB(3), (0, -1)),
+            newBond(B, 2, 1, LB(1), (0, 0)),
+            newBond(B, 2, 1, LB(2), (1, 0)),
+            newBond(B, 2, 1, LB(3), (0, 1))
+        ]
     )
 end
 
@@ -211,6 +211,8 @@ function getUnitcellHoneycomb(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -218,19 +220,17 @@ function getUnitcellHoneycomb(
         ],
         # Sites
         S[
-            newSite(Float64[0.0, 0.0],         LS("1"), S),
-            newSite(Float64[1/sqrt(3.0), 0.0], LS("2"), S)
+            newSite(S, Float64[0.0, 0.0],         LS("1")),
+            newSite(S, Float64[1/sqrt(3.0), 0.0], LS("2"))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB("x"), (0, 0), B),
-            newBond(1, 2, LB("y"), (-1, 0), B),
-            newBond(1, 2, LB("z"), (0, -1), B),
-            newBond(2, 1, LB("x"), (0, 0), B),
-            newBond(2, 1, LB("y"), (1, 0), B),
-            newBond(2, 1, LB("z"), (0, 1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB("x"), (0, 0)),
+            newBond(B, 1, 2, LB("y"), (-1, 0)),
+            newBond(B, 1, 2, LB("z"), (0, -1)),
+            newBond(B, 2, 1, LB("x"), (0, 0)),
+            newBond(B, 2, 1, LB("y"), (1, 0)),
+            newBond(B, 2, 1, LB("z"), (0, 1))
+        ]
     )
 end

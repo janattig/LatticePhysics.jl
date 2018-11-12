@@ -37,11 +37,11 @@ abstract type AbstractBond{L,N} end
 # default constructor interface
 # used for creation of new bonds
 function newBond(
+            :: Type{B},
             from    :: Integer,
             to      :: Integer,
             label   :: L,
-            wrap    :: NTuple{N,<:Integer},
-            :: Type{B}
+            wrap    :: NTuple{N,<:Integer}
         ) :: B where {L,N,B<:AbstractBond{L,N}}
 
     # print an error because implementation for concrete type is missing
@@ -55,7 +55,7 @@ end
 
 # UIDs of sites between which the bond is located
 
-# from index / UID (Int64)
+# get from index / UID (Int64)
 function from(
             b :: AbstractBond{L,N}
         ) :: Int64 where {L,N}
@@ -63,8 +63,18 @@ function from(
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'from' for bond type " * string(typeof(b)))
 end
+# set from index / UID (Int64)
+function from!(
+            b :: AbstractBond{L,N},
+            i :: Integer
+        ) where {L,N}
 
-# to index / UID (Int64)
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'from!' for bond type " * string(typeof(b)))
+end
+
+
+# get to index / UID (Int64)
 function to(
             b :: AbstractBond{L,N}
         ) :: Int64 where {L,N}
@@ -72,11 +82,20 @@ function to(
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'to' for bond type " * string(typeof(b)))
 end
+# set to index / UID (Int64)
+function to!(
+            b :: AbstractBond{L,N},
+            i :: Integer
+        ) where {L,N}
+
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'to!' for bond type " * string(typeof(b)))
+end
 
 
 
 
-# label
+# get label
 function label(
             b :: AbstractBond{L,N}
         ) :: L where {L,N}
@@ -85,15 +104,34 @@ function label(
     error("not implemented interface function 'label' for bond type " * string(typeof(b)))
 end
 
+# set label
+function label!(
+            b :: AbstractBond{L,N},
+            l :: L
+        ) where {L,N}
+
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'label!' for bond type " * string(typeof(b)))
+end
 
 
-# wrap
+
+# get wrap
 function wrap(
             b :: AbstractBond{L,N}
         ) :: NTuple{N,Int64} where {L,N}
 
     # print an error because implementation for concrete type is missing
     error("not implemented interface function 'wrap' for bond type " * string(typeof(b)))
+end
+# set wrap
+function wrap!(
+            b :: AbstractBond{L,N},
+            w :: NTuple{N, <:Integer}
+        ) where {L,N}
+
+    # print an error because implementation for concrete type is missing
+    error("not implemented interface function 'wrap!' for bond type " * string(typeof(b)))
 end
 
 
@@ -148,12 +186,17 @@ function testInterface(
     # iterate over some standard labels
     for l in ["t", 1, 1.0]
         # create a new bond
-        bond = newBond(1, 1, l, w, B{typeof(l), length(w)})
-        # test the interface
+        bond = newBond(B{typeof(l), length(w)}, 1, 1, l, w)
+        # test the interface getters
 		from(bond)
 		to(bond)
 		label(bond)
 		wrap(bond)
+        # test the interface setters
+		from!(bond, 1)
+		to!(bond, 1)
+		label!(bond, l)
+		wrap!(bond, w)
     end
     end
 

@@ -51,10 +51,10 @@ end
 # default constructor interface
 # used for creation of new unitcells
 function newUnitcell(
+            :: Type{Unitcell{S,B}},
             lattice_vectors :: Vector{<:Vector{<:Real}},
             sites           :: Vector{S},
-            bonds           :: Vector{B},
-            :: Type{Unitcell{S,B}}
+            bonds           :: Vector{B}
         ) :: Unitcell{S,B} where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
 
     # return a newly created object
@@ -73,6 +73,15 @@ function latticeVectors(
     # return the list of lattice vectors
     return unitcell.lattice_vectors
 end
+# setting a list of lattice vectors
+function latticeVectors!(
+            unitcell        :: Unitcell{S,B},
+            lattice_vectors :: Vector{<:Vector{<:Real}}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of lattice vectors
+    unitcell.lattice_vectors = lattice_vectors
+end
 
 
 # accessing a list of sites
@@ -83,6 +92,15 @@ function sites(
     # return the list of sites
     return unitcell.sites
 end
+# setting a list of sites
+function sites!(
+            unitcell :: Unitcell{S,B},
+            sites    :: Vector{S}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of sites
+    unitcell.sites = sites
+end
 
 
 # accessing a list of bonds
@@ -92,4 +110,13 @@ function bonds(
 
     # return the list of bonds
     return unitcell.bonds
+end
+# setting a list of bonds
+function bonds!(
+            unitcell :: Unitcell{S,B},
+            bonds    :: Vector{B}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of bonds
+    unitcell.bonds = bonds
 end

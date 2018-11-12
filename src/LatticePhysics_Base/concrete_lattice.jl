@@ -62,11 +62,11 @@ end
 # default constructor interface
 # used for creation of new lattices
 function newLattice(
+            ::Type{Lattice{S,B,U}},
             lattice_vectors :: Vector{<:Vector{<:Real}},
             sites           :: Vector{S},
             bonds           :: Vector{B},
-            unitcell        :: U,
-            ::Type{Lattice{S,B,U}}
+            unitcell        :: U
         ) :: Lattice{S,B,U} where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
 
     # return a newly created object
@@ -85,6 +85,15 @@ function latticeVectors(
     # return the list of lattice vectors
     return lattice.lattice_vectors
 end
+# setting a list of lattice vectors
+function latticeVectors!(
+            lattice         :: Lattice{S,B,U},
+            lattice_vectors :: Vector{<:Vector{<:Real}}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of lattice vectors
+    lattice.lattice_vectors = lattice_vectors
+end
 
 
 # accessing a list of sites
@@ -95,6 +104,15 @@ function sites(
     # return the list of sites
     return lattice.sites
 end
+# setting a list of sites
+function sites!(
+            lattice :: Lattice{S,B,U},
+            sites   :: Vector{S}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of sites
+    lattice.sites = sites
+end
 
 # accessing a list of bonds
 function bonds(
@@ -103,6 +121,15 @@ function bonds(
 
     # return the list of bonds
     return lattice.bonds
+end
+# setting a list of bonds
+function bonds!(
+            lattice :: Lattice{S,B,U},
+            bonds   :: Vector{B}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the list of bonds
+    lattice.bonds = bonds
 end
 
 
@@ -113,4 +140,13 @@ function unitcell(
 
     # return the unitcell
     return lattice.unitcell
+end
+# setting the unitcell
+function unitcell!(
+            lattice  :: Lattice{S,B,U},
+            unitcell :: U
+        ) :: U where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N}}
+
+    # set the unitcell
+    lattice.unitcell = unitcell
 end

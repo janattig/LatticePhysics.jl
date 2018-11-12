@@ -90,6 +90,8 @@ function getUnitcellCubic(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # lattice vectors
         Vector{Float64}[
             Float64[1, 0, 0],
@@ -98,19 +100,17 @@ function getUnitcellCubic(
         ],
         # sites
         S[
-            newSite(Float64[0,0,0], LS("1"), S)
+            newSite(S, Float64[0,0,0], LS("1"))
         ],
         # bonds
         B[
-            newBond(1,1, LB("1"), (+1,0,0), B),
-            newBond(1,1, LB("1"), (-1,0,0), B),
-            newBond(1,1, LB("1"), (0,+1,0), B),
-            newBond(1,1, LB("1"), (0,-1,0), B),
-            newBond(1,1, LB("1"), (0,0,+1), B),
-            newBond(1,1, LB("1"), (0,0,-1), B)
-        ],
-        # give the unitcell type
-        U
+            newBond(B, 1,1, LB("1"), (+1,0,0)),
+            newBond(B, 1,1, LB("1"), (-1,0,0)),
+            newBond(B, 1,1, LB("1"), (0,+1,0)),
+            newBond(B, 1,1, LB("1"), (0,-1,0)),
+            newBond(B, 1,1, LB("1"), (0,0,+1)),
+            newBond(B, 1,1, LB("1"), (0,0,-1))
+        ]
     )
 end
 
@@ -124,6 +124,8 @@ function getUnitcellCubic(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # lattice vectors
         Vector{Float64}[
             Float64[1, 0, 0],
@@ -132,18 +134,16 @@ function getUnitcellCubic(
         ],
         # sites
         S[
-            newSite(Float64[0,0,0], LS(1), S)
+            newSite(S, Float64[0,0,0], LS(1))
         ],
         # bonds
         B[
-            newBond(1,1, LB(1), (+1,0,0), B),
-            newBond(1,1, LB(1), (-1,0,0), B),
-            newBond(1,1, LB(1), (0,+1,0), B),
-            newBond(1,1, LB(1), (0,-1,0), B),
-            newBond(1,1, LB(1), (0,0,+1), B),
-            newBond(1,1, LB(1), (0,0,-1), B)
-        ],
-        # give the unitcell type
-        U
+            newBond(B, 1,1, LB(1), (+1,0,0)),
+            newBond(B, 1,1, LB(1), (-1,0,0)),
+            newBond(B, 1,1, LB(1), (0,+1,0)),
+            newBond(B, 1,1, LB(1), (0,-1,0)),
+            newBond(B, 1,1, LB(1), (0,0,+1)),
+            newBond(B, 1,1, LB(1), (0,0,-1))
+        ]
     )
 end

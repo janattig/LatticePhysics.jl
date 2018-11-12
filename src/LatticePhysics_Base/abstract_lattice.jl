@@ -55,11 +55,11 @@ abstract type AbstractLattice{
 # default constructor interface
 # used for creation of new lattices
 function newLattice(
+            ::Type{L},
             lattice_vectors :: Vector{<:Vector{<:Real}},
             sites           :: Vector{S},
             bonds           :: Vector{B},
-            unitcell        :: U,
-            ::Type{L}
+            unitcell        :: U
         ) :: L where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
 
     # print an error because implementation for concrete type is missing
@@ -79,6 +79,15 @@ function latticeVectors(
     # print an error because implementation for concrete type is missing
     error(  "not implemented function 'latticeVectors' for concrete lattice type " * string(L) )
 end
+# setting a list of lattice vectors
+function latticeVectors!(
+            lattice         :: L,
+            lattice_vectors :: Vector{<:Vector{<:Real}}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'latticeVectors!' for concrete lattice type " * string(L) )
+end
 
 
 # accessing a list of sites
@@ -88,6 +97,16 @@ function sites(
 
     # print an error because implementation for concrete type is missing
     error(  "not implemented function 'sites' for concrete lattice type " *
+            string(L) * " with site type " * string(S)   )
+end
+# setting a list of sites
+function sites!(
+            lattice :: L,
+            sites   :: Vector{S}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'sites!' for concrete lattice type " *
             string(L) * " with site type " * string(S)   )
 end
 
@@ -100,6 +119,16 @@ function bonds(
     error(  "not implemented function 'bonds' for concrete lattice type " *
             string(L) * " with bond type " * string(B)   )
 end
+# setting a list of bonds
+function bonds!(
+            lattice :: L,
+            bonds   :: Vector{B}
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'bonds!' for concrete lattice type " *
+            string(L) * " with bond type " * string(B)   )
+end
 
 
 # accessing the unitcell
@@ -109,6 +138,16 @@ function unitcell(
 
     # print an error because implementation for concrete type is missing
     error(  "not implemented function 'unitcell' for concrete lattice type " *
+            string(L) * " with unitcell type " * string(U)   )
+end
+# setting the unitcell
+function unitcell!(
+            lattice  :: L,
+            unitcell :: U
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # print an error because implementation for concrete type is missing
+    error(  "not implemented function 'unitcell!' for concrete lattice type " *
             string(L) * " with unitcell type " * string(U)   )
 end
 

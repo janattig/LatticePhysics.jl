@@ -94,6 +94,8 @@ function getUnitcellKagome(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -101,27 +103,25 @@ function getUnitcellKagome(
         ],
         # Sites
         S[
-            newSite(Float64[     0.0   ,  0.0 ], LS(1), S),
-            newSite(Float64[sqrt(3.0)/4, -0.25], LS(1), S),
-            newSite(Float64[sqrt(3.0)/4, +0.25], LS(1), S)
+            newSite(S, Float64[     0.0   ,  0.0 ], LS(1)),
+            newSite(S, Float64[sqrt(3.0)/4, -0.25], LS(1)),
+            newSite(S, Float64[sqrt(3.0)/4, +0.25], LS(1))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB(1), ( 0, 0), B),
-            newBond(1, 2, LB(1), (-1, 0), B),
-            newBond(1, 3, LB(1), ( 0, 0), B),
-            newBond(1, 3, LB(1), ( 0,-1), B),
-            newBond(2, 1, LB(1), ( 0, 0), B),
-            newBond(2, 1, LB(1), (+1, 0), B),
-            newBond(2, 3, LB(1), ( 0, 0), B),
-            newBond(2, 3, LB(1), (+1,-1), B),
-            newBond(3, 1, LB(1), ( 0, 0), B),
-            newBond(3, 1, LB(1), ( 0,+1), B),
-            newBond(3, 2, LB(1), ( 0, 0), B),
-            newBond(3, 2, LB(1), (-1,+1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB(1), ( 0, 0)),
+            newBond(B, 1, 2, LB(1), (-1, 0)),
+            newBond(B, 1, 3, LB(1), ( 0, 0)),
+            newBond(B, 1, 3, LB(1), ( 0,-1)),
+            newBond(B, 2, 1, LB(1), ( 0, 0)),
+            newBond(B, 2, 1, LB(1), (+1, 0)),
+            newBond(B, 2, 3, LB(1), ( 0, 0)),
+            newBond(B, 2, 3, LB(1), (+1,-1)),
+            newBond(B, 3, 1, LB(1), ( 0, 0)),
+            newBond(B, 3, 1, LB(1), ( 0,+1)),
+            newBond(B, 3, 2, LB(1), ( 0, 0)),
+            newBond(B, 3, 2, LB(1), (-1,+1))
+        ]
     )
 end
 
@@ -135,6 +135,8 @@ function getUnitcellKagome(
 
     # return a new Unitcell
     return newUnitcell(
+        # Type of the unitcell
+        U,
         # Bravais lattice vectors
         Vector{Float64}[
             Float64[sqrt(3.0)/2, -0.5],
@@ -142,26 +144,24 @@ function getUnitcellKagome(
         ],
         # Sites
         S[
-            newSite(Float64[     0.0   ,  0.0 ], LS("1"), S),
-            newSite(Float64[sqrt(3.0)/4, -0.25], LS("1"), S),
-            newSite(Float64[sqrt(3.0)/4, +0.25], LS("1"), S)
+            newSite(S, Float64[     0.0   ,  0.0 ], LS("1")),
+            newSite(S, Float64[sqrt(3.0)/4, -0.25], LS("1")),
+            newSite(S, Float64[sqrt(3.0)/4, +0.25], LS("1"))
         ],
         # Bonds
         B[
-            newBond(1, 2, LB("1"), ( 0, 0), B),
-            newBond(1, 2, LB("1"), (-1, 0), B),
-            newBond(1, 3, LB("1"), ( 0, 0), B),
-            newBond(1, 3, LB("1"), ( 0,-1), B),
-            newBond(2, 1, LB("1"), ( 0, 0), B),
-            newBond(2, 1, LB("1"), (+1, 0), B),
-            newBond(2, 3, LB("1"), ( 0, 0), B),
-            newBond(2, 3, LB("1"), (+1,-1), B),
-            newBond(3, 1, LB("1"), ( 0, 0), B),
-            newBond(3, 1, LB("1"), ( 0,+1), B),
-            newBond(3, 2, LB("1"), ( 0, 0), B),
-            newBond(3, 2, LB("1"), (-1,+1), B)
-        ],
-        # Type of the unitcell
-        U
+            newBond(B, 1, 2, LB("1"), ( 0, 0)),
+            newBond(B, 1, 2, LB("1"), (-1, 0)),
+            newBond(B, 1, 3, LB("1"), ( 0, 0)),
+            newBond(B, 1, 3, LB("1"), ( 0,-1)),
+            newBond(B, 2, 1, LB("1"), ( 0, 0)),
+            newBond(B, 2, 1, LB("1"), (+1, 0)),
+            newBond(B, 2, 3, LB("1"), ( 0, 0)),
+            newBond(B, 2, 3, LB("1"), (+1,-1)),
+            newBond(B, 3, 1, LB("1"), ( 0, 0)),
+            newBond(B, 3, 1, LB("1"), ( 0,+1)),
+            newBond(B, 3, 2, LB("1"), ( 0, 0)),
+            newBond(B, 3, 2, LB("1"), (-1,+1))
+        ]
     )
 end

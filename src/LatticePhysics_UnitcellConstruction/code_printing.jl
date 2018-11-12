@@ -26,9 +26,9 @@ function getCodeUnitcellVersion(
     site_string = ""
     for s in sites(unitcell)
         if sitelabeltype <: AbstractString
-            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(\"" * string(label(s)) *  "\"), S),\n"
+            site_string = site_string * "            newSite(S, Float64" * string(point(s)) * ", LS(\"" * string(label(s)) *  "\")),\n"
         else
-            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(" * string(label(s)) *  "), S),\n"
+            site_string = site_string * "            newSite(S, Float64" * string(point(s)) * ", LS(" * string(label(s)) *  ")),\n"
         end
     end
     if length(site_string) > 2
@@ -38,14 +38,14 @@ function getCodeUnitcellVersion(
     # build a string for all bonds
     bond_string = ""
     for b in bonds(unitcell)
-        if bondlabeltype <: AbstractString #newBond(1,1, LB("1"), (+1,0), B)
-            bond_string = bond_string * "            newBond(" *
+        if bondlabeltype <: AbstractString #newBond(B, 1,1, LB("1"), (+1,0))
+            bond_string = bond_string * "            newBond(B, " *
                 string(from(b)) * ", " * string(to(b)) *
-                ", LB(\"" * string(label(b)) *  "\"), " * string(wrap(b)) * ", B),\n"
+                ", LB(\"" * string(label(b)) *  "\"), " * string(wrap(b)) * "),\n"
         else
-            bond_string = bond_string * "            newBond(" *
+            bond_string = bond_string * "            newBond(B, " *
                 string(from(b)) * ", " * string(to(b)) *
-                ", LB(" * string(label(b)) *  "), " * string(wrap(b)) * ", B),\n"
+                ", LB(" * string(label(b)) *  "), " * string(wrap(b)) * "),\n"
         end
     end
     if length(bond_string) > 2
@@ -67,6 +67,8 @@ function getCodeUnitcellVersion(
         "    \n" *
         "    # return a new Unitcell\n" *
         "    return newUnitcell(\n" *
+        "        # Type of the unitcell\n" *
+        "        U,\n" *
         "        # Bravais lattice vectors\n" *
         "        Vector{Float64}[\n" *
         lattice_vector_string *
@@ -78,9 +80,7 @@ function getCodeUnitcellVersion(
         "        # Bonds\n" *
         "        B[\n" *
         bond_string *
-        "        ],\n" *
-        "        # Type of the unitcell\n" *
-        "        U\n" *
+        "        ]\n" *
         "    )\n" *
         "end"
 
@@ -113,9 +113,9 @@ function getCodeUnitcellSimplifiedVersion(
     site_string = ""
     for (i,s) in enumerate(sites(unitcell))
         if sitelabeltype <: AbstractString
-            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(\"" * string(i) *  "\"), S),\n"
+            site_string = site_string * "            newSite(S, Float64" * string(point(s)) * ", LS(\"" * string(i) *  "\")),\n"
         else
-            site_string = site_string * "            newSite(Float64" * string(point(s)) * ", LS(" * string(i) *  "), S),\n"
+            site_string = site_string * "            newSite(S, Float64" * string(point(s)) * ", LS(" * string(i) *  ")),\n"
         end
     end
     if length(site_string) > 2
@@ -125,14 +125,14 @@ function getCodeUnitcellSimplifiedVersion(
     # build a string for all bonds
     bond_string = ""
     for b in bonds(unitcell)
-        if bondlabeltype <: AbstractString #newBond(1,1, LB("1"), (+1,0), B)
-            bond_string = bond_string * "            newBond(" *
+        if bondlabeltype <: AbstractString #newBond(B, 1,1, LB("1"), (+1,0))
+            bond_string = bond_string * "            newBond(B, " *
                 string(from(b)) * ", " * string(to(b)) *
-                ", LB(\"1\"), " * string(wrap(b)) * ", B),\n"
+                ", LB(\"1\"), " * string(wrap(b)) * "),\n"
         else
-            bond_string = bond_string * "            newBond(" *
+            bond_string = bond_string * "            newBond(B, " *
                 string(from(b)) * ", " * string(to(b)) *
-                ", LB(1), " * string(wrap(b)) * ", B),\n"
+                ", LB(1), " * string(wrap(b)) * "),\n"
         end
     end
     if length(bond_string) > 2
@@ -154,6 +154,8 @@ function getCodeUnitcellSimplifiedVersion(
         "    \n" *
         "    # return a new Unitcell\n" *
         "    return newUnitcell(\n" *
+        "        # Type of the unitcell\n" *
+        "        U,\n" *
         "        # Bravais lattice vectors\n" *
         "        Vector{Float64}[\n" *
         lattice_vector_string *
@@ -165,9 +167,7 @@ function getCodeUnitcellSimplifiedVersion(
         "        # Bonds\n" *
         "        B[\n" *
         bond_string *
-        "        ],\n" *
-        "        # Type of the unitcell\n" *
-        "        U\n" *
+        "        ]\n" *
         "    )\n" *
         "end"
 
@@ -186,14 +186,14 @@ function getCodeUnitcellTemplate() :: String
 
     # build a string for all sites
     site_string = ""
-    site_string = site_string * "            newSite(<POSITION>, LS(<LABEL>), S),\n"
-    site_string = site_string * "            newSite(<POSITION>, LS(<LABEL>), S),\n"
+    site_string = site_string * "            newSite(S, <POSITION>, LS(<LABEL>)),\n"
+    site_string = site_string * "            newSite(S, <POSITION>, LS(<LABEL>)),\n"
     site_string = site_string * "            ...\n"
 
     # build a string for all bonds
     bond_string = ""
-    bond_string = bond_string * "            newBond(<FROM>, <TO>, LB(<LABEL>), <WRAP>, B),\n"
-    bond_string = bond_string * "            newBond(<FROM>, <TO>, LB(<LABEL>), <WRAP>, B),\n"
+    bond_string = bond_string * "            newBond(B, <FROM>, <TO>, LB(<LABEL>), <WRAP>),\n"
+    bond_string = bond_string * "            newBond(B, <FROM>, <TO>, LB(<LABEL>), <WRAP>),\n"
     bond_string = bond_string * "            ...\n"
 
 
@@ -211,6 +211,8 @@ function getCodeUnitcellTemplate() :: String
         "    \n" *
         "    # return a new Unitcell\n" *
         "    return newUnitcell(\n" *
+        "        # Type of the unitcell\n" *
+        "        U,\n" *
         "        # Bravais lattice vectors\n" *
         "        Vector{Float64}[\n" *
         lattice_vector_string *
@@ -222,9 +224,7 @@ function getCodeUnitcellTemplate() :: String
         "        # Bonds\n" *
         "        B[\n" *
         bond_string *
-        "        ],\n" *
-        "        # Type of the unitcell\n" *
-        "        U\n" *
+        "        ]\n" *
         "    )\n" *
         "end"
 
