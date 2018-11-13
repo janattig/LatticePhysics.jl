@@ -155,6 +155,41 @@ end
 
 
 
+# without new parameters
+function similar(
+            l :: L
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # return a new lattice object
+    return newLattice(
+        L,
+        deepcopy(latticeVectors(l)),
+        deepcopy(sites(l)),
+        deepcopy(bonds(l)),
+        deepcopy(unitcell(l))
+    )
+end
+# with new parameters
+function similar(
+            l :: L,
+            lattice_vectors :: Vector{<:Vector{<:Real}},
+            sites           :: Vector{S},
+            bonds           :: Vector{B},
+            unitcell        :: U
+        ) where {D,N,LS,LB,U,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},L<:AbstractLattice{S,B,U}}
+
+    # create a new lattice object
+    l_new = similar(l)
+    # set parameters
+    latticeVectors!(l_new, lattice_vectors)
+    sites!(l_new, sites)
+    bonds!(l_new, bonds)
+    unitcell!(l_new, unitcell)
+    # return the new object
+    return l_new
+end
+
+
 
 
 

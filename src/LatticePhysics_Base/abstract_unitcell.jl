@@ -123,6 +123,40 @@ end
 
 
 
+# SIMILAR FUNCTION (can be overwritten but does not have to be overwritten)
+
+# without new parameters
+function similar(
+            u :: U
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
+
+    # return a new unitcell object
+    return newUnitcell(
+        U,
+        deepcopy(latticeVectors(u)),
+        deepcopy(sites(u)),
+        deepcopy(bonds(u))
+    )
+end
+# with new parameters
+function similar(
+            u :: U,
+            lattice_vectors :: Vector{<:Vector{<:Real}},
+            sites           :: Vector{S},
+            bonds           :: Vector{B}
+        ) where {D,N,LS,LB,S<:AbstractSite{LS,D},B<:AbstractBond{LB,N},U<:AbstractUnitcell{S,B}}
+
+    # create a new unitcell object
+    u_new = similar(u)
+    # set parameters
+    latticeVectors!(u_new, lattice_vectors)
+    sites!(u_new, sites)
+    bonds!(u_new, bonds)
+    # return the new object
+    return u_new
+end
+
+
 
 
 
