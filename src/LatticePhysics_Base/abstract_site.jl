@@ -92,6 +92,38 @@ end
 
 
 
+
+# SIMILAR FUNCTION (can be overwritten but does not have to be overwritten)
+
+# without new parameters
+function similar(
+            s :: S
+        ) :: S where {L,D,S<:AbstractSite{L,D}}
+
+    # return a new site object
+    return newSite(S, deepcopy(point(s)), deepcopy(label(s)))
+end
+# with new parameters
+function similar(
+            s :: S,
+            p :: Vector{<:Real},
+            l :: L
+        ) :: S where {L,D,S<:AbstractSite{L,D}}
+
+    # create a new site object
+    s_new = similar(s)
+    # set parameters
+    point!(s_new, p)
+    label!(s_new, l)
+    # return the new object
+    return s_new
+end
+
+
+
+
+
+
 ################################################################################
 #
 #	TESTING THE INTERFACE OF SITES

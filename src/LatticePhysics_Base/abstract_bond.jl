@@ -139,6 +139,41 @@ end
 
 
 
+# SIMILAR FUNCTION (can be overwritten but does not have to be overwritten)
+
+# without new parameters
+function similar(
+            b :: B
+        ) :: B where {L,D,B<:AbstractBond{L,D}}
+
+    # return a new bond object
+    return newBond(
+        B,
+        deepcopy(from(b)), deepcopy(to(b)),
+        deepcopy(label(b)),
+        deepcopy(wrap(b))
+    )
+end
+# with new parameters
+function similar(
+            b       :: B,
+            from    :: Integer,
+            to      :: Integer,
+            label   :: L,
+            wrap    :: NTuple{N,<:Integer}
+        ) :: B where {L,D,B<:AbstractBond{L,D}}
+
+    # create a new bond object
+    b_new = similar(b)
+    # set parameters
+    from!(b_new, from)
+    to!(b_new, to)
+    label!(b_new, label)
+    wrap!(b_new, wrap)
+    # return the new object
+    return b_new
+end
+
 
 
 # ADDITIONAL FANCY SYNTAX
