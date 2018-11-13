@@ -144,7 +144,7 @@ end
 # without new parameters
 function similar(
             b :: B
-        ) :: B where {L,D,B<:AbstractBond{L,D}}
+        ) :: B where {L,N,B<:AbstractBond{L,N}}
 
     # return a new bond object
     return newBond(
@@ -161,7 +161,7 @@ function similar(
             to      :: Integer,
             label   :: L,
             wrap    :: NTuple{N,<:Integer}
-        ) :: B where {L,D,B<:AbstractBond{L,D}}
+        ) :: B where {L,N,B<:AbstractBond{L,N}}
 
     # create a new bond object
     b_new = similar(b)

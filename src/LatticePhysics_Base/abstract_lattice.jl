@@ -155,6 +155,8 @@ end
 
 
 
+# SIMILAR FUNCTION (can be overwritten but does not have to be overwritten)
+
 # without new parameters
 function similar(
             l :: L
