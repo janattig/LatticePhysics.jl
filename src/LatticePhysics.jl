@@ -56,7 +56,7 @@
 ################################################################################
 
 # include the relevant subfile
-include("LatticePhysics_Base.jl")
+using LatPhysBase
 
 
 
