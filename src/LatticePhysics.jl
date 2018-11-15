@@ -1,6 +1,6 @@
 ################################################################################
 #
-#   The unified Module for all different sorts of lattices
+#   The unified (Wrapper) Module for all different sorts of lattices
 #   and lattice based calculations.
 #
 #   Module structure mostly included in subfiles see below
@@ -56,7 +56,7 @@ using Reexport
 #
 ################################################################################
 
-# include the relevant subfile
+# include the relevant submodule
 @reexport using LatPhysBase
 
 
@@ -108,7 +108,7 @@ using Reexport
 #
 ################################################################################
 
-# include the relevant subfile
+# include the relevant submodule
 @reexport using LatPhysUnitcellLibrary
 
 
@@ -147,8 +147,8 @@ using Reexport
 #
 ################################################################################
 
-# include the relevant subfile
-include("LatticePhysics_LatticeConstruction.jl")
+# include the relevant submodule
+@reexport using LatPhysLatticeConstruction
 
 
 
