@@ -97,7 +97,7 @@ using LatPhysBase
 
 ################################################################################
 #
-#   module LatticePhysics_UnitcellDefinitions
+#   module LatPhysUnitcellLibrary
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
@@ -108,7 +108,7 @@ using LatPhysBase
 ################################################################################
 
 # include the relevant subfile
-include("LatticePhysics_UnitcellDefinitions.jl")
+using LatPhysUnitcellLibrary
 
 
 
