@@ -9,7 +9,10 @@
 
 
 # Start of module
-# module LatticePhysics
+module LatticePhysics
+
+# uses Reexport.jl to reexport all exported functions from submodules
+using Reexport
 
 
 
@@ -54,7 +57,7 @@
 ################################################################################
 
 # include the relevant subfile
-using LatPhysBase
+@reexport using LatPhysBase
 
 
 
@@ -106,7 +109,7 @@ using LatPhysBase
 ################################################################################
 
 # include the relevant subfile
-using LatPhysUnitcellLibrary
+@reexport using LatPhysUnitcellLibrary
 
 
 
@@ -422,4 +425,4 @@ include("LatticePhysics_LatticeConstruction.jl")
 
 
 # End of module
-# end
+end
