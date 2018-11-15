@@ -123,9 +123,6 @@ using LatPhysUnitcellLibrary
 #
 ################################################################################
 
-# include the relevant subfile
-include("LatticePhysics_UnitcellConstruction.jl")
-
 
 
 ################################################################################
