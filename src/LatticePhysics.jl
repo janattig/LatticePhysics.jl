@@ -197,7 +197,7 @@ using Reexport
 
 ################################################################################
 #
-#   module LatticePhysics_ReciprocalSpace
+#   module LatPhysReciprocal
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
@@ -217,6 +217,9 @@ using Reexport
 #           - construction of default BZs (3D)
 #
 ################################################################################
+
+# include the relevant submodule
+@reexport using LatPhysReciprocal
 
 
 
