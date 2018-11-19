@@ -201,11 +201,13 @@ using Reexport
 #   -> LatticePhysics_Base
 #   -> LinearAlgebra
 #
-#   --> TYPE DEFINITIONS
+#   --> TYPE DEFINITIONS (Abstract / Concrete)
+#           - Point
 #           - Path
 #           - BrillouinZone
+#           - ReciprocalLattice ??
 #
-#   --> PATHS IN MOMENTUM SPACE
+#   --> BUILDING FUNCTIONS FOR PATHS IN MOMENTUM SPACE
 #           - modification of paths
 #           - pre-implemented paths
 #           - paths based on Unitcells
