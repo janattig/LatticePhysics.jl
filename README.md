@@ -28,3 +28,4 @@ The main code is divided into various sub-modules, which can be found here:
 1.  [LatPhysBase](http://gitsrv.thp.uni-koeln.de/attig/LatPhysBase.jl.git)
 2.  [LatPhysUnitcellLibrary](http://gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git)
 3.  [LatPhysLatticeConstruction](http://gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git)
+4.  [LatPhysReciprocal](http://gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git)
