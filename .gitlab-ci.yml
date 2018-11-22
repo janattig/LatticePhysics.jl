@@ -1,0 +1,108 @@
+#---------------------------------------
+#    ALL STAGES OF CI / CD SCRIPT
+#---------------------------------------
+stages:
+  - setup
+  - pkg_setup
+  - using_pkg
+  - pkg_test
+  - own_test
+  - cleanup_julia
+  - cleanup_final
+
+
+
+
+#---------------------------------------
+#    STAGE: julia_setup
+#    --> add stuff to julia env
+#---------------------------------------
+julia_version_test:
+  script:
+    - which julia
+    - julia --version
+  stage: setup
+
+julia_test:
+  script:
+    - julia -e "println(\"hello World\")"
+  stage: setup
+
+current_dir_info:
+  script:
+    - pwd
+    - ls -lRh
+  stage: setup
+
+environment_pkg_test:
+  script:
+    - julia -e "using Pkg; pkg\"st\";"
+    - julia -e "using Pkg; pkg\"gc\";"
+  stage: setup
+
+
+
+#---------------------------------------
+#    STAGE: julia_pkg_setup
+#    --> add packages to julia env
+#---------------------------------------
+julia_env_pkg_adding:
+  script:
+    - julia -e "using Pkg; pkg\"add BenchmarkTools\";"
+    - julia -e "using Pkg; pkg\"add Reexport\";"
+    - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-2:MgoW2PxpGUsJfSs2xgRA@gitsrv.thp.uni-koeln.de/attig/LatPhysBase.jl.git\");"
+    - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-3:Yy_Seu18DAJSx_X5HXfx@gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git\");"
+    - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git\");"
+    - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git\");"
+    - julia -e "using Pkg; pkg\"dev ../LatticePhysics.jl\";"
+  stage: pkg_setup
+
+#---------------------------------------
+#    STAGE: using_pkg
+#    --> tests if "using package" works
+#---------------------------------------
+initial_test:
+  script:
+    - julia -e "using LatticePhysics"
+  stage: using_pkg
+
+
+#---------------------------------------
+#    STAGE: pkg_test
+#    --> tests if "test package" works
+#---------------------------------------
+julia_pkg_test:
+  script:
+    - julia -e "using Pkg; pkg\"test LatticePhysics\""
+  stage: pkg_test
+
+
+#---------------------------------------
+#    STAGE: own_test
+#    --> self defined tests
+#---------------------------------------
+
+
+#---------------------------------------
+#    STAGE: cleanup_julia
+#    --> remove stuff from julia env
+#---------------------------------------
+julia_env_pkg_removing:
+  script:
+    - julia -e "using Pkg; pkg\"rm BenchmarkTools\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
+    - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
+    - julia -e "using Pkg; pkg\"gc\""
+  stage: cleanup_julia
+
+#---------------------------------------
+#    STAGE: cleanup_final
+#    --> remove stuff from directory
+#    --> remove stuff from julia env
+#---------------------------------------
+cleanup_directory:
+  script:
+    - pwd
+    - rm -rf *
+    - ls -lRh
+  stage: cleanup_final
