@@ -1,6 +1,6 @@
 name = "LatticePhysics"
 uuid = "53011200-ee7a-11e8-39f1-5f3e57afe4fd"
-authors = ["Jan <jattig@thp.uni-koeln.de>"]
+authors = ["Jan Attig <jattig@thp.uni-koeln.de>"]
 version = "0.1.0"
 
 [deps]
