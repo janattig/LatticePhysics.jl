@@ -1,4 +1,5 @@
-# LatticePhysics
+# LatticePhysics [![pipeline status](http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl/badges/master/pipeline.svg)](http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl/commits/master) [![coverage report](http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl/badges/master/coverage.svg)](http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl/commits/master)
+
 
 Lattice based calculations and plotting for Julia v.1.0.*
 
