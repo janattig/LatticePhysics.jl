@@ -91,6 +91,9 @@ julia_env_pkg_removing:
   script:
     - julia -e "using Pkg; pkg\"rm BenchmarkTools\";"
     - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysUnitcellLibrary\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysLatticeConstruction\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
   stage: cleanup_julia
