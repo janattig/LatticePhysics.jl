@@ -37,6 +37,7 @@ current_dir_info:
 
 pkg_env_setup:
   script:
+    - rm -rf ~/.julia/dev/*
     - julia -e "using Pkg; pkg\"rm BenchmarkTools\";"
     - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
     - julia -e "using Pkg; pkg\"rm LatPhysUnitcellLibrary\";"
@@ -141,5 +142,6 @@ cleanup_directory:
   script:
     - pwd
     - rm -rf *
+    - rm -rf ~/.julia/dev/*
     - ls -lRh
   stage: cleanup_final
