@@ -35,8 +35,10 @@ current_dir_info:
     - ls -lRh
   stage: setup
 
-environment_pkg_test:
+pkg_env_setup:
   script:
+    - julia -e "using Pkg; pkg\"st\";"
+    - julia -e "using Pkg; pkg\"up\";"
     - julia -e "using Pkg; pkg\"st\";"
     - julia -e "using Pkg; pkg\"gc\";"
   stage: setup
@@ -47,7 +49,7 @@ environment_pkg_test:
 #    STAGE: julia_pkg_setup
 #    --> add packages to julia env
 #---------------------------------------
-julia_env_pkg_adding:
+pkg_env_adding:
   script:
     - julia -e "using Pkg; pkg\"add BenchmarkTools\";"
     - julia -e "using Pkg; pkg\"add Reexport\";"
@@ -62,7 +64,7 @@ julia_env_pkg_adding:
 #    STAGE: using_pkg
 #    --> tests if "using package" works
 #---------------------------------------
-initial_test:
+test_using:
   script:
     - julia -e "using LatticePhysics"
   stage: using_pkg
@@ -72,7 +74,7 @@ initial_test:
 #    STAGE: pkg_test_main
 #    --> tests if "test package" works
 #---------------------------------------
-julia_pkg_test:
+main_pkg_test:
   script:
     - julia -e "using Pkg; pkg\"test LatticePhysics\""
   stage: pkg_test_main
@@ -93,7 +95,7 @@ sub_test_UnitcellLibrary:
 
 sub_test_LatticeConstruction:
   script:
-    - julia -e "using Pkg; pkg\"test LatPhysLatticeConstructiony\""
+    - julia -e "using Pkg; pkg\"test LatPhysLatticeConstruction\""
   stage: pkg_test_sub
 
 sub_test_Reciprocal:
@@ -112,7 +114,7 @@ sub_test_Reciprocal:
 #    STAGE: cleanup_julia
 #    --> remove stuff from julia env
 #---------------------------------------
-julia_env_pkg_removing:
+pkg_env_removing:
   script:
     - julia -e "using Pkg; pkg\"rm BenchmarkTools\";"
     - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
