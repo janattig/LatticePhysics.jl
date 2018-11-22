@@ -5,7 +5,8 @@ stages:
   - setup
   - pkg_setup
   - using_pkg
-  - pkg_test
+  - pkg_test_sub
+  - pkg_test_main
   - own_test
   - cleanup_julia
   - cleanup_final
@@ -68,13 +69,37 @@ initial_test:
 
 
 #---------------------------------------
-#    STAGE: pkg_test
+#    STAGE: pkg_test_main
 #    --> tests if "test package" works
 #---------------------------------------
 julia_pkg_test:
   script:
     - julia -e "using Pkg; pkg\"test LatticePhysics\""
-  stage: pkg_test
+  stage: pkg_test_main
+
+#---------------------------------------
+#    STAGE: pkg_test_sub
+#    --> tests if "all sub packages" work
+#---------------------------------------
+sub_test_Base:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysBase\""
+  stage: pkg_test_sub
+
+sub_test_UnitcellLibrary:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysUnitcellLibrary\""
+  stage: pkg_test_sub
+
+sub_test_LatticeConstruction:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysLatticeConstructiony\""
+  stage: pkg_test_sub
+
+sub_test_Reciprocal:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysReciprocal\""
+  stage: pkg_test_sub
 
 
 #---------------------------------------
