@@ -67,6 +67,7 @@ pkg_env_adding:
     - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-3:Yy_Seu18DAJSx_X5HXfx@gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git\");"
     - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git\");"
     - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git\");"
+    - julia -e "using Pkg; pkg\"resolve\""
     - julia -e "using Pkg; pkg\"precompile\""
     - julia -e "using Pkg; pkg\"build LatPhysBase\""
     - julia -e "using Pkg; pkg\"build LatPhysUnitcellLibrary\""
