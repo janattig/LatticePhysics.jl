@@ -4,6 +4,10 @@ authors = ["Jan Attig <jattig@thp.uni-koeln.de>"]
 version = "0.1.0"
 
 [deps]
+LatPhysBase = "eec5c15a-e8bd-11e8-0d23-6799ca40c963"
+LatPhysLatticeConstruction = "ec4de012-e8d7-11e8-3fed-dfe576d3bbe4"
+LatPhysReciprocal = "7a511e88-ebe4-11e8-1bac-67d16a536c98"
+LatPhysUnitcellLibrary = "9ab7acfc-e8ca-11e8-283d-b33250f7e765"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [extras]
