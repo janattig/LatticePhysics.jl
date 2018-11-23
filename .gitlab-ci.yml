@@ -46,6 +46,7 @@ pkg_env_setup:
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
     - julia -e "using Pkg; pkg\"st\";"
+    - rm -rf ~/.julia/dev/*
     - julia -e "using Pkg; pkg\"up\";"
     - julia -e "using Pkg; pkg\"st\";"
     - julia -e "using Pkg; pkg\"gc\";"
