@@ -45,6 +45,7 @@ pkg_env_setup:
     - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
+    - julia -e "using Pkg; pkg\"resolve\""
     - julia -e "using Pkg; pkg\"st\";"
     - rm -rf ~/.julia/dev/*
     - julia -e "using Pkg; pkg\"up\";"
@@ -67,6 +68,8 @@ pkg_env_adding:
     - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git\");"
     - julia -e "using Pkg; Pkg.clone(\"http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git\");"
     - julia -e "using Pkg; pkg\"dev ../LatticePhysics.jl\";"
+    - julia -e "using Pkg; pkg\"resolve\""
+    - julia -e "using Pkg; pkg\"st\""
   stage: pkg_setup
 
 #---------------------------------------
