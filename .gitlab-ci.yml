@@ -42,6 +42,7 @@ pkg_env_setup:
     - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
     - julia -e "using Pkg; pkg\"rm LatPhysUnitcellLibrary\";"
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeConstruction\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysLatticeModification\";"
     - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
@@ -66,10 +67,12 @@ pkg_env_adding:
     - git clone http://gitlab+deploy-token-2:MgoW2PxpGUsJfSs2xgRA@gitsrv.thp.uni-koeln.de/attig/LatPhysBase.jl.git ~/.julia/dev/LatPhysBase.jl
     - git clone http://gitlab+deploy-token-3:Yy_Seu18DAJSx_X5HXfx@gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git ~/.julia/dev/LatPhysUnitcellLibrary.jl
     - git clone http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git ~/.julia/dev/LatPhysLatticeConstruction.jl
+    - git clone http://gitlab+deploy-token-6:xGiqp7wnVL5isvXeX9tv@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeModification.jl.git ~/.julia/dev/LatPhysLatticeModification.jl
     - git clone http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git ~/.julia/dev/LatPhysReciprocal.jl
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysBase.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysUnitcellLibrary.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLatticeConstruction.jl\";"
+    - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLatticeModification.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysReciprocal.jl\";"
     - julia -e "using Pkg; pkg\"dev ../LatticePhysics.jl\";"
     - julia -e "using Pkg; pkg\"resolve\""
@@ -77,6 +80,7 @@ pkg_env_adding:
     - julia -e "using Pkg; pkg\"build LatPhysBase\""
     - julia -e "using Pkg; pkg\"build LatPhysUnitcellLibrary\""
     - julia -e "using Pkg; pkg\"build LatPhysLatticeConstruction\""
+    - julia -e "using Pkg; pkg\"build LatPhysLatticeModification\""
     - julia -e "using Pkg; pkg\"build LatPhysReciprocal\""
     - julia -e "using Pkg; pkg\"st\""
   stage: pkg_setup
@@ -119,6 +123,11 @@ sub_test_LatticeConstruction:
     - julia -e "using Pkg; pkg\"test LatPhysLatticeConstruction\""
   stage: pkg_test_sub
 
+sub_test_LatticeModification:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysLatticeModification\""
+  stage: pkg_test_sub
+
 sub_test_Reciprocal:
   script:
     - julia -e "using Pkg; pkg\"test LatPhysReciprocal\""
@@ -141,6 +150,7 @@ pkg_env_removing:
     - julia -e "using Pkg; pkg\"rm LatPhysBase\";"
     - julia -e "using Pkg; pkg\"rm LatPhysUnitcellLibrary\";"
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeConstruction\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysLatticeModification\";"
     - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
