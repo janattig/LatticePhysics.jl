@@ -174,6 +174,9 @@ using Reexport
 #
 ################################################################################
 
+# include the relevant submodule
+@reexport using LatPhysLatticeModification
+
 
 
 ################################################################################
