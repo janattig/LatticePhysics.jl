@@ -3,6 +3,7 @@
 #---------------------------------------
 stages:
   - setup
+  - pkg_clone
   - pkg_setup
   - using_pkg
   - pkg_test_sub
@@ -57,6 +58,39 @@ pkg_env_setup:
 
 
 #---------------------------------------
+#    STAGE: pkg_clone
+#    --> git clone all packagess
+#---------------------------------------
+
+pkgcl_LatPhysBase:
+  script:
+    - git clone http://gitlab+deploy-token-2:MgoW2PxpGUsJfSs2xgRA@gitsrv.thp.uni-koeln.de/attig/LatPhysBase.jl.git ~/.julia/dev/LatPhysBase.jl
+  stage: pkg_clone
+
+pkgcl_LatPhysUnitcellLibrary:
+  script:
+    - git clone http://gitlab+deploy-token-3:Yy_Seu18DAJSx_X5HXfx@gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git ~/.julia/dev/LatPhysUnitcellLibrary.jl
+  stage: pkg_clone
+
+pkgcl_LatPhysLatticeConstruction:
+  script:
+    - git clone http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git ~/.julia/dev/LatPhysLatticeConstruction.jl
+  stage: pkg_clone
+
+pkgcl_LatPhysLatticeModification:
+  script:
+    - git clone http://gitlab+deploy-token-6:xGiqp7wnVL5isvXeX9tv@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeModification.jl.git ~/.julia/dev/LatPhysLatticeModification.jl
+  stage: pkg_clone
+
+pkgcl_LatPhysReciprocal:
+  script:
+    - git clone http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git ~/.julia/dev/LatPhysReciprocal.jl
+  stage: pkg_clone
+
+
+
+
+#---------------------------------------
 #    STAGE: julia_pkg_setup
 #    --> add packages to julia env
 #---------------------------------------
@@ -64,11 +98,6 @@ pkg_env_adding:
   script:
     - julia -e "using Pkg; pkg\"add BenchmarkTools\";"
     - julia -e "using Pkg; pkg\"add Reexport\";"
-    - git clone http://gitlab+deploy-token-2:MgoW2PxpGUsJfSs2xgRA@gitsrv.thp.uni-koeln.de/attig/LatPhysBase.jl.git ~/.julia/dev/LatPhysBase.jl
-    - git clone http://gitlab+deploy-token-3:Yy_Seu18DAJSx_X5HXfx@gitsrv.thp.uni-koeln.de/attig/LatPhysUnitcellLibrary.jl.git ~/.julia/dev/LatPhysUnitcellLibrary.jl
-    - git clone http://gitlab+deploy-token-4:eUzQMQzm7PyL7-SK-p7W@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeConstruction.jl.git ~/.julia/dev/LatPhysLatticeConstruction.jl
-    - git clone http://gitlab+deploy-token-6:xGiqp7wnVL5isvXeX9tv@gitsrv.thp.uni-koeln.de/attig/LatPhysLatticeModification.jl.git ~/.julia/dev/LatPhysLatticeModification.jl
-    - git clone http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git ~/.julia/dev/LatPhysReciprocal.jl
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysBase.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysUnitcellLibrary.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLatticeConstruction.jl\";"
