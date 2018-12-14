@@ -44,6 +44,7 @@ pkg_env_setup:
     - julia -e "using Pkg; pkg\"rm LatPhysUnitcellLibrary\";"
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeConstruction\";"
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeModification\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysLuttingerTisza\";"
     - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
@@ -87,6 +88,10 @@ pkgcl_LatPhysReciprocal:
     - git clone http://gitlab+deploy-token-5:wPaiSRbW8ppPdyozm-Kk@gitsrv.thp.uni-koeln.de/attig/LatPhysReciprocal.jl.git ~/.julia/dev/LatPhysReciprocal.jl
   stage: pkg_clone
 
+pkgcl_LatPhysLuttingerTisza:
+  script:
+    - git clone http://gitlab+deploy-token-8:WxzUZcFryvJVas_NQcNa@gitsrv.thp.uni-koeln.de/attig/LatPhysLuttingerTisza.jl.git ~/.julia/dev/LatPhysLuttingerTisza.jl
+  stage: pkg_clone
 
 
 
@@ -103,6 +108,7 @@ pkg_env_adding:
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLatticeConstruction.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLatticeModification.jl\";"
     - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysReciprocal.jl\";"
+    - julia -e "using Pkg; pkg\"dev ~/.julia/dev/LatPhysLuttingerTisza.jl\";"
     - julia -e "using Pkg; pkg\"dev ../LatticePhysics.jl\";"
     - julia -e "using Pkg; pkg\"resolve\""
     - julia -e "using Pkg; pkg\"precompile\""
@@ -111,6 +117,7 @@ pkg_env_adding:
     - julia -e "using Pkg; pkg\"build LatPhysLatticeConstruction\""
     - julia -e "using Pkg; pkg\"build LatPhysLatticeModification\""
     - julia -e "using Pkg; pkg\"build LatPhysReciprocal\""
+    - julia -e "using Pkg; pkg\"build LatPhysLuttingerTisza\""
     - julia -e "using Pkg; pkg\"st\""
   stage: pkg_setup
 
@@ -162,6 +169,10 @@ sub_test_Reciprocal:
     - julia -e "using Pkg; pkg\"test LatPhysReciprocal\""
   stage: pkg_test_sub
 
+sub_test_LuttingerTisza:
+  script:
+    - julia -e "using Pkg; pkg\"test LatPhysLuttingerTisza\""
+  stage: pkg_test_sub
 
 #---------------------------------------
 #    STAGE: own_test
@@ -181,6 +192,7 @@ pkg_env_removing:
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeConstruction\";"
     - julia -e "using Pkg; pkg\"rm LatPhysLatticeModification\";"
     - julia -e "using Pkg; pkg\"rm LatPhysReciprocal\";"
+    - julia -e "using Pkg; pkg\"rm LatPhysLuttingerTisza\";"
     - julia -e "using Pkg; pkg\"rm LatticePhysics\";"
     - julia -e "using Pkg; pkg\"gc\""
   stage: cleanup_julia
