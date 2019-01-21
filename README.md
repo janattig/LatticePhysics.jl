@@ -21,11 +21,11 @@ See the *OUTDATED* [wiki pages](http://gitsrv.thp.uni-koeln.de/attig/LatticePhys
 You can use the package via the package mode in Julia (Pkg). However, since the package
 is not listed in the Julia package repositories, you have to use
 ```julia
-(v1.0) pkg> add "git@gitsrv.thp.uni-koeln.de:attig/LatticePhysics.jl.git"
+(v1.0) pkg> add "git@gitsrv.thp.uni-koeln.de:attig/LatticePhysics.jl.git"#dev-julia-1.0
 ```
 Note: this can lead to Errors under Windows 10 due to incorrect SSH access. Use the following command instead:
 ```julia
-(v1.0) pkg> add "http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl.git"
+(v1.0) pkg> add "http://gitsrv.thp.uni-koeln.de/attig/LatticePhysics.jl.git"#dev-julia-1.0
 ```
 You will be prompted a username and password validation but it should work the same way.
 
