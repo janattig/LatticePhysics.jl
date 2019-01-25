@@ -1,4 +1,4 @@
-![LatticePhysics.jl logo](https://github.com/janattig/LatticePhysics.jl/blob/master/logos/LatticePhysics_banner.png)
+![LatticePhysics.jl logo](https://github.com/janattig/LatticePhysics.jl/blob/master/logos/LatticePhysics_banner.png){ width=60% }
 
 
 Lattice based calculations and plotting for Julia v.1.0.*
