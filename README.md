@@ -1,4 +1,4 @@
-# LatticePhysics
+![LatticePhysics.jl logo](https://github.com/janattig/LatticePhysics.jl/blob/master/logos/LatticePhysics.jl)
 
 
 Lattice based calculations and plotting for Julia v.1.0.*
