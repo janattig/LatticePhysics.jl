@@ -44,3 +44,12 @@ The main code is divided into various sub-modules, which can be found here:
 4.  [LatPhysLatticeModification](https://github.com/janattig/LatPhysLatticeModification.jl.git)
 5.  [LatPhysReciprocal](https://github.com/janattig/LatPhysReciprocal.jl.git)
 6.  [LatPhysLuttingerTisza](https://github.com/janattig/LatPhysLuttingerTisza.jl.git)
+
+Additionally, there are modules to provide plotting functions, which can be found here:
+1.  [LatPhysPlottingPyPlot](https://github.com/janattig/LatPhysPlottingPyPlot.jl.git)
+2.  [LatPhysPlottingSVG](https://github.com/janattig/LatPhysPlottingSVG.jl.git)
+3.  [LatPhysReciprocalPlottingPyPlot](https://github.com/janattig/LatPhysReciprocalPlottingPyPlot.jl.git)
+4.  [LatPhysLuttingerTiszaPlottingPyPlot](https://github.com/janattig/LatPhysLuttingerTiszaPlottingPyPlot.jl.git)
+
+The plotting modules have to be used explicitly inside user code as they are not a direct
+part of `LatticePhysics.jl`.
