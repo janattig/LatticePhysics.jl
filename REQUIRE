@@ -3,7 +3,3 @@ Optim
 PyCall
 PyPlot
 Reexport
-
-LatPhysBase
-LatPhysUnitcellLibrary
-LatPhysLatticeConstruction

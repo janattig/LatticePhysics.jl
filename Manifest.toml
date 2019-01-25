@@ -1,0 +1,110 @@
+[[Base64]]
+uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[Dates]]
+deps = ["Printf"]
+uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[[InteractiveUtils]]
+deps = ["LinearAlgebra", "Markdown"]
+uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[LatPhysBase]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "2af1faa0ce74d66096a2421832db3cc179a22996"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysBase.jl"
+uuid = "eec5c15a-e8bd-11e8-0d23-6799ca40c963"
+version = "0.1.0"
+
+[[LatPhysLatticeConstruction]]
+deps = ["LatPhysBase"]
+git-tree-sha1 = "c30265654777ec4d341b7308228156c8ab8ff22f"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysLatticeConstruction.jl"
+uuid = "ec4de012-e8d7-11e8-3fed-dfe576d3bbe4"
+version = "0.1.0"
+
+[[LatPhysLatticeModification]]
+deps = ["LatPhysBase", "LinearAlgebra"]
+git-tree-sha1 = "9c068c24a520d8550f007947fee3424bfe903543"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysLatticeModification.jl"
+uuid = "84ed28fe-f306-11e8-122d-2faba6147774"
+version = "0.1.0"
+
+[[LatPhysLuttingerTisza]]
+deps = ["LatPhysBase", "LatPhysLatticeConstruction", "LatPhysReciprocal", "LinearAlgebra"]
+git-tree-sha1 = "1792ab04b11c2d7f6c3cbeb80546495b1970acaf"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysLuttingerTisza.jl"
+uuid = "91e24bd6-ff91-11e8-087a-05fe8a0f75ec"
+version = "0.1.0"
+
+[[LatPhysReciprocal]]
+deps = ["LatPhysBase", "LatPhysLatticeConstruction", "LinearAlgebra"]
+git-tree-sha1 = "15282a10d34e75746416f0f1d3c056d345de2c13"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysReciprocal.jl"
+uuid = "7a511e88-ebe4-11e8-1bac-67d16a536c98"
+version = "0.1.0"
+
+[[LatPhysUnitcellLibrary]]
+deps = ["LatPhysBase"]
+git-tree-sha1 = "d6d358fca5e2ba073bd9552e1e03a1bb0ed158f4"
+repo-rev = "master"
+repo-url = "https://github.com/janattig/LatPhysUnitcellLibrary.jl"
+uuid = "9ab7acfc-e8ca-11e8-283d-b33250f7e765"
+version = "0.1.0"
+
+[[LibGit2]]
+uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
+
+[[Libdl]]
+uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[[LinearAlgebra]]
+deps = ["Libdl"]
+uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[[Markdown]]
+deps = ["Base64"]
+uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
+
+[[Pkg]]
+deps = ["Dates", "LibGit2", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
+uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+
+[[Printf]]
+deps = ["Unicode"]
+uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
+[[REPL]]
+deps = ["InteractiveUtils", "Markdown", "Sockets"]
+uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+
+[[Random]]
+deps = ["Serialization"]
+uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[Reexport]]
+deps = ["Pkg"]
+git-tree-sha1 = "7b1d07f411bc8ddb7977ec7f377b97b158514fe0"
+uuid = "189a3867-3050-52da-a836-e630ba90ab69"
+version = "0.2.0"
+
+[[SHA]]
+uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[[Serialization]]
+uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+
+[[Sockets]]
+uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
+
+[[UUIDs]]
+deps = ["Random"]
+uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[[Unicode]]
+uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"

@@ -15,15 +15,24 @@ julia> using LatticePhysics
 
 
 
-## Installation:
+## Installation
 
-You can use the package via the package mode in Julia (Pkg). However, since the package
-is not listed in the Julia package repositories, you have to use
+You can install the package via the package mode in Julia (Pkg). However, since the package
+is not listed in the Julia package repositories, you have to first install the unregistered
+dependencies manually with
+```julia
+(v1.0) pkg> add "https://github.com/janattig/LatPhysBase.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysUnitcellLibrary.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysLatticeConstruction.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysLatticeModification.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysReciprocal.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysLuttingerTisza.jl"
+```
+to finally install the main package with
 ```julia
 (v1.0) pkg> add "https://github.com/janattig/LatticePhysics.jl"
 ```
 
-You will have to install all submodules listed below as well (individually):
 
 
 ## Sub-modules
