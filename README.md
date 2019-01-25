@@ -7,7 +7,7 @@ Lattice based calculations and plotting for Julia v.1.0.*
 ## Usage
 
 To use the lattice library in your code, install it as specified below.
-TO use it in your code, start by importing the library
+To use it in your code, start by importing the library
 ```julia-REPL
 julia> using LatticePhysics
 ```
