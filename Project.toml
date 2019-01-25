@@ -1,0 +1,19 @@
+name = "LatticePhysics"
+uuid = "53011200-ee7a-11e8-39f1-5f3e57afe4fd"
+authors = ["Jan Attig <jattig@thp.uni-koeln.de>"]
+version = "0.1.0"
+
+[deps]
+LatPhysBase = "eec5c15a-e8bd-11e8-0d23-6799ca40c963"
+LatPhysLatticeConstruction = "ec4de012-e8d7-11e8-3fed-dfe576d3bbe4"
+LatPhysLatticeModification = "84ed28fe-f306-11e8-122d-2faba6147774"
+LatPhysReciprocal = "7a511e88-ebe4-11e8-1bac-67d16a536c98"
+LatPhysUnitcellLibrary = "9ab7acfc-e8ca-11e8-283d-b33250f7e765"
+LatPhysLuttingerTisza = "91e24bd6-ff91-11e8-087a-05fe8a0f75ec"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
