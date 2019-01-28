@@ -12,6 +12,8 @@ To use it in your code, start by importing the library
 julia> using LatticePhysics
 ```
 
+For tutorials and examples, see the [LatticePhysics Tutorials](https://github.com/janattig/LatticePhysics_Tutorials) repository.
+
 
 
 
