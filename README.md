@@ -28,6 +28,7 @@ dependencies manually with
 (v1.0) pkg> add "https://github.com/janattig/LatPhysLatticeConstruction.jl"
 (v1.0) pkg> add "https://github.com/janattig/LatPhysLatticeModification.jl"
 (v1.0) pkg> add "https://github.com/janattig/LatPhysReciprocal.jl"
+(v1.0) pkg> add "https://github.com/janattig/LatPhysBandstructures.jl"
 (v1.0) pkg> add "https://github.com/janattig/LatPhysLuttingerTisza.jl"
 ```
 to finally install the main package with
@@ -45,12 +46,14 @@ The main code is divided into various sub-modules, which can be found here:
 3.  [LatPhysLatticeConstruction](https://github.com/janattig/LatPhysLatticeConstruction.jl.git)
 4.  [LatPhysLatticeModification](https://github.com/janattig/LatPhysLatticeModification.jl.git)
 5.  [LatPhysReciprocal](https://github.com/janattig/LatPhysReciprocal.jl.git)
-6.  [LatPhysLuttingerTisza](https://github.com/janattig/LatPhysLuttingerTisza.jl.git)
+6.  [LatPhysBandstructures](https://github.com/janattig/LatPhysBandstructures.jl.git)
+7.  [LatPhysLuttingerTisza](https://github.com/janattig/LatPhysLuttingerTisza.jl.git)
 
 Additionally, there are modules to provide plotting functions, which can be found here:
 1.  [LatPhysPlottingPyPlot](https://github.com/janattig/LatPhysPlottingPyPlot.jl.git)
 2.  [LatPhysPlottingSVG](https://github.com/janattig/LatPhysPlottingSVG.jl.git)
 3.  [LatPhysReciprocalPlottingPyPlot](https://github.com/janattig/LatPhysReciprocalPlottingPyPlot.jl.git)
+5.  [LatPhysBandstructuresPlottingPyPlot](https://github.com/janattig/LatPhysBandstructuresPlottingPyPlot.jl.git)
 4.  [LatPhysLuttingerTiszaPlottingPyPlot](https://github.com/janattig/LatPhysLuttingerTiszaPlottingPyPlot.jl.git)
 
 The plotting modules have to be used explicitly inside user code as they are not a direct
