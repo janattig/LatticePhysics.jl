@@ -2,7 +2,7 @@
 import bpy
 import os
 
-from bpy.props import StringProperty, BoolProperty, IntProperty
+from bpy.props import StringProperty, BoolProperty, IntProperty, FloatProperty
 from bpy_extras.io_utils import ImportHelper
 from bpy.types import Operator
 
@@ -54,17 +54,23 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         min = 1,
         max = 16
     )
+    radius_sites = FloatProperty(
+        name = "Site radius",
+        default = 0.1,
+        min = 0.0,
+        max = 10.0
+    )
 
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_sites = IntProperty(
-        name = "Site subdivision",
+        name = "Subdivision (sites)",
         default = 2,
         min = 0,
         max = 8
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_bonds = IntProperty(
-        name = "Bond subdivision",
+        name = "Subdivision (bonds)",
         default = 2,
         min = 0,
         max = 8
@@ -118,24 +124,34 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
 
 
     # DEFINE A FUNCTION TO ADD A SPHERE
-    def addSphere(self, site_index, x,y,z, radius, color):
+    def addSphere(self, site_index, x,y,z, lbl):
         # set the correct position
         x = bpy.context.scene.cursor.location[0] + x
         y = bpy.context.scene.cursor.location[1] + y
         z = bpy.context.scene.cursor.location[2] + z
         # add an ico sphere at that point
-        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=self.resolution_sites, radius=radius, location=(x,y,z))
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=self.resolution_sites, radius=self.radius_sites, location=(x,y,z))
         # get the current object
         obj = bpy.context.active_object
         # set the name
         obj.name = "site_{0}".format(site_index)
         # add subsurf modifier to make surface look smoother
-        if self.subdivide_sites:
+        if self.subdivision_sites > 0:
             obj.modifiers.new("site_subsurf", "SUBSURF")
             obj.modifiers["site_subsurf"].levels = 1
             obj.modifiers["site_subsurf"].render_levels = self.subdivision_sites
         # set the material (color)
-        material = bpy.data.materials.get(color)
+        material_name = "site_material_"+lbl
+        # get the material
+        material = bpy.data.materials.get(material_name)
+        if material is None:
+            # create material
+            material = bpy.data.materials.new(name=material_name)
+            # set the color
+            material.diffuse_color = (1.0,1.0,1.0,1.0)
+            # use nodes for rendering
+            material.use_nodes = True
+        # set the material
         if obj.data.materials:
             obj.data.materials[0] = material
         else:
@@ -243,8 +259,8 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 site_i = int(l.split(" ")[1].split("=")[1][1:-1]) - 1
                 site_l = l.split(" ")[2].split("=")[1][1:-1]
                 site_x = float(l.split(" ")[3].split("=")[1][1:-1])
-                site_y = float(l.split(" ")[3].split("=")[1][1:-1])
-                site_z = float(l.split(" ")[3].split("=")[1][1:-1])
+                site_y = float(l.split(" ")[4].split("=")[1][1:-1])
+                site_z = float(l.split(" ")[5].split("=")[1][1:-1])
                 # add the site information to the lists
                 sites_l[site_i] = site_l
                 sites_x[site_i] = site_x
@@ -268,6 +284,13 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 # get the data from the line
                 # add the bond
                 #self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
+
+
+        # add all sites
+        for s in range(N_sites):
+            # add the respective site
+            # addSphere(self, site_index, x,y,z, radius, color):
+            self.addSphere(s+1, sites_x[s],sites_y[s],sites_z[s], sites_l[s])
 
 
 
