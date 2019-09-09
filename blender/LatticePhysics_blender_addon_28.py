@@ -14,10 +14,10 @@ import mathutils
 bl_info = {
     "name": "LatticePhysics Support",
     "author": "Jan Attig",
-    "version": (1, 0, 0),
+    "version": (2, 0, 0),
     "blender": (2, 80, 0),
     "location": "Import-Export",
-    "description": "Loading LatticePhysics dumps of lattices",
+    "description": "Loading LatticePhysics XML-dumps of lattices",
     "category": "Import-Export",
 }
 
@@ -40,20 +40,13 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
 
     # global filter options
     filter_glob = StringProperty(
-        default='*.lpbd;*.txt',
+        default='*.lpbd;*.txt;*.xml',
         options={'HIDDEN'}
     )
 
 
     # Options for importing
 
-    # resolution of bonds (faces of tubes)
-    resolution_bonds = IntProperty(
-        name = "Bond resolution",
-        default = 16,
-        min = 4,
-        max = 1024
-    )
     # resolution of sites (passed to icosphere)
     resolution_sites = IntProperty(
         name = "Site resolution",
@@ -62,29 +55,18 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         max = 16
     )
 
-    # if there is a subsurf modifier for sites
-    subdivide_sites = BoolProperty(
-        name = "Apply subsurf to sites",
-        default = True
-    )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_sites = IntProperty(
         name = "Site subdivision",
-        default = 3,
-        min = 1,
+        default = 2,
+        min = 0,
         max = 8
-    )
-
-    # if there is a subsurf modifier for bonds
-    subdivide_bonds = BoolProperty(
-        name = "Apply subsurf to bonds",
-        default = True
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_bonds = IntProperty(
         name = "Bond subdivision",
         default = 2,
-        min = 1,
+        min = 0,
         max = 8
     )
 
@@ -220,7 +202,6 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         lines = [x.strip() for x in lines]
 
 
-
         # set the render engine
         bpy.context.scene.render.engine = "CYCLES"
 
@@ -235,28 +216,58 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
             print("Filmic color space not available")
 
 
+        # try to obtain lists for sites and bonds
+        if not lines[0].startswith("<LATTICEGRAPH"):
+            print("ERROR, not a Lattice Graph file")
+
+        # make lists for sites and bonds
+        N_sites = int(lines[0].split(" ")[1].split("=")[1][1:-1])
+        N_bonds = int(lines[0].split(" ")[2].split("=")[1][1:-1])
+        print(N_sites, " sites found")
+        print(N_bonds, " bonds found")
+        sites_x = [0.0 for s in range(N_sites)]
+        sites_y = [0.0 for s in range(N_sites)]
+        sites_z = [0.0 for s in range(N_sites)]
+        sites_l = ["l" for s in range(N_sites)]
+        bonds_f = [  0 for b in range(N_bonds)]
+        bonds_t = [  0 for b in range(N_bonds)]
+        bonds_l = ["l" for b in range(N_bonds)]
 
         # go through all lines and check if a site or bond has to be added
         for l in lines:
-            # line specifying a material
-            if l.startswith("material:\t"):
-                # Get material properties
-                name=l.split("\t")[1]
-                color = [float(x)/255.0 for x in l.split("\t")[2].split(", ")]
-                # add material
-                self.addMaterial(name, color)
             # line specifying a site
-            if l.startswith("site:\t"):
+            if l.startswith("<SITE"):
+                # sample line:
+                # <SITE index="27" label="4" X="2.4748737341529163" Y="-1.0606601717798216" Z="1.7677669529663687" >
                 # get the data from the line
-                sphere_data = [float(x) for x in l.split("\t")[1].split(", ")]
-                # add the site
-                self.addSphere(int(sphere_data[0]),sphere_data[1],sphere_data[2],sphere_data[3],sphere_data[4],l.split("\t")[2])
+                site_i = int(l.split(" ")[1].split("=")[1][1:-1]) - 1
+                site_l = l.split(" ")[2].split("=")[1][1:-1]
+                site_x = float(l.split(" ")[3].split("=")[1][1:-1])
+                site_y = float(l.split(" ")[3].split("=")[1][1:-1])
+                site_z = float(l.split(" ")[3].split("=")[1][1:-1])
+                # add the site information to the lists
+                sites_l[site_i] = site_l
+                sites_x[site_i] = site_x
+                sites_y[site_i] = site_y
+                sites_z[site_i] = site_z
+                #print("site found, index=", site_i, ", label is \"", sites_l[site_i],"\"")
             # line specifying a bond
-            if l.startswith("bond:\t"):
+            if l.startswith("<BOND"):
+                # sample line:
+                # <BOND index="1" label="1" from="1" to="2" >
                 # get the data from the line
-                bond_data = [float(x) for x in l.split("\t")[1].split(", ")]
+                bond_i = int(l.split(" ")[1].split("=")[1][1:-1]) - 1
+                bond_l = l.split(" ")[2].split("=")[1][1:-1]
+                bond_f = float(l.split(" ")[3].split("=")[1][1:-1])
+                bond_t = float(l.split(" ")[4].split("=")[1][1:-1])
+                # add the site information to the lists
+                bonds_l[bond_i] = bond_l
+                bonds_f[bond_i] = bond_f
+                bonds_t[bond_i] = bond_t
+                #print("bond found, index=", bond_i, ", label is \"", bonds_l[bond_i],"\"")
+                # get the data from the line
                 # add the bond
-                self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
+                #self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
 
 
 
