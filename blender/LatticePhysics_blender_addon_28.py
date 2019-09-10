@@ -219,6 +219,8 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         with open(filename) as f:
             lines = f.readlines()
 
+        # refactor filename
+        fn = filename.split("/")[-1]
         # remove whitespace characters like `\n` at the end of each line
         lines = [x.strip() for x in lines]
 
@@ -290,8 +292,22 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 # add the bond
                 #self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
 
+
+        # center all sites
+        cm_x = sum(sites_x) / len(sites_x)
+        cm_y = sum(sites_y) / len(sites_y)
+        cm_z = sum(sites_z) / len(sites_z)
+        sites_x = [s - cm_x for s in sites_x]
+        sites_y = [s - cm_y for s in sites_y]
+        sites_z = [s - cm_z for s in sites_z]
+
         # deselect all objects
         bpy.ops.object.select_all(action='DESELECT')
+
+        # check if lattice already added
+        if "Lattice {0}".format(filename) in bpy.data.collections: # Does the top level collection already exist?
+            print("ERROR: Lattice already loaded")
+            return
 
         # add all sites and collect objects into list
         site_objects = [ self.addSite(s+1, sites_x[s],sites_y[s],sites_z[s], sites_l[s]) for s in range(N_sites) ]
@@ -300,19 +316,29 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], bonds_l[b]) for b in range(N_bonds) ]
 
         # make the collections right
+        general_collection = bpy.data.collections.new("Lattice {0}".format(fn))
+        bpy.context.scene.collection.children.link(general_collection)
         # General site and bond collections
-        site_collection = make_collection("Sites", find_collection(bpy.context, site_objects[0]))
-        bond_collection = make_collection("Bonds", find_collection(bpy.context, site_objects[0]))
+        site_collection = make_collection("Sites ({0})".format(fn), general_collection)
+        bond_collection = make_collection("Bonds ({0})".format(fn), general_collection)
+
+        site_collections = dict()
+        bond_collections = dict()
+        # make new collections for the respective labels
+        for s in site_l:
+            site_collections[s] = make_collection("Sites (label={0}) ({1})".format(s, fn), site_collection)
+        for b in bond_l:
+            bond_collections[b] = make_collection("Bonds (label={0}) ({1})".format(b, fn), bond_collection)
         # push all sites into theses lists
-        for s in site_objects:
-            old_site_collection = find_collection(bpy.context, s)
-            site_collection.objects.link(s)
-            old_site_collection.objects.unlink(s)
+        for s in range(N_sites):
+            old_site_collection = find_collection(bpy.context, site_objects[s])
+            site_collections[sites_l[s]].objects.link(site_objects[s])
+            old_site_collection.objects.unlink(site_objects[s])
         # push all bonds into theses lists
-        for b in bond_objects:
-            old_bond_collection = find_collection(bpy.context, b)
-            bond_collection.objects.link(b)
-            old_bond_collection.objects.unlink(b)
+        for b in range(N_bonds):
+            old_bond_collection = find_collection(bpy.context, bond_objects[b])
+            bond_collections[bonds_l[b]].objects.link(bond_objects[b])
+            old_bond_collection.objects.unlink(bond_objects[b])
 
 
     # EXECUTE THE ADDON
