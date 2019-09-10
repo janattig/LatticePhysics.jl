@@ -23,7 +23,20 @@ bl_info = {
 
 
 
+# HELPER FUNCTIONS
+def find_collection(context, item):
+    collections = item.users_collection
+    if len(collections) > 0:
+        return collections[0]
+    return context.scene.collection
 
+def make_collection(collection_name, parent_collection):
+    if collection_name in bpy.data.collections: # Does the collection already exist?
+        return bpy.data.collections[collection_name]
+    else:
+        new_collection = bpy.data.collections.new(collection_name)
+        parent_collection.children.link(new_collection) # Add the new collection under a parent
+        return new_collection
 
 
 
@@ -56,17 +69,22 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
     )
     radius_sites = FloatProperty(
         name = "Site radius",
-        default = 0.1,
+        default = 0.2,
         min = 0.0,
         max = 10.0
     )
-
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_sites = IntProperty(
         name = "Subdivision (sites)",
         default = 2,
         min = 0,
         max = 8
+    )
+    radius_bonds = FloatProperty(
+        name = "Bond radius",
+        default = 0.08,
+        min = 0.0,
+        max = 1.0
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_bonds = IntProperty(
@@ -84,47 +102,8 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
     # STEP 2 #  FUNCTIONS FOR ADDING PARTS
     ##########---------------------------------
 
-
-    # DEFINE A FUNCTION TO ADD A MATERIAL
-    def addMaterial(self, name, color):
-        # get the material
-        material = bpy.data.materials.get(name)
-        if material is None:
-            # create material
-            material = bpy.data.materials.new(name=name)
-        # set the color
-        material.diffuse_color = (color[0],color[1],color[2],1.0)
-        # use nodes for rendering
-        material.use_nodes = True
-        # clear the default nodes
-        material.node_tree.nodes.clear()
-        # add the necessary nodes
-        diffuse = material.node_tree.nodes.new(type = 'ShaderNodeBsdfDiffuse')
-        glossy  = material.node_tree.nodes.new(type = 'ShaderNodeBsdfGlossy')
-        output  = material.node_tree.nodes.new(type = 'ShaderNodeOutputMaterial')
-        mixer   = material.node_tree.nodes.new(type = 'ShaderNodeMixShader')
-        fresnel = material.node_tree.nodes.new(type = 'ShaderNodeFresnel')
-        # link the nodes
-        material.node_tree.links.new(fresnel.outputs['Fac'],    mixer.inputs['Fac'])
-        material.node_tree.links.new(diffuse.outputs['BSDF'],   mixer.inputs[1])
-        material.node_tree.links.new( glossy.outputs['BSDF'],   mixer.inputs[2])
-        material.node_tree.links.new(  mixer.outputs['Shader'], output.inputs['Surface'])
-        material.node_tree.links.new(  mixer.outputs['Shader'], output.inputs['Surface'])
-        # set some default values
-        diffuse.inputs[0].default_value           = (color[0],color[1],color[2],1.0)  # color of the material
-        diffuse.inputs['Roughness'].default_value = 0.75  # Roughness of the diffuse part of material
-        glossy.inputs['Roughness'].default_value  = 0.05  # Roughness of the glossy part of material
-        glossy.inputs[0].default_value            = (1.0,1.0,1.0, 1.0)  # color of the gloss
-        glossy.distribution                       = "MULTI_GGX"
-        # fix location of nodes
-        output.location  = ( 200, 0)
-        fresnel.location = (-200, 150)
-        diffuse.location = (-200, 0)
-        glossy.location  = (-200, -150)
-
-
     # DEFINE A FUNCTION TO ADD A SPHERE
-    def addSphere(self, site_index, x,y,z, lbl):
+    def addSite(self, site_index, x,y,z, lbl):
         # set the correct position
         x = bpy.context.scene.cursor.location[0] + x
         y = bpy.context.scene.cursor.location[1] + y
@@ -158,51 +137,77 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
             obj.data.materials.append(material)
         # set smooth shading
         bpy.ops.object.shade_smooth()
+        # deselect the object
+        obj.select_set(False)
+        # return the object
+        return obj
 
 
     # DEFINE A FUNCTION TO ADD A TUBE
-    def addTube(self, bond_index, x_from,y_from,z_from, x_to,y_to,z_to, radius, color):
+    def addBond(self, bond_index, p_from, p_to, lbl):
         # set the correct positions
-        x_from = bpy.context.scene.cursor.location[0] + x_from
-        y_from = bpy.context.scene.cursor.location[1] + y_from
-        z_from = bpy.context.scene.cursor.location[2] + z_from
-        x_to   = bpy.context.scene.cursor.location[0] + x_to
-        y_to   = bpy.context.scene.cursor.location[1] + y_to
-        z_to   = bpy.context.scene.cursor.location[2] + z_to
-        # difference in coordinates
-        dx = x_to - x_from
-        dy = y_to - y_from
-        dz = z_to - z_from
-        # angles
-        phi   = math.atan2(dy, dx)
-        theta = math.pi/2 - math.atan2(dz,math.sqrt(dx**2+dy**2))
-        # find the length of the bond
-        bond_length = math.sqrt(dx**2 + dy**2 + dz**2)
-        # add a cylinder of the desired data
-        bpy.ops.mesh.primitive_cylinder_add(vertices=self.resolution_bonds, radius=radius, depth=bond_length, location=((x_to+x_from)/2, (y_to+y_from)/2, (z_to+z_from)/2))
-        bpy.ops.transform.rotate(value=-theta, orient_axis='Y')
-        bpy.ops.transform.rotate(value=-phi, orient_axis='Z')
-        # get the current object
-        obj = bpy.context.active_object
-        # set the name
-        obj.name = "bond_{0}".format(bond_index)
+        x_from = bpy.context.scene.cursor.location[0] + p_from[0]
+        y_from = bpy.context.scene.cursor.location[1] + p_from[1]
+        z_from = bpy.context.scene.cursor.location[2] + p_from[2]
+        x_to   = bpy.context.scene.cursor.location[0] + p_to[0]
+        y_to   = bpy.context.scene.cursor.location[1] + p_to[1]
+        z_to   = bpy.context.scene.cursor.location[2] + p_to[2]
+        # adding curve from
+        # https://blender.stackexchange.com/questions/120074/how-to-make-a-curve-path-from-scratch-given-a-list-of-x-y-z-points
+        # make a new curve
+        crv = bpy.data.curves.new('crv', 'CURVE')
+        crv.dimensions = '3D'
+        # make a new spline in that curve
+        spline = crv.splines.new(type='NURBS')
+        # a spline point for each point
+        spline.points.add(1) # theres already one point by default
+        # assign the point coordinates to the spline points
+        spline.points[0].co = (x_from,y_from,z_from,1)
+        spline.points[1].co = (  x_to,  y_to,  z_to,1)
+        # make a new object with the curve
+        obj = bpy.data.objects.new("bond_{0}".format(bond_index), crv)
+        # TODO render bevel (Probably change in the future)
+        obj.data.splines[0].use_bezier_u = True
+        obj.data.splines[0].use_bezier_u = False
+        # set the bevel so that the bonds are actually tubes
+        obj.data.bevel_depth = self.radius_bonds
+        # link it to the scene
+        bpy.context.scene.collection.objects.link(obj)
         # add subsurf modifier to make surface look smoother
-        if self.subdivide_bonds:
-            # first edge split (to seperate the faces of the tubes from subsurfing)
-            obj.modifiers.new("bond_edge_split", "EDGE_SPLIT")
-            obj.modifiers["bond_edge_split"].split_angle = 1.0
+        if self.subdivision_bonds > 0:
             # then subsurf
             obj.modifiers.new("bond_subsurf", "SUBSURF")
             obj.modifiers["bond_subsurf"].levels = 1
             obj.modifiers["bond_subsurf"].render_levels = self.subdivision_bonds
         # set the material (color)
-        material = bpy.data.materials.get(color)
+        material_name = "bond_material_"+lbl
+        # get the material
+        material = bpy.data.materials.get(material_name)
+        if material is None:
+            # create material
+            material = bpy.data.materials.new(name=material_name)
+            # set the color
+            material.diffuse_color = (0.5,0.5,0.5,1.0)
+            # use nodes for rendering
+            material.use_nodes = True
+        # set the material
         if obj.data.materials:
             obj.data.materials[0] = material
         else:
             obj.data.materials.append(material)
         # set smooth shading
         bpy.ops.object.shade_smooth()
+        # select the object
+        obj.select_set(True)
+        # set origin to geometry
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+        # deselect the object
+        obj.select_set(False)
+        # return the object
+        return obj
+
+
+
 
 
     ##########---------------------------------
@@ -274,8 +279,8 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 # get the data from the line
                 bond_i = int(l.split(" ")[1].split("=")[1][1:-1]) - 1
                 bond_l = l.split(" ")[2].split("=")[1][1:-1]
-                bond_f = float(l.split(" ")[3].split("=")[1][1:-1])
-                bond_t = float(l.split(" ")[4].split("=")[1][1:-1])
+                bond_f = int(l.split(" ")[3].split("=")[1][1:-1]) - 1
+                bond_t = int(l.split(" ")[4].split("=")[1][1:-1]) - 1
                 # add the site information to the lists
                 bonds_l[bond_i] = bond_l
                 bonds_f[bond_i] = bond_f
@@ -285,15 +290,29 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
                 # add the bond
                 #self.addTube(int(bond_data[0]),bond_data[1],bond_data[2],bond_data[3],bond_data[4],bond_data[5],bond_data[6],bond_data[7],l.split("\t")[2])
 
+        # deselect all objects
+        bpy.ops.object.select_all(action='DESELECT')
 
-        # add all sites
-        for s in range(N_sites):
-            # add the respective site
-            # addSphere(self, site_index, x,y,z, radius, color):
-            self.addSphere(s+1, sites_x[s],sites_y[s],sites_z[s], sites_l[s])
+        # add all sites and collect objects into list
+        site_objects = [ self.addSite(s+1, sites_x[s],sites_y[s],sites_z[s], sites_l[s]) for s in range(N_sites) ]
 
+        # add all bonds and collect objects into list
+        bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], bonds_l[b]) for b in range(N_bonds) ]
 
-
+        # make the collections right
+        # General site and bond collections
+        site_collection = make_collection("Sites", find_collection(bpy.context, site_objects[0]))
+        bond_collection = make_collection("Bonds", find_collection(bpy.context, site_objects[0]))
+        # push all sites into theses lists
+        for s in site_objects:
+            old_site_collection = find_collection(bpy.context, s)
+            site_collection.objects.link(s)
+            old_site_collection.objects.unlink(s)
+        # push all bonds into theses lists
+        for b in bond_objects:
+            old_bond_collection = find_collection(bpy.context, b)
+            bond_collection.objects.link(b)
+            old_bond_collection.objects.unlink(b)
 
 
     # EXECUTE THE ADDON
