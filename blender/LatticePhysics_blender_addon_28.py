@@ -305,7 +305,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         bpy.ops.object.select_all(action='DESELECT')
 
         # check if lattice already added
-        if "Lattice {0}".format(filename) in bpy.data.collections: # Does the top level collection already exist?
+        if "Lattice {0}".format(fn) in bpy.data.collections: # Does the top level collection already exist?
             print("ERROR: Lattice already loaded")
             return
 
@@ -325,9 +325,9 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         site_collections = dict()
         bond_collections = dict()
         # make new collections for the respective labels
-        for s in site_l:
+        for s in sites_l:
             site_collections[s] = make_collection("Sites (label={0}) ({1})".format(s, fn), site_collection)
-        for b in bond_l:
+        for b in bonds_l:
             bond_collections[b] = make_collection("Bonds (label={0}) ({1})".format(b, fn), bond_collection)
         # push all sites into theses lists
         for s in range(N_sites):
