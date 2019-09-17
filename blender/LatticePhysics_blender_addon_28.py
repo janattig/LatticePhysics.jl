@@ -8,6 +8,8 @@ from bpy.types import Operator
 
 import math
 import mathutils
+from mathutils import *
+from math import *
 
 
 # BLENDER ADDON INFORMATION
@@ -68,27 +70,27 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         max = 16
     )
     radius_sites = FloatProperty(
-        name = "Site radius",
+        name = "Site radius (relative)",
         default = 0.2,
         min = 0.0,
         max = 10.0
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_sites = IntProperty(
-        name = "Subdivision (sites)",
+        name = "Subdivision of sites",
         default = 2,
         min = 0,
         max = 8
     )
     radius_bonds = FloatProperty(
-        name = "Bond radius",
+        name = "Bond radius (relative)",
         default = 0.08,
         min = 0.0,
         max = 1.0
     )
     # number of subdivisions of sites (passed to the subsurf modifier)
     subdivision_bonds = IntProperty(
-        name = "Subdivision (bonds)",
+        name = "Subdivision of bonds",
         default = 2,
         min = 0,
         max = 8
@@ -103,13 +105,13 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
     ##########---------------------------------
 
     # DEFINE A FUNCTION TO ADD A SPHERE
-    def addSite(self, site_index, x,y,z, lbl):
+    def addSite(self, site_index, p, radius, lbl):
         # set the correct position
-        x = bpy.context.scene.cursor.location[0] + x
-        y = bpy.context.scene.cursor.location[1] + y
-        z = bpy.context.scene.cursor.location[2] + z
+        x = bpy.context.scene.cursor.location[0] + p[0]
+        y = bpy.context.scene.cursor.location[1] + p[1]
+        z = bpy.context.scene.cursor.location[2] + p[2]
         # add an ico sphere at that point
-        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=self.resolution_sites, radius=self.radius_sites, location=(x,y,z))
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=self.resolution_sites, radius=radius, location=(x,y,z))
         # get the current object
         obj = bpy.context.active_object
         # set the name
@@ -144,7 +146,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
 
 
     # DEFINE A FUNCTION TO ADD A TUBE
-    def addBond(self, bond_index, p_from, p_to, lbl):
+    def addBond(self, bond_index, p_from, p_to, radius, lbl):
         # set the correct positions
         x_from = bpy.context.scene.cursor.location[0] + p_from[0]
         y_from = bpy.context.scene.cursor.location[1] + p_from[1]
@@ -170,7 +172,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         obj.data.splines[0].use_bezier_u = True
         obj.data.splines[0].use_bezier_u = False
         # set the bevel so that the bonds are actually tubes
-        obj.data.bevel_depth = self.radius_bonds
+        obj.data.bevel_depth = radius
         # link it to the scene
         bpy.context.scene.collection.objects.link(obj)
         # add subsurf modifier to make surface look smoother
@@ -301,6 +303,10 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         sites_y = [s - cm_y for s in sites_y]
         sites_z = [s - cm_z for s in sites_z]
 
+        # determine lenght of all bonds
+        bond_lengths = [sqrt((sites_x[bonds_f[i]]-sites_x[bonds_t[i]])**2 + (sites_y[bonds_f[i]]-sites_y[bonds_t[i]])**2) for i in range(N_bonds)]
+        min_bond_length = min(bond_lengths)
+
         # deselect all objects
         bpy.ops.object.select_all(action='DESELECT')
 
@@ -310,10 +316,10 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
             return
 
         # add all sites and collect objects into list
-        site_objects = [ self.addSite(s+1, sites_x[s],sites_y[s],sites_z[s], sites_l[s]) for s in range(N_sites) ]
+        site_objects = [ self.addSite(s+1, [sites_x[s],sites_y[s],sites_z[s]], self.radius_sites * min_bond_length, sites_l[s]) for s in range(N_sites) ]
 
         # add all bonds and collect objects into list
-        bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], bonds_l[b]) for b in range(N_bonds) ]
+        bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], self.radius_bonds * min_bond_length, bonds_l[b]) for b in range(N_bonds) ]
 
         # make the collections right
         general_collection = bpy.data.collections.new("Lattice {0}".format(fn))
