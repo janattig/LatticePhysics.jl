@@ -96,6 +96,11 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         max = 8
     )
 
+    # if there is a subsurf modifier for sites
+    hook_bonds_to_sites = BoolProperty(
+        name = "Hook bonds to sites",
+        default = True
+    )
 
 
 
@@ -146,7 +151,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
 
 
     # DEFINE A FUNCTION TO ADD A TUBE
-    def addBond(self, bond_index, p_from, p_to, radius, lbl):
+    def addBond(self, bond_index, p_from, p_to, radius, lbl, hook_from=-1, hook_to=-1):
         # set the correct positions
         x_from = bpy.context.scene.cursor.location[0] + p_from[0]
         y_from = bpy.context.scene.cursor.location[1] + p_from[1]
@@ -157,7 +162,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         # adding curve from
         # https://blender.stackexchange.com/questions/120074/how-to-make-a-curve-path-from-scratch-given-a-list-of-x-y-z-points
         # make a new curve
-        crv = bpy.data.curves.new('crv', 'CURVE')
+        crv = bpy.data.curves.new("crv_{0}".format(bond_index), 'CURVE')
         crv.dimensions = '3D'
         # make a new spline in that curve
         spline = crv.splines.new(type='NURBS')
@@ -175,6 +180,15 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         obj.data.bevel_depth = radius
         # link it to the scene
         bpy.context.scene.collection.objects.link(obj)
+        # maybe hook the bond to the sites
+        if self.hook_bonds_to_sites and hook_from>=0 and hook_to>=0:
+            # add the hook modifiers
+            obj.modifiers.new("follow_site_{0}".format(hook_from), "HOOK")
+            obj.modifiers["follow_site_{0}".format(hook_from)].object = bpy.data.objects["site_{0}".format(hook_from)]
+            obj.modifiers["follow_site_{0}".format(hook_from)].vertex_indices_set([0,])
+            obj.modifiers.new("follow_site_{0}".format(hook_to), "HOOK")
+            obj.modifiers["follow_site_{0}".format(hook_to)].object   = bpy.data.objects["site_{0}".format(hook_to)]
+            obj.modifiers["follow_site_{0}".format(hook_to)].vertex_indices_set([1,])
         # add subsurf modifier to make surface look smoother
         if self.subdivision_bonds > 0:
             # then subsurf
@@ -200,11 +214,11 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         # set smooth shading
         bpy.ops.object.shade_smooth()
         # select the object
-        obj.select_set(True)
+        #obj.select_set(True)
         # set origin to geometry
-        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+        #bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
         # deselect the object
-        obj.select_set(False)
+        #obj.select_set(False)
         # return the object
         return obj
 
@@ -319,7 +333,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
         site_objects = [ self.addSite(s+1, [sites_x[s],sites_y[s],sites_z[s]], self.radius_sites * min_bond_length, sites_l[s]) for s in range(N_sites) ]
 
         # add all bonds and collect objects into list
-        bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], self.radius_bonds * min_bond_length, bonds_l[b]) for b in range(N_bonds) ]
+        bond_objects = [ self.addBond(b+1, [sites_x[bonds_f[b]],sites_y[bonds_f[b]],sites_z[bonds_f[b]]], [sites_x[bonds_t[b]],sites_y[bonds_t[b]],sites_z[bonds_t[b]]], self.radius_bonds * min_bond_length, bonds_l[b], bonds_f[b]+1, bonds_t[b]+1) for b in range(N_bonds) ]
 
         # make the collections right
         general_collection = bpy.data.collections.new("Lattice {0}".format(fn))
