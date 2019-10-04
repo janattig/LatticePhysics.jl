@@ -236,7 +236,7 @@ class LatticePhysicsBlenderAddon(Operator, ImportHelper):
             lines = f.readlines()
 
         # refactor filename
-        fn = filename.split("/")[-1]
+        fn = filename.split(os.sep)[-1]
         # remove whitespace characters like `\n` at the end of each line
         lines = [x.strip() for x in lines]
 
